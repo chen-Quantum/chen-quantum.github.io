@@ -16,8 +16,9 @@ import Layout from "../layouts/Layout.astro";
         Digital Courses
       </h1>
       <p class="text-base text-slate-500 max-w-xl leading-relaxed">
-        Structured online courses in mathematics and quantum computing —
-        currently in preparation.
+        Structured digital courses in physics, quantum theory, and quantum
+        algorithms are in preparation. Each course is being built around a
+        clear topic list, recorded lectures, and accompanying notes.
       </p>
     </div>
   </section>
@@ -46,34 +47,38 @@ import Layout from "../layouts/Layout.astro";
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[
           {
-            title: "Quantum Computing — From Zero to Algorithms",
-            description: "A complete journey from linear algebra prerequisites through major quantum algorithms. Designed for CS and mathematics students with no prior quantum knowledge.",
+            title: "Physics 1",
+            description: "Classical mechanics: kinematics, Newton's laws, energy and momentum, oscillations, and an introduction to waves.",
+            topics: ["Mechanics", "Newton's laws", "Energy and momentum", "Oscillations", "Waves"],
+            tags: ["Physics", "Mechanics"],
+            status: "Coming next year",
+          },
+          {
+            title: "Physics 2",
+            description: "Electromagnetism: electrostatics, Gauss's law, electric potential, circuits, magnetostatics, Faraday induction, and the road to Maxwell's equations.",
+            topics: ["Electrostatics", "Gauss's law", "Electric potential", "Circuits", "Magnetostatics", "Faraday induction", "Maxwell foundations"],
+            tags: ["Physics", "Electromagnetism"],
+            status: "Coming next year",
+          },
+          {
+            title: "Quantum 1",
+            description: "Introduction to quantum mechanics: wavefunctions, operators, measurement, spin, the Schrödinger equation, the harmonic oscillator, and angular momentum.",
+            topics: ["Wavefunctions", "Operators", "Measurement", "Spin", "Schrödinger equation", "Harmonic oscillator", "Angular momentum"],
+            tags: ["Quantum Mechanics", "Physics"],
+            status: "Coming next year",
+          },
+          {
+            title: "Quantum Algorithms",
+            description: "Quantum computing from qubits to algorithms: gates and circuits, Deutsch–Jozsa, phase estimation, the Quantum Fourier Transform, Grover, Shor, variational algorithms, and quantum machine learning foundations.",
+            topics: ["Qubits and gates", "Circuits", "Deutsch–Jozsa", "Phase estimation", "QFT", "Grover", "Shor foundations", "Variational algorithms", "QML foundations"],
             tags: ["Quantum Computing", "Algorithms"],
-            status: "In Production",
+            status: "Coming next year",
           },
-          {
-            title: "Linear Algebra Masterclass",
-            description: "Rigorous yet accessible coverage of linear algebra with geometric intuition, computational tools, and applications in data science and quantum mechanics.",
-            tags: ["Linear Algebra", "Mathematics"],
-            status: "Planned",
-          },
-          {
-            title: "Mathematical Foundations of CS",
-            description: "Logic, set theory, combinatorics, graph theory, and probability — the mathematical toolkit every serious computer scientist needs.",
-            tags: ["Discrete Math", "Foundations"],
-            status: "Planned",
-          },
-        ].map(({ title, description, tags, status }) => (
+        ].map(({ title, description, topics, tags, status }) => (
           <div class="flex flex-col p-6 bg-white rounded-xl border border-slate-200">
             <!-- Status pill -->
             <div class="flex items-center justify-between mb-4">
-              <span
-                class={`text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                  status === "In Production"
-                    ? "text-amber-700 bg-amber-50 border border-amber-200"
-                    : "text-slate-500 bg-slate-100"
-                }`}
-              >
+              <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-amber-700 bg-amber-50 border border-amber-200">
                 {status}
               </span>
             </div>
@@ -81,9 +86,23 @@ import Layout from "../layouts/Layout.astro";
             <h3 class="text-base font-semibold text-slate-900 mb-3 leading-snug flex-none">
               {title}
             </h3>
-            <p class="text-sm text-slate-500 leading-relaxed mb-5 flex-1">
+            <p class="text-sm text-slate-500 leading-relaxed mb-4 flex-1">
               {description}
             </p>
+
+            <div class="mb-4">
+              <p class="text-[0.6rem] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Topics</p>
+              <ul class="text-xs text-slate-500 leading-relaxed space-y-0.5">
+                {topics.slice(0, 5).map((t) => (<li>· {t}</li>))}
+                {topics.length > 5 && <li class="text-slate-400">… and more</li>}
+              </ul>
+            </div>
+
+            <div class="mb-4 grid grid-cols-2 gap-2 text-[0.65rem]">
+              <span class="font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded text-center">Materials: coming soon</span>
+              <span class="font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded text-center">Videos: coming soon</span>
+            </div>
+
             <div class="flex flex-wrap gap-1.5 mt-auto">
               {tags.map((tag) => (
                 <span class="text-[0.65rem] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-wide">

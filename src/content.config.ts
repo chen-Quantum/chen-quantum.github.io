@@ -180,6 +180,23 @@ const communityGallery = defineCollection({
   }),
 });
 
+const teaching = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/teaching" }),
+  schema: z.object({
+    title: z.string(),
+    titleHebrew: z.string().optional(),
+    description: z.string(),
+    courseId: z.string(),
+    audience: z.array(z.string()).default([]),
+    topics: z.array(z.string()).default([]),
+    semester: z.string().optional(),
+    institution: z.string().optional(),
+    status: z.enum(["active", "upcoming", "past"]).default("active"),
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   library,
   projects,
@@ -189,4 +206,5 @@ export const collections = {
   materials,
   communityEvents,
   communityGallery,
+  teaching,
 };

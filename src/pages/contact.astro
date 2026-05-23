@@ -1,9 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// Replace these with your actual contact details before publishing
-const EMAIL = "your.email@university.ac.il";
-const WHATSAPP_NUMBER = "972501234567"; // international format, no + sign
+const EMAIL = "chengadi@mail.tau.ac.il";
+const WHATSAPP_NUMBER = "972525501669"; // international format, no + sign
+const WHATSAPP_LABEL = "052-550-1669";
 ---
 
 <Layout
@@ -20,9 +20,36 @@ const WHATSAPP_NUMBER = "972501234567"; // international format, no + sign
         Contact
       </h1>
       <p class="text-base text-slate-500 max-w-xl leading-relaxed">
-        For private lessons, private courses, academic collaboration, or any
-        other inquiry — reach out directly.
+        For tutoring, teaching materials, quantum community events, research
+        collaborations, and project inquiries — reach out by email or WhatsApp.
       </p>
+
+      <!-- Quick contact buttons -->
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={`mailto:${EMAIL}`}
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          Email
+          <span class="text-xs font-normal opacity-80 hidden sm:inline">{EMAIL}</span>
+        </a>
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
+        >
+          Message on WhatsApp
+          <span class="text-xs font-normal opacity-80 hidden sm:inline">{WHATSAPP_LABEL}</span>
+        </a>
+        <a
+          href="/files/cv/chen-gadi-cv-2026.pdf"
+          download
+          class="inline-flex items-center gap-2 px-5 py-2.5 text-slate-700 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:text-slate-900 transition-colors"
+        >
+          Download CV
+        </a>
+      </div>
     </div>
   </section>
 
@@ -151,7 +178,7 @@ const WHATSAPP_NUMBER = "972501234567"; // international format, no + sign
               </div>
               <div>
                 <p class="text-sm font-semibold text-slate-800 group-hover:text-emerald-600 transition-colors">WhatsApp</p>
-                <p class="text-xs text-slate-400">Message me directly</p>
+                <p class="text-xs text-slate-400">{WHATSAPP_LABEL}</p>
               </div>
             </a>
           </div>
