@@ -1,0 +1,116 @@
+---
+/**
+ * PdfViewer — embedded PDF display with deterrence measures.
+ *
+ * IMPORTANT: This component applies reasonable deterrence (no visible download
+ * button, right-click disabled, text-select disabled, watermark overlay, print
+ * CSS to block printing). It does NOT prevent all copying or screenshots — that
+ * is technically impossible in a browser. Use it for legitimate content-sharing
+ * with students, not for top-secret documents.
+ *
+ * If your PDF is already password-protected, that layer of protection applies
+ * in addition to these measures.
+ */
+
+interface Props {
+  pdfUrl: string;          // URL of the PDF to embed
+  title: string;           // Document title for aria label
+  watermarkText?: string;  // Watermark string (default: site identity)
+}
+
+const {
+  pdfUrl,
+  title,
+  watermarkText = "Chen Quantum · chen-quantum.github.io",
+} = Astro.props;
+---
+
+<!-- Outer wrapper — relative to allow watermark overlay -->
+<div
+  class="pdf-viewer-wrap relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
+  oncontextmenu="return false"
+  role="document"
+  aria-label={title}
+>
+  <!-- Watermark overlay — sits above the iframe, pointer-events:none so clicking passes through -->
+  <div
+    class="pdf-watermark"
+    aria-hidden="true"
+  >
+    {Array.from({ length: 24 }).map(() => (
+      <span class="pdf-watermark__stamp">{watermarkText}</span>
+    ))}
+  </div>
+
+  <!-- The iframe embedding the PDF.
+       #toolbar=0 hides the browser PDF toolbar in Chromium-based browsers.
+       This is a hint, not a guarantee — Firefox and Safari may still show controls. -->
+  <iframe
+    src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+    title={title}
+    class="pdf-viewer-frame w-full"
+    loading="lazy"
+    allowfullscreen={false}
+    style="height: 75vh; min-height: 480px; max-height: 900px;"
+  ></iframe>
+</div>
+
+<style>
+  /* --- Deterrence styles -------------------------------------------------- */
+
+  /* Block text selection inside viewer */
+  .pdf-viewer-wrap {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  /* Diagonal watermark using CSS grid repeat */
+  .pdf-watermark {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;          /* clicks pass through to iframe */
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .pdf-watermark__stamp {
+    display: inline-block;
+    transform: rotate(-35deg);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgb(148 163 184 / 0.35);   /* slate-400 @ 35% */
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* --- Print deterrence -------------------------------------------------- */
+  @media print {
+    .pdf-viewer-wrap {
+      display: none !important;
+    }
+    body::before {
+      content: "Printing is disabled for this material.";
+      display: block;
+      padding: 4rem;
+      font-size: 1.5rem;
+      text-align: center;
+      color: #475569;
+    }
+  }
+</style>
+
+<script>
+  /* Block right-click on the viewer wrapper.
+   * Note: this is a deterrence, not a hard block — browser devtools still work. */
+  document.querySelectorAll<HTMLElement>(".pdf-viewer-wrap").forEach((el) => {
+    el.addEventListener("contextmenu", (e) => e.preventDefault());
+  });
+</script>

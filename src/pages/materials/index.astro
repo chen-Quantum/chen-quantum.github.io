@@ -1,0 +1,125 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import MaterialCard from "../../components/MaterialCard.astro";
+import { getCollection } from "astro:content";
+
+const allMaterials = await getCollection("materials", ({ data }) => !data.draft);
+allMaterials.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featured = allMaterials.filter((m) => m.data.featured);
+
+// Group by type
+const typeOrder = ["tutorial", "practice", "worksheet", "notes", "exam-prep"] as const;
+const typeLabelMap: Record<string, string> = {
+  tutorial: "Tutorials",
+  practice: "Practice Problems",
+  worksheet: "Worksheets",
+  notes: "Notes",
+  "exam-prep": "Exam Preparation",
+};
+
+const byType = typeOrder
+  .map((type) => ({
+    type,
+    label: typeLabelMap[type] ?? type,
+    items: allMaterials.filter((m) => m.data.type === type),
+  }))
+  .filter(({ items }) => items.length > 0);
+
+const subjects = [...new Set(allMaterials.map((m) => m.data.subject))];
+---
+
+<Layout
+  title="Practice Materials"
+  description="Tutorial sheets, practice problems, worksheets, and exam preparation materials by Chen Quantum."
+>
+  <!-- Page header -->
+  <section class="border-b border-slate-100">
+    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        Teaching
+      </p>
+      <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight mb-5">
+        Practice Materials
+      </h1>
+      <p class="text-base text-slate-500 max-w-xl leading-relaxed mb-8">
+        Tutorial sheets, practice problem sets, worksheets, and exam
+        preparation materials from my courses. Each document opens in a
+        dedicated viewer.
+      </p>
+
+      <!-- Stats -->
+      {allMaterials.length > 0 && (
+        <dl class="flex flex-wrap gap-6">
+          <div class="flex items-baseline gap-1.5">
+            <dd class="text-sm font-semibold text-slate-900 tabular-nums">{allMaterials.length}</dd>
+            <dt class="text-xs text-slate-400">documents</dt>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <dd class="text-sm font-semibold text-slate-900 tabular-nums">{subjects.length}</dd>
+            <dt class="text-xs text-slate-400">subjects</dt>
+          </div>
+        </dl>
+      )}
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    {allMaterials.length === 0 ? (
+      <div class="py-24 max-w-sm">
+        <p class="font-display text-3xl text-slate-200 mb-4">Coming soon.</p>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Practice materials and tutorial sheets will appear here as they are ready.
+        </p>
+      </div>
+    ) : (
+      <div class="space-y-14">
+        {/* Featured */}
+        {featured.length > 0 && (
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
+              Featured
+            </p>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {featured.map((m) => (
+                <MaterialCard
+                  title={m.data.title}
+                  description={m.data.description}
+                  subject={m.data.subject}
+                  type={m.data.type}
+                  tags={m.data.tags}
+                  slug={m.id}
+                  featured={m.data.featured}
+                  passwordProtected={m.data.passwordProtected}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* By type */}
+        {byType.map(({ type, label, items }) => (
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
+              {label}
+            </p>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {items.map((m) => (
+                <MaterialCard
+                  title={m.data.title}
+                  description={m.data.description}
+                  subject={m.data.subject}
+                  type={m.data.type}
+                  tags={m.data.tags}
+                  slug={m.id}
+                  featured={m.data.featured}
+                  passwordProtected={m.data.passwordProtected}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</Layout>

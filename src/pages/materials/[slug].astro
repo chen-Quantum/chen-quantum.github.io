@@ -1,0 +1,193 @@
+---
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import PdfViewer from "../../components/PdfViewer.astro";
+
+export async function getStaticPaths() {
+  const materials = await getCollection("materials", ({ data }) => !data.draft);
+  return materials.map((material) => ({
+    params: { slug: material.id },
+    props: { material },
+  }));
+}
+
+interface Props {
+  material: CollectionEntry<"materials">;
+}
+
+const { material } = Astro.props;
+const { data } = material;
+const { Content } = await render(material);
+
+// Resolve PDF URL: prefer explicit pdfUrl, else derive from pdfFile in /materials/
+const pdfUrl = data.pdfUrl ?? (data.pdfFile ? `/materials/${data.pdfFile}` : null);
+const hasPdf = Boolean(pdfUrl);
+
+const typeColors: Record<string, string> = {
+  tutorial: "text-indigo-600 bg-indigo-50 border-indigo-100",
+  practice: "text-emerald-600 bg-emerald-50 border-emerald-100",
+  worksheet: "text-amber-600 bg-amber-50 border-amber-100",
+  notes: "text-sky-600 bg-sky-50 border-sky-100",
+  "exam-prep": "text-rose-600 bg-rose-50 border-rose-100",
+};
+const badgeClass = typeColors[data.type] ?? "text-slate-600 bg-slate-50 border-slate-200";
+---
+
+<Layout title={data.title} description={data.description}>
+  <!-- Breadcrumb -->
+  <div class="border-b border-slate-100 bg-slate-50">
+    <div class="mx-auto max-w-6xl px-6 py-3">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500">
+        <a href="/" class="hover:text-slate-900 transition-colors">Home</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <a href="/materials" class="hover:text-slate-900 transition-colors">Materials</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-slate-700 font-medium truncate max-w-xs">{data.title}</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Document header -->
+  <section class="border-b border-slate-100 bg-white">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:py-16">
+      <div class="max-w-3xl">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class={`text-sm font-semibold uppercase tracking-wider border px-3 py-1 rounded-full ${badgeClass}`}>
+            {data.type}
+          </span>
+          <span class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+            {data.subject}
+          </span>
+          {data.passwordProtected && (
+            <span class="text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Password protected
+            </span>
+          )}
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4 leading-tight">
+          {data.title}
+        </h1>
+        <p class="text-lg text-slate-500 leading-relaxed mb-6">
+          {data.description}
+        </p>
+
+        {data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {data.tags.map((tag) => (
+              <span class="text-xs font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1.5 rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12 items-start">
+      <div>
+        <!-- Document description / notes -->
+        <section class="mb-10">
+          <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
+            About this Material
+          </h2>
+          <div class="prose-content">
+            <Content />
+          </div>
+        </section>
+
+        <!-- PDF Viewer -->
+        {hasPdf ? (
+          <section class="mb-10">
+            <h2 class="text-xl font-bold text-slate-900 mb-4">
+              Document Viewer
+            </h2>
+            <p class="text-sm text-slate-500 mb-5 leading-relaxed">
+              View the material below. Printing and downloading are intentionally
+              limited — these measures deter casual copying but cannot prevent
+              screenshots. Your access here is for personal study.
+            </p>
+            <PdfViewer
+              pdfUrl={pdfUrl!}
+              title={data.title}
+            />
+          </section>
+        ) : (
+          <div class="p-6 rounded-xl border border-dashed border-slate-200 bg-slate-50 text-center mb-10">
+            <p class="text-sm font-medium text-slate-500 mb-2">Document not yet available</p>
+            <p class="text-xs text-slate-400">
+              The PDF for this material will be added shortly. Check back soon.
+            </p>
+          </div>
+        )}
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="hidden lg:block sticky top-24">
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+            Document Info
+          </h3>
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-xs text-slate-400 mb-1">Subject</dt>
+              <dd class="text-sm font-medium text-slate-700">{data.subject}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-slate-400 mb-1">Type</dt>
+              <dd class="text-sm font-medium text-slate-700 capitalize">{data.type}</dd>
+            </div>
+            {data.course && (
+              <div>
+                <dt class="text-xs text-slate-400 mb-1">Course</dt>
+                <dd class="text-sm font-medium text-slate-700">{data.course}</dd>
+              </div>
+            )}
+            {data.tags.length > 0 && (
+              <div>
+                <dt class="text-xs text-slate-400 mb-2">Topics</dt>
+                <dd class="flex flex-wrap gap-1.5">
+                  {data.tags.map((tag) => (
+                    <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            {data.passwordProtected && (
+              <div class="pt-2 border-t border-slate-200">
+                <p class="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2 leading-relaxed">
+                  This PDF is password-protected. Contact me for access.
+                </p>
+              </div>
+            )}
+          </dl>
+
+          <div class="mt-5 pt-4 border-t border-slate-200">
+            <a
+              href="/materials"
+              class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              All materials
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>

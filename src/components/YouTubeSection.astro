@@ -1,0 +1,51 @@
+---
+// Reusable YouTube links section.
+// Pass an array of { title, url } objects.
+interface VideoLink {
+  title: string;
+  url: string;
+}
+
+interface Props {
+  videos: VideoLink[];
+  heading?: string;
+}
+
+const { videos, heading = "YouTube Videos" } = Astro.props;
+
+if (videos.length === 0) return;
+---
+
+<section class="mb-12 scroll-mt-20" id="videos">
+  <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
+    <span class="flex items-center gap-2.5">
+      <!-- YouTube icon -->
+      <svg class="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+      </svg>
+      {heading}
+    </span>
+  </h2>
+  <div class="grid gap-3 sm:grid-cols-2">
+    {videos.map((video) => (
+      <a
+        href={video.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all"
+      >
+        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center mt-0.5">
+          <svg class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
+            {video.title}
+          </p>
+          <p class="text-xs text-slate-400 mt-0.5">YouTube</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

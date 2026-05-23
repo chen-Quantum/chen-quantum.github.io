@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --font-family-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-family-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better focus rings */
+:focus-visible {
+  outline: 2px solid rgb(99 102 241);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Prose styles for MDX content */
+.prose-content p {
+  margin-bottom: 1.25rem;
+  color: rgb(71 85 105);
+  line-height: 1.8;
+}
+.prose-content p:last-child {
+  margin-bottom: 0;
+}
+.prose-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(15 23 42);
+  margin-top: 2.25rem;
+  margin-bottom: 0.875rem;
+  letter-spacing: -0.01em;
+}
+.prose-content h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: rgb(15 23 42);
+  margin-top: 1.75rem;
+  margin-bottom: 0.625rem;
+}
+.prose-content ul {
+  list-style-type: disc;
+  padding-left: 1.375rem;
+  margin-bottom: 1.25rem;
+  color: rgb(71 85 105);
+}
+.prose-content ol {
+  list-style-type: decimal;
+  padding-left: 1.375rem;
+  margin-bottom: 1.25rem;
+  color: rgb(71 85 105);
+}
+.prose-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+  padding-left: 0.25rem;
+}
+.prose-content a {
+  color: rgb(79 70 229);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose-content a:hover {
+  color: rgb(67 56 202);
+}
+.prose-content strong {
+  font-weight: 600;
+  color: rgb(30 41 59);
+}
+.prose-content em {
+  font-style: italic;
+  color: rgb(51 65 85);
+}
+.prose-content code {
+  font-size: 0.8125rem;
+  background: rgb(241 245 249);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.3rem;
+  color: rgb(51 65 85);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.prose-content blockquote {
+  border-left: 3px solid rgb(199 210 254);
+  padding-left: 1.25rem;
+  margin-left: 0;
+  color: rgb(100 116 139);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+}

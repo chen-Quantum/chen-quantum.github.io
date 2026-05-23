@@ -1,0 +1,299 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="About"
+  description="About Chen Quantum — researcher, teaching assistant, and educator in mathematics and quantum computing."
+>
+  <!-- ─── Page header ───────────────────────────────────────────── -->
+  <section class="border-b border-slate-100">
+    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        About
+      </p>
+      <h1
+        class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight"
+      >
+        Chen Quantum.
+      </h1>
+    </div>
+  </section>
+
+  <!-- ─── Main content ──────────────────────────────────────────── -->
+  <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-16 items-start">
+
+      <!-- Left: content -->
+      <div>
+        <!-- Bio intro — full width, prominent -->
+        <div class="mb-14">
+          <p
+            class="text-lg md:text-xl text-slate-700 leading-relaxed font-medium mb-6 max-w-2xl"
+          >
+            M.Sc. student in Particle Physics at Tel Aviv University, with a
+            B.Sc. in Mathematics and Physics (Magna Cum Laude, Dean's List
+            2024). I work on quantum computing, quantum machine learning, and
+            physics-inspired algorithms.
+          </p>
+          <p class="text-base text-slate-500 leading-relaxed max-w-2xl mb-4">
+            My research practice is simulator-first and reproducibility-first:
+            each project is a small experiment with named baselines, an
+            explicit measurement-efficiency or accuracy signal, and visible
+            limitations. I make no unsupported quantum-advantage claims; every
+            number in every project re-runs from a single command in its
+            repository.
+          </p>
+          <p class="text-base text-slate-500 leading-relaxed max-w-2xl">
+            On the teaching side, I serve as a teaching assistant and run
+            tutorials in linear algebra, multivariable calculus, and
+            introductory quantum computing.
+          </p>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-100 mb-14"></div>
+
+        <!-- Research interests -->
+        <section class="mb-14">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6"
+          >
+            Research Interests
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {
+              [
+                {
+                  area: "Quantum Computing",
+                  detail: "Quantum algorithms, quantum measurement design, and simulator-based prototypes.",
+                },
+                {
+                  area: "Quantum Machine Learning",
+                  detail: "Quantum kernels, adaptive measurement policies, and matched-budget benchmarks.",
+                },
+                {
+                  area: "Physics-Inspired Algorithms",
+                  detail: "Hamiltonian dynamics, wavefunction optimization, and Born-rule classifiers.",
+                },
+                {
+                  area: "Mathematical Research Prototypes",
+                  detail: "Reproducible code, honest baselines, and visible limitations.",
+                },
+              ].map(({ area, detail }) => (
+                <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                  <p class="text-sm font-semibold text-slate-800 mb-1">{area}</p>
+                  <p class="text-xs text-slate-500 leading-relaxed">{detail}</p>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-100 mb-14"></div>
+
+        <!-- Research principles -->
+        <section class="mb-14">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6"
+          >
+            Research Principles
+          </p>
+          <ul class="space-y-2.5 max-w-2xl text-base text-slate-500 leading-relaxed">
+            <li class="flex gap-3"><span class="text-slate-300">·</span> Simulator-first, hardware-aware later.</li>
+            <li class="flex gap-3"><span class="text-slate-300">·</span> Honest baselines before claims.</li>
+            <li class="flex gap-3"><span class="text-slate-300">·</span> No unsupported quantum-advantage claims.</li>
+            <li class="flex gap-3"><span class="text-slate-300">·</span> Mathematical clarity and reproducibility.</li>
+            <li class="flex gap-3"><span class="text-slate-300">·</span> Research prototypes with visible limitations.</li>
+          </ul>
+        </section>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-100 mb-14"></div>
+
+        <!-- Education timeline -->
+        <section class="mb-14">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8"
+          >
+            Education
+          </p>
+          <div class="relative">
+            <!-- Timeline line -->
+            <div
+              class="absolute left-[7px] top-2 bottom-2 w-px bg-slate-200"
+              aria-hidden="true"
+            ></div>
+
+            <div class="space-y-8 pl-6">
+              {
+                [
+                  {
+                    degree: "M.Sc. in Particle Physics",
+                    school: "Tel Aviv University",
+                    period: "2024 — Present",
+                    note: "Focus: quantum computing, quantum machine learning, and physics-inspired algorithms",
+                    active: true,
+                  },
+                  {
+                    degree: "B.Sc. in Mathematics and Physics",
+                    school: "Tel Aviv University",
+                    period: "2020 — 2024",
+                    note: "Graduated with Honors (Magna Cum Laude) · Dean's List 2024",
+                    active: false,
+                  },
+                ].map(({ degree, school, period, note, active }) => (
+                  <div class="relative">
+                    <div
+                      class={`absolute -left-6 top-1.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center ${
+                        active
+                          ? "border-indigo-500 bg-indigo-50"
+                          : "border-slate-300 bg-white"
+                      }`}
+                    >
+                      {active && (
+                        <div class="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                      )}
+                    </div>
+                    <p
+                      class={`text-sm font-semibold mb-0.5 ${active ? "text-slate-900" : "text-slate-700"}`}
+                    >
+                      {degree}
+                    </p>
+                    <p class="text-xs text-slate-500 mb-1">{school}</p>
+                    <p class="text-xs text-slate-400">
+                      {period} &middot; {note}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-100 mb-14"></div>
+
+        <!-- Teaching section -->
+        <section>
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6"
+          >
+            Teaching
+          </p>
+          <p class="text-base text-slate-500 leading-relaxed mb-6 max-w-2xl">
+            I have served as a teaching assistant for courses in linear
+            algebra, multivariable calculus, and introductory quantum
+            computing. I run weekly tutorials, design practice problems, and
+            produce video explanations to extend office hours beyond the
+            classroom.
+          </p>
+          <a
+            href="/courses"
+            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 hover:text-indigo-600 transition-colors"
+          >
+            Browse course materials
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              ></path>
+            </svg>
+          </a>
+        </section>
+      </div>
+
+      <!-- Right: sidebar -->
+      <aside class="lg:sticky lg:top-20 space-y-4">
+        <!-- Logo card -->
+        <div
+          class="rounded-xl border border-slate-200 bg-slate-50 p-8 flex items-center justify-center"
+        >
+          <img
+            src="/brand/logo.png"
+            alt="Chen Quantum"
+            class="w-28 h-28 object-contain"
+          />
+        </div>
+
+        <!-- Info card -->
+        <div class="rounded-xl border border-slate-100 bg-white p-5">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
+          >
+            At a Glance
+          </p>
+          <dl class="space-y-3.5">
+            {
+              [
+                { label: "Role", value: "Teaching Assistant & Researcher" },
+                { label: "Focus", value: "Quantum Computing & Quantum ML" },
+                { label: "Status", value: "M.Sc. Student" },
+                { label: "Location", value: "Tel Aviv University" },
+              ].map(({ label, value }) => (
+                <div>
+                  <dt class="text-[0.65rem] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+                    {label}
+                  </dt>
+                  <dd class="text-sm text-slate-700">{value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <!-- Quick links -->
+        <div class="rounded-xl border border-slate-100 bg-white p-5">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
+          >
+            Elsewhere
+          </p>
+          <ul class="flex flex-col gap-2" role="list">
+            {
+              [
+                { href: "/files/chen-gadi-cv-2026.pdf", label: "Download CV" },
+                { href: "/projects", label: "Projects" },
+                { href: "/courses", label: "Course Materials" },
+                { href: "/research", label: "Research" },
+                { href: "/library", label: "Library" },
+              ].map(({ href, label }) => (
+                <li>
+                  <a
+                    href={href}
+                    class="flex items-center justify-between text-sm text-slate-600 hover:text-indigo-600 transition-colors py-0.5"
+                  >
+                    {label}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3 w-3 text-slate-300"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>

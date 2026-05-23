@@ -1,0 +1,93 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GalleryGrid from "../../components/GalleryGrid.astro";
+import { getCollection } from "astro:content";
+
+const allAlbums = await getCollection("communityGallery", ({ data }) => !data.draft);
+allAlbums.sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf());
+---
+
+<Layout
+  title="Community Gallery"
+  description="Photos from TAU Quantum Community events — workshops, conferences, and community gatherings."
+>
+  <!-- Page header -->
+  <section class="border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white">
+    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <a href="/" class="hover:text-slate-900 transition-colors">Home</a>
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <a href="/quantum-community" class="hover:text-slate-900 transition-colors">Quantum Community</a>
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-slate-700">Gallery</span>
+      </nav>
+
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        TAU Quantum Community
+      </p>
+      <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight mb-5">
+        Gallery
+      </h1>
+      <p class="text-base text-slate-500 max-w-xl leading-relaxed">
+        Photos from our events, workshops, and community gatherings.
+      </p>
+    </div>
+  </section>
+
+  <!-- Gallery content -->
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    {allAlbums.length === 0 ? (
+      <div class="py-24 max-w-sm">
+        <p class="font-display text-3xl text-slate-200 mb-4">No albums yet.</p>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Event photos will be added here after each event.
+          See the <a href="/quantum-community/events" class="text-indigo-500 underline underline-offset-2">events page</a> for upcoming activities.
+        </p>
+      </div>
+    ) : (
+      <div class="space-y-16">
+        {allAlbums.map((album) => {
+          const formattedDate = album.data.eventDate.toLocaleDateString("en-GB", {
+            month: "long",
+            year: "numeric",
+          });
+          return (
+            <div>
+              <!-- Album header -->
+              <div class="flex items-end justify-between mb-6">
+                <div>
+                  <p class="text-xs font-medium text-slate-400 mb-1">{formattedDate}</p>
+                  <h2 class="font-display text-2xl text-slate-900">{album.data.title}</h2>
+                  {album.data.description && (
+                    <p class="text-sm text-slate-500 mt-2 max-w-xl leading-relaxed">
+                      {album.data.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <GalleryGrid
+                photos={album.data.photos}
+                columns={3}
+              />
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    <!-- How to add photos note (visible only in development or to admin) -->
+    <div class="mt-16 p-6 rounded-xl border border-dashed border-slate-200 bg-slate-50">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Maintainer Note</p>
+      <p class="text-sm text-slate-500 leading-relaxed">
+        To add photos: place image files in <code class="text-slate-600">public/community/gallery/</code>,
+        then update the corresponding file in <code class="text-slate-600">src/content/communityGallery/</code>
+        with the image filenames and captions. See the README for details.
+      </p>
+    </div>
+  </div>
+</Layout>
