@@ -3,6 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import CourseCard from "../components/CourseCard.astro";
 import MaterialCard from "../components/MaterialCard.astro";
 import { getCollection } from "astro:content";
+import { youtubeVideos } from "../data/youtubeVideos";
+import { tirgulim } from "../data/tirgulim";
 
 const allCourses = await getCollection("courses", ({ data }) => !data.draft);
 const featuredCourses = allCourses.filter((c) => c.data.featured);
@@ -12,23 +14,25 @@ const allMaterials = await getCollection("materials", ({ data }) => !data.draft)
 const featuredMaterials = allMaterials.filter((m) => m.data.featured);
 featuredMaterials.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
+const teachingCourses = await getCollection(
+  "teaching",
+  ({ data }) => !data.draft && data.status === "active"
+);
+
 const allEvents = await getCollection("communityEvents", ({ data }) => !data.draft);
 const upcomingEvents = allEvents.filter((e) => e.data.status === "upcoming");
 const featuredEvents = allEvents.filter((e) => e.data.featured).slice(0, 2);
 
-const totalVideos = allCourses.reduce(
-  (sum, c) => sum + c.data.youtubeLinks.length,
-  0
-);
-const totalTutorials = allCourses.reduce(
-  (sum, c) => sum + c.data.tutorials.length,
-  0
-);
+// Real, data-derived counts only — no invented metrics.
+const totalRecordings = youtubeVideos.length;
+const totalPracticeSheets = tirgulim.length;
+const speakersHosted = new Set(allEvents.flatMap((e) => e.data.speakers)).size;
+const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
 ---
 
 <Layout
-  title="Chen Quantum"
-  description="Academic website of Chen Quantum — teaching assistant, researcher, educator, and co-founder of the TAU Quantum Community."
+  title="Chen Gadi"
+  description="Academic website of Chen Gadi — teaching assistant, researcher, educator, and co-founder of the TAU Quantum Community."
 >
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="bg-white border-b border-slate-100">
@@ -49,7 +53,7 @@ const totalTutorials = allCourses.reduce(
           <h1
             class="font-display text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-[1.05] tracking-tight mb-4"
           >
-            Chen<br />Quantum.
+            Chen<br />Gadi.
           </h1>
 
           <!-- Hero theme -->
@@ -110,7 +114,7 @@ const totalTutorials = allCourses.reduce(
           >
             <img
               src="/brand/logo.png"
-              alt="Chen Quantum"
+              alt="Chen Gadi"
               class="w-full h-full object-contain"
               loading="eager"
             />
@@ -122,28 +126,28 @@ const totalTutorials = allCourses.reduce(
 
   <!-- ─── Stats bar ──────────────────────────────────────────────── -->
   {
-    allCourses.length > 0 && (
+    totalRecordings > 0 && (
       <div class="border-b border-slate-100 bg-slate-50">
         <div class="mx-auto max-w-6xl px-6 py-4">
           <dl class="flex flex-wrap items-center gap-6 md:gap-8">
             <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">courses taught</dt>
+              <dt class="text-xs text-slate-400 order-2">courses (TA)</dt>
               <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {allCourses.length}
+                {teachingCourses.length}
               </dd>
             </div>
             <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
             <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">lecture recordings</dt>
+              <dt class="text-xs text-slate-400 order-2">tutorial recordings</dt>
               <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {totalVideos}
+                {totalRecordings}
               </dd>
             </div>
             <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
             <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">practice materials</dt>
+              <dt class="text-xs text-slate-400 order-2">practice sheets</dt>
               <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {totalTutorials + allMaterials.length}
+                {totalPracticeSheets}
               </dd>
             </div>
             <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
@@ -206,9 +210,8 @@ const totalTutorials = allCourses.reduce(
         <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-amber-700 bg-amber-50 border border-amber-200 self-start mb-3">Coming soon</span>
         <h3 class="text-base font-semibold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Digital Courses</h3>
         <p class="text-sm text-slate-500 leading-relaxed flex-1">
-          Structured online courses in physics, quantum theory, and quantum
-          algorithms — Physics 1, Physics 2, Quantum 1, and Quantum Algorithms
-          are in preparation for next year.
+          Structured online courses in physics and quantum computing are in
+          preparation. Details will be announced here.
         </p>
       </a>
     </div>
@@ -356,8 +359,8 @@ const totalTutorials = allCourses.reduce(
             Research
           </h3>
           <p class="text-sm text-slate-500 leading-relaxed mb-4">
-            Quantum algorithms and complexity theory, with a focus on
-            mathematical foundations and practical implications.
+            Quantum computing, quantum machine learning, and physics-inspired
+            algorithms — explored through simulator-based prototypes.
           </p>
           <a
             href="/research"
@@ -441,7 +444,7 @@ const totalTutorials = allCourses.reduce(
           <p class="text-base text-white/70 leading-relaxed mb-5">
             A student-led quantum computing community at Tel Aviv University —
             organising workshops, conferences, and lectures in collaboration
-            with the TAU Quantum Information Center.
+            with QuanTAU, the university's Quantum Science &amp; Technology center.
           </p>
           <p class="text-base text-white/70 leading-relaxed mb-8">
             Open to students, researchers, and anyone curious about quantum
@@ -469,14 +472,10 @@ const totalTutorials = allCourses.reduce(
         <!-- Community highlights -->
         <div class="grid grid-cols-2 gap-4">
           {[
-            { label: "Workshops & Events", icon: "🔬", value: `${allEvents.length}+` },
-            { label: "Active Members", icon: "👥", value: "50+" },
-            { label: "Partner Institutions", icon: "🏛️", value: "3" },
-            {
-              label: upcomingEvents.length > 0 ? "Next Event" : "Community Active",
-              icon: "📅",
-              value: upcomingEvents.length > 0 ? "Coming soon" : "Since 2025",
-            },
+            { label: "Community events", icon: "🗓️", value: `${allEvents.length}` },
+            { label: "Speakers hosted", icon: "🎤", value: `${speakersHosted}+` },
+            { label: "Partners", icon: "🤝", value: `${partnersCount}` },
+            { label: "Active since", icon: "✨", value: "2023" },
           ].map(({ label, icon, value }) => (
             <div class="p-5 rounded-xl bg-white/10 border border-white/20">
               <p class="text-xl mb-2">{icon}</p>
@@ -512,7 +511,7 @@ const totalTutorials = allCourses.reduce(
               View CV
             </a>
             <a
-              href="/docs/cv.pdf"
+              href="/files/cv/chen-gadi-cv-2026.pdf"
               download
               class="inline-flex items-center gap-2 px-5 py-2.5 text-slate-600 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:text-slate-900 transition-colors"
             >

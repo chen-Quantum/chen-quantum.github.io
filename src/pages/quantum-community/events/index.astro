@@ -33,11 +33,13 @@ const past = allEvents.filter((e) => e.data.status === "past");
         TAU Quantum Community
       </p>
       <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight mb-5">
-        Events
+        Past QTC & Quantum Community Events
       </h1>
-      <p class="text-base text-slate-500 max-w-xl leading-relaxed mb-8">
-        Workshops, symposia, lectures, and community gatherings organised
-        by and for the quantum student community.
+      <p class="text-base text-slate-500 max-w-2xl leading-relaxed mb-8">
+        A curated archive of quantum student community events, meetups,
+        workshops, conferences, and collaborations at Tel Aviv University and
+        across the Israeli quantum community. Details are taken from the
+        original event posters.
       </p>
 
       {allEvents.length > 0 && (
@@ -77,13 +79,17 @@ const past = allEvents.filter((e) => e.data.status === "past");
                   title={event.data.title}
                   description={event.data.description}
                   date={event.data.date}
+                  dateDisplay={event.data.dateDisplay}
+                  dateConfirmed={event.data.dateConfirmed}
+                  time={event.data.time}
                   eventType={event.data.eventType}
                   venue={event.data.venue}
                   status={event.data.status}
                   featured={event.data.featured}
                   slug={event.id}
-                  collaborators={event.data.collaborators}
+                  partners={event.data.partners}
                   speakers={event.data.speakers}
+                  posterImage={event.data.posterImage}
                   registrationUrl={event.data.registrationUrl}
                 />
               ))}
@@ -103,13 +109,17 @@ const past = allEvents.filter((e) => e.data.status === "past");
                   title={event.data.title}
                   description={event.data.description}
                   date={event.data.date}
+                  dateDisplay={event.data.dateDisplay}
+                  dateConfirmed={event.data.dateConfirmed}
+                  time={event.data.time}
                   eventType={event.data.eventType}
                   venue={event.data.venue}
                   status={event.data.status}
                   featured={event.data.featured}
                   slug={event.id}
-                  collaborators={event.data.collaborators}
+                  partners={event.data.partners}
                   speakers={event.data.speakers}
+                  posterImage={event.data.posterImage}
                   registrationUrl={event.data.registrationUrl}
                 />
               ))}

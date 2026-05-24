@@ -10,11 +10,15 @@ allEvents.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const upcoming = allEvents.filter((e) => e.data.status === "upcoming");
 const past = allEvents.filter((e) => e.data.status === "past");
 const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
+
+// Real, data-derived community metrics (no invented numbers).
+const speakersHosted = new Set(allEvents.flatMap((e) => e.data.speakers)).size;
+const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
 ---
 
 <Layout
   title="Quantum Community"
-  description="The TAU Quantum Community — a student-led quantum computing community at Tel Aviv University, in collaboration with the TAU Quantum Information Center."
+  description="The TAU Quantum Community (QTC) — a student-led quantum community at Tel Aviv University, in collaboration with QuanTAU, the university's Quantum Science & Technology center."
 >
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
@@ -77,19 +81,19 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
             the frontier.
           </p>
           <p class="text-base text-slate-600 leading-relaxed">
-            We operate in close collaboration with the
-            <strong class="text-slate-800">TAU Quantum Information Center</strong>,
-            giving students access to world-class researchers, hardware, and
-            events as they build their careers in quantum science.
+            We operate in close collaboration with
+            <strong class="text-slate-800">QuanTAU</strong> — Tel Aviv University's
+            Quantum Science &amp; Technology center — giving students access to
+            leading researchers and events as they explore quantum science.
           </p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           {[
-            { label: "Events organised", value: `${allEvents.length}+` },
-            { label: "Active members", value: "50+" },
-            { label: "Partner institutions", value: "3" },
-            { label: "Years active", value: "1" },
+            { label: "Community events", value: `${allEvents.length}` },
+            { label: "Speakers hosted", value: `${speakersHosted}+` },
+            { label: "Partners", value: `${partnersCount}` },
+            { label: "Active since", value: "2023" },
           ].map(({ label, value }) => (
             <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
               <p class="font-display text-4xl text-slate-900 mb-2">{value}</p>
@@ -118,7 +122,7 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
           {
             icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
             title: "Workshops",
-            description: "Hands-on technical workshops on quantum programming, Qiskit, and quantum hardware — designed for students who learn by building.",
+            description: "Hands-on technical workshops on quantum programming and quantum software — designed for students who learn by building.",
           },
           {
             icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
@@ -138,12 +142,12 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
           {
             icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
             title: "Industry Connections",
-            description: "Partnerships with IBM Quantum, startups, and industry experts to help students explore careers in quantum technology.",
+            description: "Events and workshops with quantum companies — including Classiq, Quantum Machines, and Microsoft — to help students explore careers in quantum technology.",
           },
           {
             icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
-            title: "Cross-University Collaboration",
-            description: "Building bridges with quantum groups at Weizmann, Technion, and the Hebrew University to create a national student network.",
+            title: "Across Israeli Academia",
+            description: "Talks by researchers from across Israeli academia — Tel Aviv University, Ben-Gurion University, and the Technion — and the wider quantum ecosystem.",
           },
         ].map(({ icon, title, description }) => (
           <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-sm transition-all duration-200">
@@ -184,13 +188,17 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
               title={event.data.title}
               description={event.data.description}
               date={event.data.date}
+              dateDisplay={event.data.dateDisplay}
+              dateConfirmed={event.data.dateConfirmed}
+              time={event.data.time}
               eventType={event.data.eventType}
               venue={event.data.venue}
               status={event.data.status}
               featured={event.data.featured}
               slug={event.id}
-              collaborators={event.data.collaborators}
+              partners={event.data.partners}
               speakers={event.data.speakers}
+              posterImage={event.data.posterImage}
               registrationUrl={event.data.registrationUrl}
             />
           ))}
@@ -248,9 +256,9 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
             Part of the Israeli quantum ecosystem.
           </h2>
           <p class="text-base text-slate-600 leading-relaxed mb-6">
-            We work closely with the TAU Quantum Information Center and
-            maintain connections with quantum groups across Israeli academia
-            and the growing quantum technology industry.
+            We work closely with QuanTAU — Tel Aviv University's Quantum Science
+            &amp; Technology center — and connect with partners across Israeli
+            academia and the quantum technology industry.
           </p>
           <p class="text-base text-slate-600 leading-relaxed mb-8">
             If your organisation would like to collaborate on events, sponsor
@@ -267,10 +275,12 @@ const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
 
         <div class="space-y-3">
           {[
-            "TAU Quantum Information Center",
-            "Weizmann Institute — Quantum Physics",
-            "Technion — Quantum Science & Technology",
-            "IBM Quantum Network",
+            "QuanTAU — Quantum Science & Technology, TAU",
+            "QUBIT — Israel's Quantum Tech Community",
+            "IQCC — Israeli Quantum Computing Center",
+            "Classiq",
+            "Quantum Machines",
+            "Microsoft",
           ].map((org) => (
             <div class="flex items-center gap-3 p-4 rounded-xl border border-slate-100 bg-slate-50">
               <div class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></div>

@@ -1,8 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import LiteYouTube from "../components/LiteYouTube.astro";
 import { getCollection } from "astro:content";
-import { teachingMaterials } from "../data/teachingMaterials";
-import { teachingVideos } from "../data/teachingVideos";
+import { tirgulim } from "../data/tirgulim";
+import {
+  hedva2Videos,
+  linearAlgebraVideos,
+  videosForPractice,
+} from "../data/youtubeVideos";
 
 const allTeaching = await getCollection("teaching", ({ data }) => !data.draft);
 const activeCourses = allTeaching
@@ -10,16 +15,32 @@ const activeCourses = allTeaching
   .sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 function countFor(courseId: string) {
-  return {
-    materials: teachingMaterials.filter((m) => m.courseId === courseId).length,
-    videos: teachingVideos.filter((v) => v.courseId === courseId).length,
-  };
+  if (courseId === "calculus-2")
+    return { materials: tirgulim.length, videos: hedva2Videos.length };
+  if (courseId === "linear-algebra-electrical")
+    return {
+      materials: 0,
+      videos: linearAlgebraVideos.filter((v) => v.track.includes("Electrical")).length,
+    };
+  if (courseId === "linear-algebra-biomedical")
+    return {
+      materials: 0,
+      videos: linearAlgebraVideos.filter((v) => v.track.includes("Biomedical")).length,
+    };
+  return { materials: 0, videos: 0 };
 }
+
+// Linear Algebra recordings grouped by tutorial number (newest first) + exam question.
+const laTutorialNumbers = [13, 12, 11, 10, 9, 8];
+const laGroups = laTutorialNumbers
+  .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n) }))
+  .filter((g) => g.videos.length > 0);
+const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
 ---
 
 <Layout
   title="Teaching"
-  description="Teaching by Chen Gadi at Tel Aviv University — linear algebra and calculus 2 for engineering students. Materials and lecture videos are being organized and uploaded gradually."
+  description="Teaching by Chen Gadi at Tel Aviv University — linear algebra and calculus 2 (Hedva 2) for engineering students. Practice sheets and tutorial recordings."
 >
   <!-- Page header -->
   <section class="border-b border-slate-100">
@@ -31,16 +52,20 @@ function countFor(courseId: string) {
         Teaching at Tel Aviv University
       </h1>
       <p class="text-base text-slate-500 max-w-2xl leading-relaxed">
-        Current teaching assistant work in mathematics for engineering students:
-        linear algebra (electrical and biomedical engineering tracks) and
-        calculus 2. Lecture notes, worksheets, and recordings are being
-        gradually organized and uploaded.
+        Teaching-assistant work in mathematics for engineering students: linear
+        algebra (electrical and biomedical engineering tracks) and calculus 2
+        (Hedva 2). Below are the practice sheets and full tutorial recordings.
+      </p>
+      <p class="mt-4 text-xs text-slate-400 max-w-2xl leading-relaxed">
+        Recordings are <strong class="font-semibold text-slate-500">unlisted YouTube videos</strong>,
+        available through this page and the course links. Unlisted videos are not
+        private — anyone with a link can view them.
       </p>
     </div>
   </section>
 
-  <!-- Courses -->
-  <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+  <!-- Current courses -->
+  <div class="mx-auto max-w-6xl px-6 py-14 md:py-16">
     <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8">
       Current Courses
     </p>
@@ -63,12 +88,9 @@ function countFor(courseId: string) {
             <p class="text-sm text-slate-500 leading-relaxed mb-4 flex-1">
               {c.data.description}
             </p>
-
             {c.data.audience.length > 0 && (
               <div class="mb-4">
-                <p class="text-[0.65rem] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
-                  Audience
-                </p>
+                <p class="text-[0.65rem] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Audience</p>
                 <div class="flex flex-wrap gap-1.5">
                   {c.data.audience.map((a) => (
                     <span class="text-[0.65rem] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{a}</span>
@@ -76,115 +98,133 @@ function countFor(courseId: string) {
                 </div>
               </div>
             )}
-
-            {c.data.topics.length > 0 && (
-              <div class="mb-4">
-                <p class="text-[0.65rem] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
-                  Topics
-                </p>
-                <ul class="text-xs text-slate-500 leading-relaxed space-y-0.5 columns-1 sm:columns-2">
-                  {c.data.topics.slice(0, 8).map((t) => (
-                    <li>· {t}</li>
-                  ))}
-                  {c.data.topics.length > 8 && (
-                    <li class="text-slate-400">… and more</li>
-                  )}
-                </ul>
-              </div>
-            )}
-
             <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-4 text-xs text-slate-400">
-              <span>{materials} material{materials === 1 ? "" : "s"}</span>
+              <span>{materials} practice sheet{materials === 1 ? "" : "s"}</span>
               <span>·</span>
-              <span>{videos} video{videos === 1 ? "" : "s"}</span>
+              <span>{videos} recording{videos === 1 ? "" : "s"}</span>
             </div>
           </div>
         );
       })}
     </div>
 
-    <!-- Materials section -->
-    <section class="mt-16 md:mt-20">
-      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8">
-        Materials
-      </p>
-      <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-8">
-        <p class="text-base text-slate-600 leading-relaxed max-w-3xl mb-4">
-          Lecture notes, practice worksheets, and reference sheets are being
-          gradually organized and uploaded. Items marked
-          <span class="text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded text-xs font-semibold border border-amber-200">coming soon</span>
-          are planned; items that are already prepared appear as direct download links.
-        </p>
-        <p class="text-sm text-slate-500 leading-relaxed max-w-3xl">
-          Materials are gradually being organized and uploaded. If you are a
-          current student and need something urgently, please get in touch via
-          the <a href="/contact" class="text-indigo-600 hover:underline">contact page</a>.
-        </p>
+    <!-- ─── Hedva 2 ─────────────────────────────────────────────── -->
+    <section class="mt-16 md:mt-20 scroll-mt-24" id="hedva-2">
+      <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+        <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+          Calculus 2 · Hedva 2 — practice sessions
+        </h2>
+        <span class="text-sm text-slate-400" dir="rtl">חדו״א 2 — תרגולים</span>
       </div>
+      <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
+        Five practice sessions covering sequences and series of functions, power
+        series, multivariable foundations, and differentiability. Each session has
+        a practice sheet (PDF) and full recordings across the engineering tracks.
+      </p>
 
-      <div class="mt-8 grid gap-4 md:grid-cols-2">
-        {activeCourses.map((c) => {
-          const courseMaterials = teachingMaterials.filter((m) => m.courseId === c.data.courseId);
-          if (courseMaterials.length === 0) return null;
+      <div class="space-y-6">
+        {tirgulim.map((t) => {
+          const vids = videosForPractice(t.id);
           return (
-            <div class="p-5 rounded-xl border border-slate-200 bg-white">
-              <p class="text-sm font-semibold text-slate-900 mb-3">{c.data.title}</p>
-              <ul class="space-y-2">
-                {courseMaterials.map((m) => (
-                  <li class="flex items-start gap-2 text-xs">
-                    <span class={`flex-shrink-0 w-1.5 h-1.5 rounded-full mt-1.5 ${m.status === "available" ? "bg-emerald-400" : "bg-slate-300"}`}></span>
-                    {m.status === "available" ? (
-                      <a href={m.href} class="text-slate-700 hover:text-indigo-600 transition-colors">{m.title}</a>
-                    ) : (
-                      <span class="text-slate-500">
-                        {m.title}
-                        <span class="ml-2 text-[0.6rem] font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">coming soon</span>
-                      </span>
-                    )}
-                  </li>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8">
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                <div>
+                  <p class="text-base font-semibold text-slate-900">{t.titleEn}</p>
+                  <p class="text-sm text-slate-500 mt-1" dir="rtl">{t.titleHe}</p>
+                </div>
+                <a
+                  href={t.pdfPath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition-colors flex-shrink-0"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Practice sheet (PDF)
+                </a>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 mb-6" dir="rtl">
+                {t.topics.map((tp) => (
+                  <span class="text-[0.7rem] font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">{tp}</span>
                 ))}
-              </ul>
+              </div>
+
+              {vids.length > 0 && (
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {vids.map((v) => (
+                    <LiteYouTube
+                      videoId={v.videoId}
+                      title={v.title}
+                      thumbnail={v.thumbnail}
+                      embedUrl={v.embedUrl}
+                      url={v.url}
+                      duration={v.duration}
+                      track={v.track}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
     </section>
 
-    <!-- Videos section -->
-    <section class="mt-16 md:mt-20">
-      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8">
-        Lecture videos
+    <!-- ─── Linear Algebra ──────────────────────────────────────── -->
+    <section class="mt-16 md:mt-20 scroll-mt-24" id="linear-algebra">
+      <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+        <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+          Linear Algebra — tutorial recordings
+        </h2>
+        <span class="text-sm text-slate-400" dir="rtl">לינארית — תרגולים</span>
+      </div>
+      <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
+        Full tutorial recordings across the electrical and biomedical engineering
+        tracks (tutorials 8–13), plus a worked exam question. Written materials are
+        being organized and will be added here.
       </p>
-      <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-6">
-        Short explanatory videos for the trickiest topics in each course.
-        Videos are hosted externally — the embed list below will be filled in
-        as recordings are published.
-      </p>
-      <div class="grid gap-4 md:grid-cols-2">
-        {activeCourses.map((c) => {
-          const courseVideos = teachingVideos.filter((v) => v.courseId === c.data.courseId);
-          if (courseVideos.length === 0) return null;
-          return (
-            <div class="p-5 rounded-xl border border-slate-200 bg-white">
-              <p class="text-sm font-semibold text-slate-900 mb-3">{c.data.title}</p>
-              <ul class="space-y-2">
-                {courseVideos.map((v) => (
-                  <li class="flex items-start gap-2 text-xs">
-                    <span class={`flex-shrink-0 w-1.5 h-1.5 rounded-full mt-1.5 ${v.status === "available" ? "bg-emerald-400" : "bg-slate-300"}`}></span>
-                    {v.status === "available" && v.url ? (
-                      <a href={v.url} target="_blank" rel="noopener noreferrer" class="text-slate-700 hover:text-indigo-600 transition-colors">{v.title}</a>
-                    ) : (
-                      <span class="text-slate-500">
-                        {v.title}
-                        <span class="ml-2 text-[0.6rem] font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">coming soon</span>
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+
+      <div class="space-y-10">
+        {laGroups.map((g) => (
+          <div>
+            <p class="text-sm font-semibold text-slate-900 mb-4">Tutorial {g.n}</p>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {g.videos.map((v) => (
+                <LiteYouTube
+                  videoId={v.videoId}
+                  title={v.title}
+                  thumbnail={v.thumbnail}
+                  embedUrl={v.embedUrl}
+                  url={v.url}
+                  duration={v.duration}
+                  track={v.track}
+                  note={v.sessionNote}
+                />
+              ))}
             </div>
-          );
-        })}
+          </div>
+        ))}
+
+        {laExam.length > 0 && (
+          <div>
+            <p class="text-sm font-semibold text-slate-900 mb-4">Worked exam question (2022)</p>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {laExam.map((v) => (
+                <LiteYouTube
+                  videoId={v.videoId}
+                  title={v.title}
+                  thumbnail={v.thumbnail}
+                  embedUrl={v.embedUrl}
+                  url={v.url}
+                  duration={v.duration}
+                  track={v.track}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
 
@@ -195,9 +235,9 @@ function countFor(courseId: string) {
           Looking for tutoring or specific materials?
         </h2>
         <p class="text-sm text-slate-600 leading-relaxed mb-5">
-          I run private tutoring sessions for linear algebra, calculus 2, and
-          introductory quantum computing for engineering and physics students.
-          Get in touch by email or WhatsApp.
+          I run tutorials and private lessons in linear algebra and calculus (1 &amp; 2)
+          for engineering students. If you are a current student and need a specific
+          sheet or recording, get in touch.
         </p>
         <a
           href="/contact"
@@ -208,4 +248,7 @@ function countFor(courseId: string) {
       </div>
     </section>
   </div>
+
+  {/* Video classification note (developer-facing): all 30 playlist videos are
+     classified — 13 Hedva 2, 17 Linear Algebra, 0 unknown. No unknown bucket to show. */}
 </Layout>

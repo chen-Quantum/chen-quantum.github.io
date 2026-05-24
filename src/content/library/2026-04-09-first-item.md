@@ -6,8 +6,8 @@ kind: "tip"
 course: "Linear Algebra"
 topic: "Vectors"
 tags: ["math", "teaching"]
-featured: true
-draft: false
+featured: false
+draft: true
 ---
 
 This is my first teaching item.

@@ -2,11 +2,11 @@
 title: "Single-Qubit Gates — Practice Problems"
 description: "A structured set of practice problems on single-qubit quantum gates, the Bloch sphere, and gate composition. Includes worked solutions for the first half."
 subject: "Quantum Computing"
-pdfFile: "quantum-gates-practice.pdf"
 tags: ["Quantum Computing", "Gates", "Circuits", "Practice"]
 course: "Introduction to Quantum Computing"
 type: "practice"
-featured: true
+featured: false
+draft: true
 passwordProtected: false
 date: 2025-10-10
 ---

@@ -1,16 +1,20 @@
 ---
-// Reusable quantum community event card
+// Reusable quantum community event card (poster-archive style).
 interface Props {
   title: string;
   description: string;
   date: Date;
+  dateDisplay?: string;
+  dateConfirmed?: boolean;
+  time?: string;
   eventType: string;
   venue?: string;
   status: "upcoming" | "past";
   featured?: boolean;
   slug: string;
-  collaborators?: string[];
+  partners?: string[];
   speakers?: string[];
+  posterImage?: string;
   registrationUrl?: string;
 }
 
@@ -18,13 +22,16 @@ const {
   title,
   description,
   date,
+  dateDisplay,
+  dateConfirmed = true,
+  time,
   eventType,
   venue,
   status,
-  featured = false,
   slug,
-  collaborators = [],
+  partners = [],
   speakers = [],
+  posterImage,
   registrationUrl,
 } = Astro.props;
 
@@ -33,6 +40,8 @@ const formattedDate = date.toLocaleDateString("en-GB", {
   month: "long",
   year: "numeric",
 });
+// When the poster did not print a year, show its exact printed date — never a guessed year.
+const shownDate = dateConfirmed ? formattedDate : (dateDisplay ?? formattedDate);
 
 const typeLabel: Record<string, string> = {
   conference: "Conference",
@@ -41,6 +50,7 @@ const typeLabel: Record<string, string> = {
   meetup: "Meetup",
   "community-event": "Community Event",
   symposium: "Symposium",
+  hackathon: "Hackathon",
 };
 
 const typeColors: Record<string, string> = {
@@ -50,72 +60,99 @@ const typeColors: Record<string, string> = {
   meetup: "text-emerald-600 bg-emerald-50 border-emerald-100",
   "community-event": "text-teal-600 bg-teal-50 border-teal-100",
   symposium: "text-violet-600 bg-violet-50 border-violet-100",
+  hackathon: "text-rose-600 bg-rose-50 border-rose-100",
 };
 
 const badgeClass = typeColors[eventType] ?? "text-slate-600 bg-slate-50 border-slate-200";
 ---
 
-<div class="group flex flex-col p-6 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all duration-200 ease-out">
-  <!-- Top row: type + status -->
-  <div class="flex items-center justify-between mb-4 gap-2">
-    <span class={`text-[0.65rem] font-semibold uppercase tracking-wider border px-2.5 py-1 rounded-full ${badgeClass}`}>
-      {typeLabel[eventType] ?? eventType}
-    </span>
-    <span
-      class={`text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-        status === "upcoming"
-          ? "text-emerald-700 bg-emerald-50"
-          : "text-slate-500 bg-slate-100"
-      }`}
-    >
-      {status === "upcoming" ? "Upcoming" : "Past"}
-    </span>
-  </div>
-
-  <!-- Date -->
-  <p class="text-xs font-medium text-slate-400 mb-2">{formattedDate}</p>
-
-  <!-- Title -->
-  <h3 class="text-base font-semibold text-slate-900 leading-snug mb-3">
-    {title}
-  </h3>
-
-  <!-- Description -->
-  <p class="text-sm text-slate-500 leading-relaxed flex-1 mb-5 line-clamp-3">
-    {description}
-  </p>
-
-  <!-- Venue -->
-  {venue && (
-    <p class="text-xs text-slate-400 mb-4 flex items-start gap-1.5">
-      <svg class="h-3.5 w-3.5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      <span class="line-clamp-2">{venue}</span>
-    </p>
+<div class="group flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-slate-300 hover:shadow-sm transition-all duration-200 ease-out">
+  <!-- Poster -->
+  {posterImage && (
+    <a href={`/quantum-community/events/${slug}`} class="block bg-slate-100 border-b border-slate-100">
+      <img
+        src={`/community/${posterImage}`}
+        alt={`Poster — ${title}`}
+        class="w-full h-48 object-contain"
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
   )}
 
-  <!-- Footer actions -->
-  <div class="flex items-center gap-3 mt-auto pt-4 border-t border-slate-100">
-    {registrationUrl && status === "upcoming" ? (
-      <a
-        href={registrationUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition-colors"
+  <div class="flex flex-col p-6 flex-1">
+    <!-- Top row: type + status -->
+    <div class="flex items-center justify-between mb-3 gap-2">
+      <span class={`text-[0.65rem] font-semibold uppercase tracking-wider border px-2.5 py-1 rounded-full ${badgeClass}`}>
+        {typeLabel[eventType] ?? eventType}
+      </span>
+      <span
+        class={`text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+          status === "upcoming"
+            ? "text-emerald-700 bg-emerald-50"
+            : "text-slate-500 bg-slate-100"
+        }`}
       >
-        Register
+        {status === "upcoming" ? "Upcoming" : "Past"}
+      </span>
+    </div>
+
+    <!-- Date (+ time) -->
+    <p class="text-xs font-medium text-slate-400 mb-2">
+      {shownDate}{time ? ` · ${time}` : ""}
+    </p>
+
+    <!-- Title -->
+    <h3 class="text-base font-semibold text-slate-900 leading-snug mb-3">
+      {title}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-sm text-slate-500 leading-relaxed flex-1 mb-4 line-clamp-3">
+      {description}
+    </p>
+
+    <!-- Venue -->
+    {venue && (
+      <p class="text-xs text-slate-400 mb-3 flex items-start gap-1.5">
+        <svg class="h-3.5 w-3.5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="line-clamp-2">{venue}</span>
+      </p>
+    )}
+
+    <!-- Partners -->
+    {partners.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-1">
+        {partners.map((p) => (
+          <span class="text-[0.6rem] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{p}</span>
+        ))}
+      </div>
+    )}
+
+    <!-- Footer actions -->
+    <div class="flex items-center gap-3 mt-auto pt-4 border-t border-slate-100">
+      {registrationUrl && status === "upcoming" ? (
+        <a
+          href={registrationUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition-colors"
+        >
+          Register
+        </a>
+      ) : null}
+      <a
+        href={`/quantum-community/events/${slug}`}
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+      >
+        Details
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
       </a>
-    ) : null}
-    <a
-      href={`/quantum-community/events/${slug}`}
-      class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
-    >
-      Details
-      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-      </svg>
-    </a>
+    </div>
   </div>
 </div>

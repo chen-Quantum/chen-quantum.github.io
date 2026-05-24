@@ -2,11 +2,11 @@
 title: "Dirac Notation and Hilbert Spaces — A Primer"
 description: "A self-contained introduction to Dirac (bra-ket) notation, inner products, and the structure of Hilbert spaces. Designed for students beginning quantum computing."
 subject: "Quantum Computing"
-pdfFile: "dirac-notation-primer.pdf"
 tags: ["Quantum Computing", "Linear Algebra", "Notation"]
 course: "Introduction to Quantum Computing"
 type: "tutorial"
-featured: true
+featured: false
+draft: true
 passwordProtected: false
 date: 2025-09-15
 ---

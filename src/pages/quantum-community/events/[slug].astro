@@ -26,6 +26,8 @@ const formattedDate = data.date.toLocaleDateString("en-GB", {
   month: "long",
   year: "numeric",
 });
+// Never display a year the poster did not print.
+const shownDate = data.dateConfirmed ? formattedDate : (data.dateDisplay ?? formattedDate);
 
 const typeLabel: Record<string, string> = {
   conference: "Conference",
@@ -34,6 +36,7 @@ const typeLabel: Record<string, string> = {
   meetup: "Meetup",
   "community-event": "Community Event",
   symposium: "Symposium",
+  hackathon: "Hackathon",
 };
 
 const typeColors: Record<string, string> = {
@@ -43,8 +46,15 @@ const typeColors: Record<string, string> = {
   meetup: "text-emerald-600 bg-emerald-50 border-emerald-100",
   "community-event": "text-teal-600 bg-teal-50 border-teal-100",
   symposium: "text-violet-600 bg-violet-50 border-violet-100",
+  hackathon: "text-rose-600 bg-rose-50 border-rose-100",
 };
 const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 border-slate-200";
+
+// Prefer rich talks; fall back to plain speaker names.
+const talks = data.talks.length > 0
+  ? data.talks
+  : data.speakers.map((s) => ({ speaker: s, role: undefined, talk: undefined }));
+const partners = data.partners.length > 0 ? data.partners : data.collaborators;
 ---
 
 <Layout title={data.title} description={data.description}>
@@ -77,13 +87,7 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
           <span class={`text-sm font-semibold uppercase tracking-wider border px-3 py-1 rounded-full ${badgeClass}`}>
             {typeLabel[data.eventType] ?? data.eventType}
           </span>
-          <span
-            class={`text-sm font-medium px-3 py-1 rounded-full ${
-              data.status === "upcoming"
-                ? "text-emerald-700 bg-emerald-50 border border-emerald-200"
-                : "text-slate-500 bg-slate-100"
-            }`}
-          >
+          <span class="text-sm font-medium px-3 py-1 rounded-full text-slate-500 bg-slate-100">
             {data.status === "upcoming" ? "Upcoming" : "Past"}
           </span>
         </div>
@@ -98,7 +102,7 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            {formattedDate}
+            {shownDate}{data.time ? ` · ${data.time}` : ""}
           </span>
           {data.venue && (
             <span class="flex items-center gap-1.5">
@@ -110,21 +114,8 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
             </span>
           )}
         </div>
-
-        {data.registrationUrl && data.status === "upcoming" && (
-          <div class="mt-8">
-            <a
-              href={data.registrationUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors"
-            >
-              Register for this event
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          </div>
+        {!data.dateConfirmed && (
+          <p class="mt-3 text-xs text-slate-400 italic">The original poster did not print a year; the date is shown exactly as printed.</p>
         )}
       </div>
     </div>
@@ -132,14 +123,46 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
 
   <!-- Main content -->
   <div class="mx-auto max-w-6xl px-6 py-12">
-    <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-12 items-start">
       <div>
+        <!-- Poster -->
+        {data.posterImage && (
+          <figure class="mb-10">
+            <img
+              src={`/community/${data.posterImage}`}
+              alt={`Event poster — ${data.title}`}
+              class="w-full max-w-xl rounded-2xl border border-slate-200 bg-slate-50"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="mt-2 text-xs text-slate-400">Original event poster.</figcaption>
+          </figure>
+        )}
+
         <!-- Body content -->
         <section class="mb-12">
           <div class="prose-content">
             <Content />
           </div>
         </section>
+
+        <!-- Talks / Speakers -->
+        {talks.length > 0 && (
+          <section class="mb-12">
+            <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
+              Speakers &amp; Talks
+            </h2>
+            <ul class="space-y-5">
+              {talks.map((t) => (
+                <li>
+                  <p class="text-sm font-semibold text-slate-900">{t.speaker}</p>
+                  {t.role && <p class="text-xs text-slate-500 leading-snug mt-0.5">{t.role}</p>}
+                  {t.talk && <p class="text-sm text-slate-600 italic mt-1">“{t.talk}”</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <!-- Photos -->
         {data.photos.length > 0 && (
@@ -156,7 +179,7 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
       </div>
 
       <!-- Sidebar -->
-      <aside class="hidden lg:block sticky top-24">
+      <aside class="lg:sticky lg:top-24">
         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
           <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
             Event Details
@@ -164,47 +187,36 @@ const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 bor
           <dl class="space-y-4">
             <div>
               <dt class="text-xs text-slate-400 mb-1">Date</dt>
-              <dd class="text-sm font-medium text-slate-700">{formattedDate}</dd>
+              <dd class="text-sm font-medium text-slate-700">{shownDate}</dd>
             </div>
+            {data.time && (
+              <div>
+                <dt class="text-xs text-slate-400 mb-1">Time</dt>
+                <dd class="text-sm font-medium text-slate-700">{data.time}</dd>
+              </div>
+            )}
             {data.venue && (
               <div>
                 <dt class="text-xs text-slate-400 mb-1">Venue</dt>
                 <dd class="text-sm font-medium text-slate-700">{data.venue}</dd>
               </div>
             )}
-            {data.speakers.length > 0 && (
+            {partners.length > 0 && (
               <div>
-                <dt class="text-xs text-slate-400 mb-2">Speakers</dt>
-                <dd class="space-y-1">
-                  {data.speakers.map((s) => (
-                    <p class="text-sm text-slate-700">{s}</p>
-                  ))}
-                </dd>
-              </div>
-            )}
-            {data.collaborators.length > 0 && (
-              <div>
-                <dt class="text-xs text-slate-400 mb-2">Collaborators</dt>
-                <dd class="space-y-1">
-                  {data.collaborators.map((c) => (
-                    <p class="text-xs text-slate-500 leading-snug">{c}</p>
+                <dt class="text-xs text-slate-400 mb-2">Partners</dt>
+                <dd class="flex flex-wrap gap-1.5">
+                  {partners.map((p) => (
+                    <span class="text-[0.65rem] font-medium text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-full">{p}</span>
                   ))}
                 </dd>
               </div>
             )}
           </dl>
 
-          {data.registrationUrl && data.status === "upcoming" && (
-            <div class="mt-5">
-              <a
-                href={data.registrationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="block w-full text-center text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-lg transition-colors"
-              >
-                Register
-              </a>
-            </div>
+          {data.notes && (
+            <p class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-400 leading-relaxed">
+              {data.notes}
+            </p>
           )}
 
           <div class="mt-5 pt-4 border-t border-slate-200">

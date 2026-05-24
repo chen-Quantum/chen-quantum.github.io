@@ -24,8 +24,16 @@ const projects = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     tech: z.array(z.string()).default([]),
+    // A project links to a repo ONLY when that repo actually implements it.
     github: z.string().url().optional(),
+    // Link text for the repo (e.g. "GitHub" for a full repo, "Preview repo"
+    // for a public teaser of a private prototype). Defaults to "GitHub".
+    repoLabel: z.string().optional(),
+    // Shown when there is no public repo yet (e.g. "code release pending").
+    repoNote: z.string().optional(),
     live: z.string().url().optional(),
+    // Short status badge: e.g. "Research prototype", "Public preview".
+    status: z.string().optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
@@ -125,7 +133,18 @@ const materials = defineCollection({
   }),
 });
 
-// Quantum community events
+// Quantum community events.
+// This collection is the project's existing convention for events (it powers
+// /quantum-community/events/*, the homepage, and the community page). It has been
+// extended with poster/talks/partners/time fields so the QTC archive can present
+// the real poster information faithfully.
+//
+// IMPORTANT (accuracy rules baked into the data):
+//  - `talks` carries each speaker exactly as printed on the poster, with optional
+//    role + talk title. The site never claims the site owner spoke or organised.
+//  - When a poster does NOT print a year, set `dateConfirmed: false` and put the
+//    exact printed date in `dateDisplay` (e.g. "18.11", "12 Nov", "May 27").
+//    `date` is then a sort-only placeholder and the year is NEVER displayed.
 const communityEvents = defineCollection({
   loader: glob({
     pattern: "**/*.{md,mdx}",
@@ -135,6 +154,12 @@ const communityEvents = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    // Exact date string as printed on the poster. Always shown when present.
+    dateDisplay: z.string().optional(),
+    // false => the poster did not print a year; `date` is sort-only, year hidden.
+    dateConfirmed: z.boolean().default(true),
+    // Time as printed on the poster, e.g. "18:00", "17:00–19:00", "9am–5pm".
+    time: z.string().optional(),
     eventType: z
       .enum([
         "conference",
@@ -143,14 +168,31 @@ const communityEvents = defineCollection({
         "meetup",
         "community-event",
         "symposium",
+        "hackathon",
       ])
       .default("meetup"),
     venue: z.string().optional(),
     collaborators: z.array(z.string()).default([]),
     speakers: z.array(z.string()).default([]),
+    // Rich speaker info from the poster: name (+ optional role / talk title).
+    talks: z
+      .array(
+        z.object({
+          speaker: z.string(),
+          role: z.string().optional(),
+          talk: z.string().optional(),
+        })
+      )
+      .default([]),
+    // Partner / sponsor logos shown on the poster (names only).
+    partners: z.array(z.string()).default([]),
+    // Poster image path relative to /public/community/, e.g. "qtc/<id>.jpg".
+    posterImage: z.string().optional(),
     registrationUrl: z.string().url().optional(),
     // Paths relative to /public/community/
     photos: z.array(z.string()).default([]),
+    // Short editorial note (e.g. an unresolved detail). Shown subtly.
+    notes: z.string().optional(),
     featured: z.boolean().default(false),
     status: z.enum(["upcoming", "past"]).default("upcoming"),
     draft: z.boolean().default(false),

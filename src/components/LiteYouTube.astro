@@ -1,0 +1,92 @@
+---
+// Lightweight YouTube facade: shows the thumbnail + play button, and only loads
+// the privacy-enhanced youtube-nocookie iframe when the user clicks. Always shows
+// a "Watch on YouTube" fallback (works even if embedding is disabled for a video).
+//
+// These are UNLISTED videos — anyone with the link can view them. We do not claim
+// they are private or secure anywhere in the UI.
+interface Props {
+  videoId: string;
+  title: string;
+  thumbnail: string;
+  embedUrl: string;
+  url: string;
+  duration?: string;
+  track?: string;
+  note?: string;
+}
+const { title, thumbnail, embedUrl, url, duration, track, note } = Astro.props;
+---
+
+<div class="flex flex-col rounded-xl border border-slate-200 bg-white overflow-hidden">
+  <div
+    class="lite-yt group relative aspect-video bg-slate-900 cursor-pointer"
+    data-embed={embedUrl}
+    data-title={title}
+  >
+    <button type="button" class="lite-yt-trigger absolute inset-0 w-full h-full" aria-label={`Play video: ${title}`}>
+      <img
+        src={thumbnail}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+      />
+      <span class="absolute inset-0 flex items-center justify-center">
+        <span class="flex items-center justify-center w-14 h-14 rounded-full bg-black/60 group-hover:bg-red-600 transition-colors">
+          <svg class="w-6 h-6 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+        </span>
+      </span>
+      {duration && (
+        <span class="absolute bottom-2 right-2 text-[0.65rem] font-semibold text-white bg-black/70 px-1.5 py-0.5 rounded">
+          {duration}
+        </span>
+      )}
+    </button>
+  </div>
+
+  <div class="p-4 flex flex-col flex-1">
+    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+      {track && (
+        <span class="text-[0.6rem] font-semibold uppercase tracking-wide text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">{track}</span>
+      )}
+      {note && (
+        <span class="text-[0.6rem] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{note}</span>
+      )}
+    </div>
+    <p class="text-sm text-slate-700 leading-snug mb-3 flex-1" dir="rtl">{title}</p>
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-red-600 transition-colors self-start"
+    >
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z" /></svg>
+      Watch on YouTube
+    </a>
+  </div>
+</div>
+
+<script>
+  // One delegated listener swaps the facade for the real iframe on click.
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    const trigger = target.closest(".lite-yt-trigger");
+    if (!trigger) return;
+    const container = trigger.closest(".lite-yt") as HTMLElement | null;
+    if (!container || container.dataset.loaded === "true") return;
+    const embed = container.dataset.embed;
+    if (!embed) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = embed + "?autoplay=1&rel=0";
+    iframe.title = container.dataset.title || "YouTube video";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    iframe.className = "absolute inset-0 w-full h-full border-0";
+    container.innerHTML = "";
+    container.appendChild(iframe);
+    container.dataset.loaded = "true";
+    container.style.cursor = "default";
+  });
+</script>
