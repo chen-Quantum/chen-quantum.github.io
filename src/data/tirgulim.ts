@@ -9,16 +9,19 @@
 
 export interface TirgulSession {
   id: string; // "tirgul1" … "tirgul5" — matches YouTubeVideo.relatedPractice
+  courseId: string; // course identity for /teaching filters (see courses.ts)
   titleHe: string;
   titleEn: string;
   topics: string[]; // Hebrew, as taught
   pdfPath: string; // served from /public; verified to exist
   videoIds: string[]; // matched recordings (see youtubeVideos.ts)
+  tags?: string[]; // optional free-form tags (e.g. ["exam-prep"])
 }
 
 export const tirgulim: TirgulSession[] = [
   {
     id: "tirgul1",
+    courseId: "hedva2",
     titleHe: "תרגול 1 — התכנסות סדרות פונקציות",
     titleEn: "Convergence of sequences of functions",
     topics: [
@@ -33,6 +36,7 @@ export const tirgulim: TirgulSession[] = [
   },
   {
     id: "tirgul2",
+    courseId: "hedva2",
     titleHe: "תרגול 2 — טורי פונקציות ועוד",
     titleEn: "Series of functions and more",
     topics: [
@@ -49,6 +53,7 @@ export const tirgulim: TirgulSession[] = [
   },
   {
     id: "tirgul3",
+    courseId: "hedva2",
     titleHe: "תרגול 3 — טורי חזקות",
     titleEn: "Power series",
     topics: [
@@ -67,6 +72,7 @@ export const tirgulim: TirgulSession[] = [
   },
   {
     id: "tirgul4",
+    courseId: "hedva2",
     titleHe: "תרגול 4 — וקטורים, מישורים, משטחים, תחום הגדרה, קווי גובה, טופולוגיה וקשירות",
     titleEn:
       "Vectors, planes, surfaces, domains, level curves, topology and connectedness",
@@ -90,6 +96,7 @@ export const tirgulim: TirgulSession[] = [
   },
   {
     id: "tirgul5",
+    courseId: "hedva2",
     titleHe: "תרגול 5 — גבולות, רציפות, נגזרות חלקיות ודיפרנציאביליות",
     titleEn: "Limits, continuity, partial derivatives and differentiability",
     topics: [

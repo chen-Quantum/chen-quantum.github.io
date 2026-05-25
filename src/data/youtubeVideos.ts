@@ -6,10 +6,13 @@
 // Anyone with the link (or this site) can view them. Embeds use the
 // privacy-enhanced youtube-nocookie.com domain.
 
+import { courseFor } from "./courses";
+
 export type VideoCategory =
   | "hedva2"
   | "linear_algebra"
   | "quantum"
+  | "physics"
   | "project"
   | "other"
   | "unknown";
@@ -32,9 +35,19 @@ export interface YouTubeVideo {
   sessionNote: string; // morning/afternoon/group/etc. (may be empty)
   topics: string[];
   visibilityNote: string;
+  // Course identity for the /teaching course filters. Derived from `category`
+  // via courseFor() (see src/data/courses.ts) at export time — do NOT hand-edit
+  // per row; set the row's `category` and these follow automatically.
+  courseId: string;
+  courseTag: string;
 }
 
-export const youtubeVideos: YouTubeVideo[] = [
+// Raw rows carry only the hand-classified fields; courseId/courseTag are stamped
+// on at export time from `category` (keeps the 30 rows free of derived data and
+// preserves all manual corrections). To add a video: append a row here.
+type RawVideo = Omit<YouTubeVideo, "courseId" | "courseTag">;
+
+const rawVideos: RawVideo[] = [
   { index: 1, title: "חדווא 2ב לביו רפואה - תרגול 5 - גבולות בכמה משתנים(הפרכות וטכניקות) ,נגזרות חלקיות , פולריות", videoId: "Sa86qqfw4qo", url: "https://www.youtube.com/watch?v=Sa86qqfw4qo", embedUrl: "https://www.youtube-nocookie.com/embed/Sa86qqfw4qo", thumbnail: "https://i.ytimg.com/vi/Sa86qqfw4qo/hqdefault.jpg", duration: "1:33:19", durationSeconds: 5599, description: "", category: "hedva2", relatedPractice: "tirgul5", laTutorial: null, isExamQuestion: false, track: "Biomedical Engineering", sessionNote: "limits in several variables, partial derivatives, polar coordinates", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
   { index: 2, title: "תרגול 5 להנדסת חשמל  -גבולות בכמה משתנים, נגזרות חלקיות ודיפרנציאביליות", videoId: "IeuB2vLrdWE", url: "https://www.youtube.com/watch?v=IeuB2vLrdWE", embedUrl: "https://www.youtube-nocookie.com/embed/IeuB2vLrdWE", thumbnail: "https://i.ytimg.com/vi/IeuB2vLrdWE/hqdefault.jpg", duration: "1:24:16", durationSeconds: 5056, description: "", category: "hedva2", relatedPractice: "tirgul5", laTutorial: null, isExamQuestion: false, track: "Electrical Engineering", sessionNote: "limits, partial derivatives, differentiability", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
   { index: 3, title: "תרגול 5 להנדסות  - טופולוגיה בR^n , גבולות בכמה משתנים.", videoId: "r-jm6vs-UKs", url: "https://www.youtube.com/watch?v=r-jm6vs-UKs", embedUrl: "https://www.youtube-nocookie.com/embed/r-jm6vs-UKs", thumbnail: "https://i.ytimg.com/vi/r-jm6vs-UKs/hqdefault.jpg", duration: "1:35:46", durationSeconds: 5746, description: "", category: "hedva2", relatedPractice: "tirgul5", laTutorial: null, isExamQuestion: false, track: "Engineering (general)", sessionNote: "topology in Rⁿ and limits in several variables", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
@@ -66,6 +79,13 @@ export const youtubeVideos: YouTubeVideo[] = [
   { index: 29, title: "לינארית לביו-רפואה - תרגול 8 יום רביעי", videoId: "i6ql3gmfc18", url: "https://www.youtube.com/watch?v=i6ql3gmfc18", embedUrl: "https://www.youtube-nocookie.com/embed/i6ql3gmfc18", thumbnail: "https://i.ytimg.com/vi/i6ql3gmfc18/hqdefault.jpg", duration: "1:38:00", durationSeconds: 5880, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: 8, isExamQuestion: false, track: "Biomedical Engineering", sessionNote: "Wednesday group", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
   { index: 30, title: "לינארית לחשמל - תרגול 8 צהריים", videoId: "N6LBon7c3HA", url: "https://www.youtube.com/watch?v=N6LBon7c3HA", embedUrl: "https://www.youtube-nocookie.com/embed/N6LBon7c3HA", thumbnail: "https://i.ytimg.com/vi/N6LBon7c3HA/hqdefault.jpg", duration: "1:33:07", durationSeconds: 5587, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: 8, isExamQuestion: false, track: "Electrical Engineering", sessionNote: "afternoon", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
 ];
+
+// Stamp courseId/courseTag onto every video from its category (single source of
+// truth = the course registry in courses.ts). This is the public export.
+export const youtubeVideos: YouTubeVideo[] = rawVideos.map((v) => ({
+  ...v,
+  ...courseFor(v.category),
+}));
 
 export const hedva2Videos = youtubeVideos.filter((v) => v.category === "hedva2");
 export const linearAlgebraVideos = youtubeVideos.filter((v) => v.category === "linear_algebra");

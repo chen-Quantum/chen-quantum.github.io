@@ -1,11 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LiteYouTube from "../components/LiteYouTube.astro";
+import PdfPreview from "../components/PdfPreview.astro";
 import { getCollection } from "astro:content";
 import { tirgulim } from "../data/tirgulim";
+import { teachingCourses } from "../data/courses";
 import {
+  youtubeVideos,
   hedva2Videos,
   linearAlgebraVideos,
+  unknownVideos,
   videosForPractice,
 } from "../data/youtubeVideos";
 
@@ -36,6 +40,15 @@ const laGroups = laTutorialNumbers
   .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n) }))
   .filter((g) => g.videos.length > 0);
 const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
+
+// Course filters: render a chip only for courses that actually have content
+// (videos or practice sheets). Future courses in the registry stay hidden until
+// material is classified into them.
+const filterCourses = teachingCourses.filter(
+  (c) =>
+    youtubeVideos.some((v) => v.courseId === c.id) ||
+    tirgulim.some((t) => t.courseId === c.id)
+);
 ---
 
 <Layout
@@ -108,8 +121,35 @@ const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
       })}
     </div>
 
+    <!-- ─── Course filter ───────────────────────────────────────── -->
+    {filterCourses.length > 1 && (
+      <div class="mt-16 md:mt-20" data-course-filter>
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+          Browse by course
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            data-course="all"
+            class="text-sm font-semibold px-4 py-2 rounded-full border bg-slate-900 text-white border-slate-900 transition-colors"
+          >
+            All
+          </button>
+          {filterCourses.map((c) => (
+            <button
+              type="button"
+              data-course={c.id}
+              class="text-sm font-semibold px-4 py-2 rounded-full border bg-white text-slate-600 border-slate-200 hover:border-slate-300 transition-colors"
+            >
+              {c.tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+
     <!-- ─── Hedva 2 ─────────────────────────────────────────────── -->
-    <section class="mt-16 md:mt-20 scroll-mt-24" id="hedva-2">
+    <section class="mt-10 md:mt-12 scroll-mt-24" id="hedva-2" data-course-section="hedva2">
       <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
         <h2 class="font-display text-2xl md:text-3xl text-slate-900">
           Calculus 2 · Hedva 2 — practice sessions
@@ -145,10 +185,14 @@ const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
                 </a>
               </div>
 
-              <div class="flex flex-wrap gap-1.5 mb-6" dir="rtl">
+              <div class="flex flex-wrap gap-1.5 mb-4" dir="rtl">
                 {t.topics.map((tp) => (
                   <span class="text-[0.7rem] font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">{tp}</span>
                 ))}
+              </div>
+
+              <div class="mb-6">
+                <PdfPreview pdfPath={t.pdfPath} title={t.titleEn} />
               </div>
 
               {vids.length > 0 && (
@@ -173,7 +217,7 @@ const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
     </section>
 
     <!-- ─── Linear Algebra ──────────────────────────────────────── -->
-    <section class="mt-16 md:mt-20 scroll-mt-24" id="linear-algebra">
+    <section class="mt-16 md:mt-20 scroll-mt-24" id="linear-algebra" data-course-section="linear-algebra">
       <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
         <h2 class="font-display text-2xl md:text-3xl text-slate-900">
           Linear Algebra — tutorial recordings
@@ -228,6 +272,29 @@ const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
       </div>
     </section>
 
+    <!-- ─── Needs classification (admin-only; renders only if non-empty) ─── -->
+    {unknownVideos.length > 0 && (
+      <section class="mt-16 md:mt-20" data-course-section="unknown">
+        <div class="rounded-2xl border border-dashed border-amber-300 bg-amber-50/40 p-6">
+          <p class="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2">
+            Needs classification
+          </p>
+          <p class="text-sm text-slate-600 leading-relaxed max-w-3xl mb-4">
+            {unknownVideos.length} playlist recording{unknownVideos.length === 1 ? "" : "s"} could
+            not be confidently matched to a course from the title alone. Listed here for
+            manual review — not shown anywhere else on the site.
+          </p>
+          <ul class="space-y-1.5">
+            {unknownVideos.map((v) => (
+              <li class="text-sm" dir="rtl">
+                <a href={v.url} target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:text-indigo-700">{v.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
     <!-- Get in touch -->
     <section class="mt-16 md:mt-20">
       <div class="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-8 max-w-3xl">
@@ -250,5 +317,44 @@ const laExam = linearAlgebraVideos.filter((v) => v.isExamQuestion);
   </div>
 
   {/* Video classification note (developer-facing): all 30 playlist videos are
-     classified — 13 Hedva 2, 17 Linear Algebra, 0 unknown. No unknown bucket to show. */}
+     classified — 13 Hedva 2, 17 Linear Algebra, 0 unknown. The "Needs
+     classification" section above renders only when unknownVideos is non-empty.
+     Course tags/filters are driven by src/data/courses.ts (courseFor). */}
+
+  <script>
+    // Course filter: show only the section(s) for the selected course.
+    // Vanilla JS, no framework — mirrors the LiteYouTube delegated pattern.
+    (() => {
+      const bar = document.querySelector("[data-course-filter]");
+      if (!bar) return;
+      const buttons = Array.from(
+        bar.querySelectorAll("button[data-course]")
+      ) as HTMLButtonElement[];
+      const sections = Array.from(
+        document.querySelectorAll("[data-course-section]")
+      ) as HTMLElement[];
+      const ON = ["bg-slate-900", "text-white", "border-slate-900"];
+      const OFF = ["bg-white", "text-slate-600", "border-slate-200", "hover:border-slate-300"];
+
+      function apply(course: string) {
+        sections.forEach((s) => {
+          const show = course === "all" || s.dataset.courseSection === course;
+          s.classList.toggle("hidden", !show);
+        });
+        buttons.forEach((b) => {
+          const on = (b.dataset.course || "") === course;
+          ON.forEach((c) => b.classList.toggle(c, on));
+          OFF.forEach((c) => b.classList.toggle(c, !on));
+        });
+      }
+
+      bar.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest(
+          "button[data-course]"
+        ) as HTMLButtonElement | null;
+        if (!btn) return;
+        apply(btn.dataset.course || "all");
+      });
+    })();
+  </script>
 </Layout>
