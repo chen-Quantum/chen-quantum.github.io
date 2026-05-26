@@ -2,6 +2,7 @@
 title: "QEGK Vision"
 description: "Entangled group-invariant quantum kernels for visual symmetry and anomaly experiments. A simulator-based quantum-kernel research prototype."
 date: 2026-05-22
+thumbnail: "/media/qegk-vision/hero.png"
 status: "Research prototype"
 tech:
   - quantum kernels

@@ -2,6 +2,7 @@
 title: "QMF — Quantum Measurement Flow"
 description: "Adaptive quantum measurement-flow prototype for non-commuting feature acquisition under finite measurement budgets. A research prototype with mixed-to-positive results."
 date: 2026-05-23
+thumbnail: "/media/qmeasure-flow/gallery.png"
 status: "Research prototype (private)"
 repoNote: "Code release pending."
 tech:

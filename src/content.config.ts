@@ -23,6 +23,9 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    // Optional card thumbnail (path under /public, e.g. "/media/qbrl/foo.png").
+    // Public-safe imagery only.
+    thumbnail: z.string().optional(),
     tech: z.array(z.string()).default([]),
     // A project links to a repo ONLY when that repo actually implements it.
     github: z.string().url().optional(),

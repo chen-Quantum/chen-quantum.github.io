@@ -2,6 +2,7 @@
 title: "QIFM — Quantum Interference Field Machine"
 description: "Hamiltonian evolution and Born-rule readout explored as a neural-network alternative. An experimental, simulator-based learning architecture."
 date: 2026-05-22
+thumbnail: "/media/qifm/hero.png"
 status: "Research prototype"
 tech:
   - Hamiltonian dynamics

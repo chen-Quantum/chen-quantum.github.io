@@ -2,6 +2,7 @@
 title: "QBRL — Quantum Birkhoff Routing Layers"
 description: "A public research preview of a constrained routing principle for structured expert assignment. The method treats balanced expert assignment as a global structured optimization problem over legal assignment states, rather than independent local choices corrected afterward by balancing penalties. Full technical details are under review."
 date: 2026-05-26
+thumbnail: "/media/qbrl/selected_result_process.png"
 status: "Public research preview"
 github: "https://github.com/chen-Quantum/qbrl-research-preview"
 repoLabel: "Public preview"

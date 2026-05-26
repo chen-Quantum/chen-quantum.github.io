@@ -2,6 +2,7 @@
 title: "Q-SPF — Quantum Semantic Progress"
 description: "Quantum semantic-progress functions for visual-sequence analysis and content-aware retiming. A simulator-based visual-sequence research prototype."
 date: 2026-05-22
+thumbnail: "/media/qsemantic-progress/gallery.png"
 status: "Research prototype (private)"
 repoNote: "Code release pending."
 tech:
