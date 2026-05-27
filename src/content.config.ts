@@ -35,6 +35,8 @@ const projects = defineCollection({
     // Shown when there is no public repo yet (e.g. "code release pending").
     repoNote: z.string().optional(),
     live: z.string().url().optional(),
+    // Optional extra document links rendered as small buttons (e.g. PDFs).
+    docs: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
     // Short status badge: e.g. "Research prototype", "Public preview".
     status: z.string().optional(),
     featured: z.boolean().default(false),

@@ -96,6 +96,16 @@ projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
                       Live ↗
                     </a>
                   )}
+                  {project.data.docs.map((d) => (
+                    <a
+                      href={d.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs font-semibold text-teal-700 hover:text-teal-800 transition-colors"
+                    >
+                      {d.label} ↗
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
