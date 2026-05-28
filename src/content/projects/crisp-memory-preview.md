@@ -1,6 +1,6 @@
 ---
 title: "CRISP Memory Preview"
-description: "A fixed-budget, update-aware external fact memory that complements retrieval, with controlled real-text validation and exact-answer decoding through a value codebook. Sparse-superposition storage, destructive updates, and situational hash/embedding addressing. A public research preview — not a solved LLM-memory system."
+description: "A compact research preview of fixed-budget external memory for text-like facts. CRISP uses sparse superposition and destructive updates to retain and revise facts under memory pressure, with real-text validation against retrieval-style baselines."
 date: 2026-05-28
 thumbnail: "/media/crisp-memory-preview/method_summary_card.png"
 status: "Public research preview"
