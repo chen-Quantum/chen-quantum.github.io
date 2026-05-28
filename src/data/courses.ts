@@ -32,6 +32,12 @@ export const teachingCourses: TeachingCourse[] = [
     title: "Linear Algebra",
     categories: ["linear_algebra"],
   },
+  {
+    id: "group-theory",
+    tag: "Group Theory",
+    title: "Group Theory",
+    categories: ["group_theory"],
+  },
   // ── Future courses (no content yet → no filter chip until classified). ──
   // Uncomment / extend as recordings for these are added & classified.
   // { id: "quantum-computing", tag: "Quantum Computing", title: "Quantum Computing", categories: ["quantum"] },

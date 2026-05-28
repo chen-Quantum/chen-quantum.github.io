@@ -100,20 +100,28 @@ These are hard constraints. If a step would violate one, stop and ask.
 Repo root: `chen-quantum.github.io/` (inside `~/Desktop/chen-web/`).
 
 ```
-src/data/youtubeVideos.ts          # all playlist videos + classification
-src/data/tirgulim.ts               # Hedva 2 practice sessions
-src/data/courses.ts                # course registry → filter tags (courseFor)
-src/pages/teaching.astro           # /teaching page (filters, cards, preview)
-src/components/LiteYouTube.astro   # click-to-load nocookie video facade
-src/components/PdfPreview.astro    # honest inline PDF preview (download + open)
-src/components/PdfViewer.astro     # deterrence viewer — used by /materials ONLY
-src/content.config.ts              # content collections (teaching, etc.)
+src/data/youtubeVideos.ts                # all playlist videos + classification
+src/data/playlists.ts                    # playlist metadata (id, title, courseId, contentType)
+src/data/tirgulim.ts                     # Hedva 2 practice sessions
+src/data/courses.ts                      # course registry → filter tags (courseFor)
+src/pages/teaching.astro                 # /teaching page (filters, cards, preview)
+src/pages/teaching/linear-algebra.astro  # /teaching/linear-algebra subpage (full LA archive)
+src/components/LiteYouTube.astro         # click-to-load nocookie video facade
+src/components/PdfPreview.astro          # honest inline PDF preview (download + open)
+src/components/PdfViewer.astro           # deterrence viewer — used by /materials ONLY
+src/content.config.ts                    # content collections (teaching, etc.)
 
-public/files/teaching/calculus-2/          # tirgul1.pdf … tirgul5.pdf (live)
-public/files/teaching/linear-algebra-electrical/   # (ready for LA sheets)
-public/files/teaching/linear-algebra-biomedical/   # (ready for LA sheets)
+public/files/teaching/calculus-2/                # tirgul1.pdf … tirgul6.pdf (live)
+public/files/teaching/linear-algebra-electrical/ # (ready for LA sheets)
+public/files/teaching/linear-algebra-biomedical/ # (ready for LA sheets)
 
-../tirgulim/                        # external SOURCE PDFs (sibling of the repo)
+../tirgulim/                             # external SOURCE PDFs (sibling of the repo)
+
+scripts/sync-teaching-content.mjs                # deterministic sync runner (Node)
+scripts/local-sync-teaching.sh                   # local Mac convenience wrapper
+.github/workflows/sync-teaching-content.yml      # Tue/Thu 00:00 Asia/Jerusalem report-only
+docs/automation/teaching-sync-automation.md      # GitHub Actions documentation
+docs/automation/local-teaching-sync.md           # local Mac automation documentation
 ```
 
 Convention: **TypeScript data files** (`src/data/*.ts`), not JSON. Keep it.
@@ -161,22 +169,29 @@ the current video/tirgul counts. **Do not edit anything during the audit.**
 
 ### B. Extract / refresh YouTube metadata
 
-Playlist (unlisted): `https://www.youtube.com/playlist?list=PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW`
-
-Prefer `yt-dlp` (no API key). Flat metadata is enough for title + id + duration:
+The repo tracks multiple unlisted playlists in `src/data/playlists.ts`
+(`teachingPlaylists`). To re-scan all of them at once:
 
 ```bash
-yt-dlp --flat-playlist --dump-json "PLAYLIST_URL" > /tmp/playlist.json
-# Full metadata (descriptions etc.) only if needed:
-# yt-dlp --dump-json "PLAYLIST_URL" > /tmp/playlist_full.json
+for url in $(grep -oE 'https://[^"]*list=[^"]+' src/data/playlists.ts | sort -u); do
+  pid=$(echo "$url" | sed 's/.*list=//')
+  yt-dlp --flat-playlist --no-warnings --quiet --dump-single-json "$url" \
+    > "/tmp/pl_${pid}.json"
+done
 ```
 
-If `yt-dlp` is missing: `pip3 install -q yt-dlp`. **Never** use API keys unless
-already configured in the environment, and **never** commit a `.env`.
+In practice the deterministic sync script
+(`scripts/sync-teaching-content.mjs`) handles the iteration. Flat metadata
+(title + id + duration) is enough for most cases — use `--dump-json` (no
+`--flat-playlist`) only when descriptions are also needed. If `yt-dlp` is
+missing: `pip3 install -q yt-dlp`. **Never** use API keys unless already
+configured in the environment, and **never** commit a `.env`.
 
-Diff the playlist against the `videoId`s already in `youtubeVideos.ts`. Only
-**new** ids need rows. Existing rows are the source of truth for any manual
-corrections — do not overwrite them.
+Diff each playlist's video ids against the ones already in
+`youtubeVideos.ts`. Only **new** ids need new rows. Existing rows are the
+source of truth for any manual corrections — do not overwrite them. New rows
+must set `playlistId` (and `playlistTitle`) so the Linear Algebra subpage can
+group them.
 
 ### C. Detect new PDFs
 
@@ -243,10 +258,22 @@ Classify from **titles and descriptions only**. Hebrew cues:
 
 - `חדו"א 2` / `חדווא 2` / "Hedva 2" / "Calculus 2" → `category: "hedva2"`.
 - `לינארית` / `ליניארית` / "Linear Algebra" → `category: "linear_algebra"`.
+- `תורת החבורות` / "Group Theory" → `category: "group_theory"`.
 - `קוונטים` / "Quantum" → `category: "quantum"`.
 - `פיזיקה` / "Physics" → `category: "physics"`.
 - Clearly a worked exam question → set `isExamQuestion: true`
-  (e.g. `שאלה ממבחן …`).
+  (e.g. `שאלה ממבחן …`); also set `contentType: "exam-solution"`.
+
+Also classify by **content type** (`contentType?: ContentType`):
+
+- Full tutorial recording → `"tutorial"` (default; older rows omit this).
+- Worked exam solution → `"exam-solution"`.
+- Other worked solution / exercise → `"worked-solution"`.
+- Song / sung memory aid → `"song"`.
+- Short trick / mnemonic / "things to remember" → `"memory-aid"`.
+- Full lecture → `"lecture"`.
+- Playlist-only entry (no video content) → `"playlist"`.
+- Unsure → `"unknown"` (and add to manual review).
 
 Track (`track`) from the title when explicit:
 - `חשמל` / "חשמליסטים" → "Electrical Engineering"
@@ -374,3 +401,41 @@ End by reminding the user that nothing was committed or pushed.
   approval **before** any commit.
 - Remember `.claude/` and `CLAUDE.md` are gitignored — this skill itself is a
   local tool and is not part of the tracked site.
+
+---
+
+## 13. Modes (manual / scheduled / local)
+
+The skill itself is the **human / Claude workflow guide** — used during
+interactive sessions to do the full audit-then-edit pass with judgement.
+
+For routine re-checks there are two automated runners that follow the same
+rules in a narrower way:
+
+**1. Manual mode (this skill, default).**
+Interactive Claude Code session. Full audit, full classification, can update
+all data files, can run the build, can wait for the user before committing.
+
+**2. GitHub Actions scheduled mode.**
+File: `.github/workflows/sync-teaching-content.yml`. Runs
+`scripts/sync-teaching-content.mjs --report-only` on Tuesday and Thursday at
+00:00 Asia/Jerusalem (plus `workflow_dispatch` for manual runs). Report-only:
+it scans the playlists tracked in `src/data/playlists.ts`, diffs against
+`src/data/youtubeVideos.ts`, and uploads a JSON report as a workflow
+artifact. **It does not commit, push, or open a PR.** It cannot see local
+files outside the repo — `../tirgulim/` and any other `/Users/...` path is
+out of reach.
+
+**3. Local Mac mode.**
+File: `scripts/local-sync-teaching.sh`. A thin wrapper around
+`scripts/sync-teaching-content.mjs` that also scans `../tirgulim/` for new
+PDFs (which GitHub Actions cannot). Run it manually before a sync session, or
+schedule it locally with a LaunchAgent (instructions in
+`docs/automation/local-teaching-sync.md`). Do not install the LaunchAgent
+silently — only when the user explicitly opts in.
+
+The deterministic script's classification is **cautious**: it sets
+`category: "unknown"` and `contentType: "unknown"` and flags the row for
+manual review whenever the title is ambiguous. New videos with high-confidence
+matches are appended to `rawVideos` with the new fields set; everything else
+is reported and left for the human to triage.

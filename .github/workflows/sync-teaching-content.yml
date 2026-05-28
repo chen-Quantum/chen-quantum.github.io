@@ -1,0 +1,70 @@
+name: Teaching content sync (report-only)
+
+# Scheduled, report-only check of the teaching playlists. The workflow does
+# NOT modify the repo, does NOT commit, does NOT push, and does NOT open a
+# pull request. It uploads a JSON report as a workflow artifact and writes a
+# Markdown summary to the Actions run page.
+#
+# Schedule: Tuesday and Thursday at 00:00 Asia/Jerusalem.
+# Manual trigger: enabled via workflow_dispatch.
+#
+# Notes on the schedule:
+#   - GitHub Actions timezone support is used: Tuesday and Thursday at 00:00
+#     Asia/Jerusalem. Runs may still be delayed by GitHub load, especially at
+#     the top of the hour.
+#   - GitHub Actions cannot scan files outside the repo (e.g. ../tirgulim/
+#     on the maintainer's Mac). Local PDFs are handled by
+#     scripts/local-sync-teaching.sh.
+
+on:
+  schedule:
+    - cron: "0 0 * * 2,4"
+      timezone: "Asia/Jerusalem"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Scan teaching playlists (report-only)
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Jerusalem
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install yt-dlp
+        run: |
+          python3 -m pip install --quiet --upgrade pip
+          python3 -m pip install --quiet yt-dlp
+          yt-dlp --version
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run sync (report-only)
+        run: node scripts/sync-teaching-content.mjs
+
+      - name: Append report to job summary
+        if: always()
+        run: |
+          {
+            echo "## teaching-sync report"
+            echo ""
+            echo '```json'
+            cat reports/teaching-sync/latest.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: teaching-sync-report
+          path: reports/teaching-sync/latest.json
+          if-no-files-found: warn
+          retention-days: 30

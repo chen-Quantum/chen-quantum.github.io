@@ -1,0 +1,276 @@
+---
+// Internal Linear Algebra teaching subpage.
+//
+// Linked from /teaching ("View full Linear Algebra page →"). Not in the top
+// navbar. Modest wording — this is a teaching archive, not a course site.
+//
+// Sections (each renders only when it has content):
+//   1. Tutorial recordings (existing LA playlist, grouped by tutorial number)
+//   2. Worked exam questions
+//   3. Worked solutions (non-exam)
+//   4. Songs & memory aids
+//   5. Materials (placeholder)
+import Layout from "../../layouts/Layout.astro";
+import LiteYouTube from "../../components/LiteYouTube.astro";
+import {
+  linearAlgebraVideos,
+  videosByContentType,
+} from "../../data/youtubeVideos";
+import { teachingPlaylists } from "../../data/playlists";
+
+// Tutorial recordings — grouped by tutorial number (newest first).
+const laTutorialNumbers = [13, 12, 11, 10, 9, 8];
+const laGroups = laTutorialNumbers
+  .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n) }))
+  .filter((g) => g.videos.length > 0);
+
+// Worked exam questions — any LA video marked isExamQuestion.
+const examVideos = linearAlgebraVideos.filter((v) => v.isExamQuestion);
+
+// Worked solutions (non-exam), songs, memory-aids — LA only.
+const laSolutions = videosByContentType("worked-solution").filter(
+  (v) => v.category === "linear_algebra" && !v.isExamQuestion
+);
+const laSongs = videosByContentType("song").filter(
+  (v) => v.category === "linear_algebra"
+);
+const laMemoryAids = videosByContentType("memory-aid").filter(
+  (v) => v.category === "linear_algebra"
+);
+
+// Optional playlist provenance (used for section sub-titles).
+const examPlaylist = teachingPlaylists.find(
+  (p) => p.id === "PLm0oTNdEqyanqRzbtG56IX1fzIjknH6An"
+);
+const solutionsPlaylist = teachingPlaylists.find(
+  (p) => p.id === "PLm0oTNdEqyalwtYng6d2FFijOXHsBT_Sn"
+);
+const songPlaylist = teachingPlaylists.find(
+  (p) => p.id === "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y"
+);
+const memoryAidPlaylist = teachingPlaylists.find(
+  (p) => p.id === "PLm0oTNdEqyamkS2BnpUAV7T_O9tHIG0NB"
+);
+---
+
+<Layout
+  title="Linear Algebra"
+  description="Linear Algebra teaching archive — tutorial recordings, worked exam questions, and supporting playlists for engineering students at Tel Aviv University."
+>
+  <!-- Page header -->
+  <section class="border-b border-slate-100">
+    <div class="mx-auto max-w-5xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        Teaching · Linear Algebra
+      </p>
+      <h1 class="font-display text-4xl md:text-5xl text-slate-900 leading-[1.05] tracking-tight mb-5">
+        Linear Algebra teaching archive
+      </h1>
+      <p class="text-base text-slate-500 max-w-2xl leading-relaxed">
+        Tutorial recordings across the electrical and biomedical engineering
+        tracks (tutorials 8–13), worked exam questions, and supporting
+        playlists. Recordings are
+        <strong class="font-semibold text-slate-600">unlisted YouTube videos</strong>,
+        available through the course website / link. Written materials are
+        being organised.
+      </p>
+      <p class="mt-5">
+        <a
+          href="/teaching"
+          class="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-700 hover:text-indigo-900"
+        >
+          ← Back to teaching overview
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-5xl px-6 py-12 md:py-14">
+    <!-- ─── Tutorial recordings ──────────────────────────────────── -->
+    <section class="mb-16">
+      <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+        <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+          Tutorial recordings
+        </h2>
+        <span class="text-sm text-slate-400" dir="rtl">תרגולים</span>
+      </div>
+      <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
+        Full tutorial recordings, grouped by tutorial number. Multiple
+        engineering tracks were recorded per session.
+      </p>
+      <div class="space-y-10">
+        {laGroups.map((g) => (
+          <div>
+            <p class="text-sm font-semibold text-slate-900 mb-4">Tutorial {g.n}</p>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {g.videos.map((v) => (
+                <LiteYouTube
+                  videoId={v.videoId}
+                  title={v.title}
+                  thumbnail={v.thumbnail}
+                  embedUrl={v.embedUrl}
+                  url={v.url}
+                  duration={v.duration}
+                  track={v.track}
+                  note={v.sessionNote}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── Worked exam questions ───────────────────────────────── -->
+    {examVideos.length > 0 && (
+      <section class="mb-16">
+        <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+          <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+            Worked exam questions
+          </h2>
+          <span class="text-sm text-slate-400" dir="rtl">שאלות ממבחנים</span>
+        </div>
+        {examPlaylist && (
+          <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-6">
+            Selected worked solutions from past exams. Some videos come from the
+            playlist <a
+              href={examPlaylist.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-semibold text-indigo-700 hover:text-indigo-900"
+              dir="rtl"
+            >{examPlaylist.title}</a>.
+          </p>
+        )}
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {examVideos.map((v) => (
+            <LiteYouTube
+              videoId={v.videoId}
+              title={v.title}
+              thumbnail={v.thumbnail}
+              embedUrl={v.embedUrl}
+              url={v.url}
+              duration={v.duration}
+              track={v.track}
+              note={v.sessionNote}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ─── Worked solutions (non-exam) ─────────────────────────── -->
+    {laSolutions.length > 0 && (
+      <section class="mb-16">
+        <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+          <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+            Worked solutions
+          </h2>
+          <span class="text-sm text-slate-400" dir="rtl">פתרונות שאלות</span>
+        </div>
+        {solutionsPlaylist && (
+          <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-6">
+            Worked solutions focused on eigenvalues, eigenvectors, representing
+            matrices and the characteristic polynomial. From the playlist <a
+              href={solutionsPlaylist.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-semibold text-indigo-700 hover:text-indigo-900"
+              dir="rtl"
+            >{solutionsPlaylist.title}</a>.
+          </p>
+        )}
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {laSolutions.map((v) => (
+            <LiteYouTube
+              videoId={v.videoId}
+              title={v.title}
+              thumbnail={v.thumbnail}
+              embedUrl={v.embedUrl}
+              url={v.url}
+              duration={v.duration}
+              track={v.track}
+              note={v.sessionNote}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ─── Songs & memory aids ─────────────────────────────────── -->
+    {(laSongs.length + laMemoryAids.length) > 0 && (
+      <section id="songs" class="mb-16 scroll-mt-24">
+        <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+          <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+            Songs &amp; memory aids
+          </h2>
+          <span class="text-sm text-slate-400" dir="rtl">שירים וטריקים</span>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
+          Short videos for hard-to-remember conditions, plus original songs
+          that encode linear-algebra ideas across musical styles.
+        </p>
+
+        {laSongs.length > 0 && (
+          <div class="mb-10">
+            {songPlaylist && (
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                Songs · {songPlaylist.title}
+              </p>
+            )}
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {laSongs.map((v) => (
+                <LiteYouTube
+                  videoId={v.videoId}
+                  title={v.title}
+                  thumbnail={v.thumbnail}
+                  embedUrl={v.embedUrl}
+                  url={v.url}
+                  duration={v.duration}
+                  track={v.track}
+                  note={v.sessionNote}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {laMemoryAids.length > 0 && (
+          <div>
+            {memoryAidPlaylist && (
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3" dir="rtl">
+                Memory aids · {memoryAidPlaylist.title}
+              </p>
+            )}
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {laMemoryAids.map((v) => (
+                <LiteYouTube
+                  videoId={v.videoId}
+                  title={v.title}
+                  thumbnail={v.thumbnail}
+                  embedUrl={v.embedUrl}
+                  url={v.url}
+                  duration={v.duration}
+                  track={v.track}
+                  note={v.sessionNote}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+
+    <!-- ─── Materials placeholder ───────────────────────────────── -->
+    <section class="mb-16">
+      <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+        <h2 class="font-display text-2xl md:text-3xl text-slate-900">Materials</h2>
+        <span class="text-sm text-slate-400" dir="rtl">חומרי לימוד</span>
+      </div>
+      <p class="text-sm text-slate-500 leading-relaxed max-w-3xl">
+        Practice sheets for Linear Algebra are being organised and will be
+        added here as they become available.
+      </p>
+    </section>
+  </div>
+</Layout>

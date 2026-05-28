@@ -11,9 +11,23 @@ import { courseFor } from "./courses";
 export type VideoCategory =
   | "hedva2"
   | "linear_algebra"
+  | "group_theory"
   | "quantum"
   | "physics"
   | "project"
+  | "other"
+  | "unknown";
+
+// Content kinds. Older rows omit this; the export below stamps a sensible
+// default ("tutorial", or "exam-solution" when isExamQuestion is true).
+export type ContentType =
+  | "tutorial"
+  | "worked-solution"
+  | "exam-solution"
+  | "song"
+  | "memory-aid"
+  | "lecture"
+  | "playlist"
   | "other"
   | "unknown";
 
@@ -35,6 +49,13 @@ export interface YouTubeVideo {
   sessionNote: string; // morning/afternoon/group/etc. (may be empty)
   topics: string[];
   visibilityNote: string;
+  // Content kind (tutorial / worked-solution / song / …). Optional in raw rows;
+  // the export stamps a default ("tutorial", or "exam-solution" when
+  // isExamQuestion is true). New playlists set this explicitly.
+  contentType?: ContentType;
+  // Optional playlist provenance — for videos that come from a named playlist.
+  playlistId?: string;
+  playlistTitle?: string;
   // Course identity for the /teaching course filters. Derived from `category`
   // via courseFor() (see src/data/courses.ts) at export time — do NOT hand-edit
   // per row; set the row's `category` and these follow automatically.
@@ -78,19 +99,53 @@ const rawVideos: RawVideo[] = [
   { index: 28, title: "לינארית לחשמל -תרגול 8 בוקררר", videoId: "t44ITGiL-e0", url: "https://www.youtube.com/watch?v=t44ITGiL-e0", embedUrl: "https://www.youtube-nocookie.com/embed/t44ITGiL-e0", thumbnail: "https://i.ytimg.com/vi/t44ITGiL-e0/hqdefault.jpg", duration: "1:36:28", durationSeconds: 5788, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: 8, isExamQuestion: false, track: "Electrical Engineering", sessionNote: "morning", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
   { index: 29, title: "לינארית לביו-רפואה - תרגול 8 יום רביעי", videoId: "i6ql3gmfc18", url: "https://www.youtube.com/watch?v=i6ql3gmfc18", embedUrl: "https://www.youtube-nocookie.com/embed/i6ql3gmfc18", thumbnail: "https://i.ytimg.com/vi/i6ql3gmfc18/hqdefault.jpg", duration: "1:38:00", durationSeconds: 5880, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: 8, isExamQuestion: false, track: "Biomedical Engineering", sessionNote: "Wednesday group", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
   { index: 30, title: "לינארית לחשמל - תרגול 8 צהריים", videoId: "N6LBon7c3HA", url: "https://www.youtube.com/watch?v=N6LBon7c3HA", embedUrl: "https://www.youtube-nocookie.com/embed/N6LBon7c3HA", thumbnail: "https://i.ytimg.com/vi/N6LBon7c3HA/hqdefault.jpg", duration: "1:33:07", durationSeconds: 5587, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: 8, isExamQuestion: false, track: "Electrical Engineering", sessionNote: "afternoon", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it." },
+
+  // ── Appended playlists (existing 30 rows above are unchanged). ──────────────
+  // P1 · שאלות ממבחנים - לינארית להנדסת חשמל  (exam-solution · LA · Electrical)
+  { index: 31, title: "אלגברה לינארית - מציאת בסיס למימד לחיתוך וסכום (שאלה ממבחן)", videoId: "smjyXbm2Y-8", url: "https://www.youtube.com/watch?v=smjyXbm2Y-8", embedUrl: "https://www.youtube-nocookie.com/embed/smjyXbm2Y-8", thumbnail: "https://i.ytimg.com/vi/smjyXbm2Y-8/hqdefault.jpg", duration: "19:42", durationSeconds: 1182, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: true, track: "Electrical Engineering", sessionNote: "exam question — basis and dimension for intersection and sum", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "exam-solution", playlistId: "PLm0oTNdEqyanqRzbtG56IX1fzIjknH6An", playlistTitle: "שאלות ממבחנים - לינארית להנדסת חשמל" },
+  { index: 32, title: "אלגברה לינארית - מציאת בסיס למימד לתתי מרחבים (שאלה ממבחן)", videoId: "TZGM2YB4BoY", url: "https://www.youtube.com/watch?v=TZGM2YB4BoY", embedUrl: "https://www.youtube-nocookie.com/embed/TZGM2YB4BoY", thumbnail: "https://i.ytimg.com/vi/TZGM2YB4BoY/hqdefault.jpg", duration: "13:40", durationSeconds: 820, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: true, track: "Electrical Engineering", sessionNote: "exam question — basis and dimension for subspaces", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "exam-solution", playlistId: "PLm0oTNdEqyanqRzbtG56IX1fzIjknH6An", playlistTitle: "שאלות ממבחנים - לינארית להנדסת חשמל" },
+  // P3 · תרגילים ופתרונות בתורת החבורות  (worked-solution · Group Theory)
+  { index: 33, title: "תורת החבורות - תהי חבורה pית אז לכל חזקת p מתאימה קיימת תת״ח נורמלית", videoId: "azBkoNLUs8M", url: "https://www.youtube.com/watch?v=azBkoNLUs8M", embedUrl: "https://www.youtube-nocookie.com/embed/azBkoNLUs8M", thumbnail: "https://i.ytimg.com/vi/azBkoNLUs8M/hqdefault.jpg", duration: "13:29", durationSeconds: 809, description: "", category: "group_theory", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "p-group: for every order p^k there exists a normal subgroup of that order", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "worked-solution", playlistId: "PLm0oTNdEqyalMoJvzAouqqQoCU3NyWiBI", playlistTitle: "תרגילים ופתרונות בתורת החבורות" },
+  // P4 · אלגברה לינארית טריקים שתיקים ודברים לזכור  (memory-aid · LA)
+  { index: 34, title: "תנאים שקולים להפיכות מטריצה", videoId: "KJ5TNM4b8TU", url: "https://www.youtube.com/watch?v=KJ5TNM4b8TU", embedUrl: "https://www.youtube-nocookie.com/embed/KJ5TNM4b8TU", thumbnail: "https://i.ytimg.com/vi/KJ5TNM4b8TU/hqdefault.jpg", duration: "7:05", durationSeconds: 425, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "equivalent conditions for matrix invertibility", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "memory-aid", playlistId: "PLm0oTNdEqyamkS2BnpUAV7T_O9tHIG0NB", playlistTitle: "אלגברה לינארית טריקים שתיקים ודברים לזכור" },
+  // P5 · אלגברה לינארית - ו״ע, ע״ע, מ״ע, פ״א  (worked-solution · LA)
+  { index: 35, title: "שאלה על ערכים עצמיים", videoId: "yZ8u7h6ozVY", url: "https://www.youtube.com/watch?v=yZ8u7h6ozVY", embedUrl: "https://www.youtube-nocookie.com/embed/yZ8u7h6ozVY", thumbnail: "https://i.ytimg.com/vi/yZ8u7h6ozVY/hqdefault.jpg", duration: "10:30", durationSeconds: 630, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "eigenvalues exercise", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "worked-solution", playlistId: "PLm0oTNdEqyalwtYng6d2FFijOXHsBT_Sn", playlistTitle: "אלגברה לינארית - ו״ע, ע״ע ,מ״ע ,פ״א ." },
+  // P6 · Span Of Consciousness (EP) — original Linear Algebra songs across styles
+  { index: 36, title: "Is This Matrix INVERTIBLE? - JAZZ Edition", videoId: "FfgbA3mzCIk", url: "https://www.youtube.com/watch?v=FfgbA3mzCIk", embedUrl: "https://www.youtube-nocookie.com/embed/FfgbA3mzCIk", thumbnail: "https://i.ytimg.com/vi/FfgbA3mzCIk/hqdefault.jpg", duration: "3:32", durationSeconds: 212, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "jazz edition", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "song", playlistId: "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y", playlistTitle: "Span Of Consciousness (EP)" },
+  { index: 37, title: "Is This Matrix INVERTIBLE? - Techno Festival live", videoId: "WVJruw0hlPc", url: "https://www.youtube.com/watch?v=WVJruw0hlPc", embedUrl: "https://www.youtube-nocookie.com/embed/WVJruw0hlPc", thumbnail: "https://i.ytimg.com/vi/WVJruw0hlPc/hqdefault.jpg", duration: "3:21", durationSeconds: 201, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "techno · festival live", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "song", playlistId: "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y", playlistTitle: "Span Of Consciousness (EP)" },
+  { index: 38, title: "Dimension TheoremS", videoId: "XEXLwitVLKs", url: "https://www.youtube.com/watch?v=XEXLwitVLKs", embedUrl: "https://www.youtube-nocookie.com/embed/XEXLwitVLKs", thumbnail: "https://i.ytimg.com/vi/XEXLwitVLKs/hqdefault.jpg", duration: "3:44", durationSeconds: 224, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "song", playlistId: "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y", playlistTitle: "Span Of Consciousness (EP)" },
+  { index: 39, title: "I SAY LINEAR COMBO - HITECH Trance", videoId: "uSx5mZZ6-xc", url: "https://www.youtube.com/watch?v=uSx5mZZ6-xc", embedUrl: "https://www.youtube-nocookie.com/embed/uSx5mZZ6-xc", thumbnail: "https://i.ytimg.com/vi/uSx5mZZ6-xc/hqdefault.jpg", duration: "2:34", durationSeconds: 154, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "hi-tech trance", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "song", playlistId: "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y", playlistTitle: "Span Of Consciousness (EP)" },
+  { index: 40, title: "I SAY LINEAR COMBO - Nitzhonot GOA Trance", videoId: "wOzP-UZqgsw", url: "https://www.youtube.com/watch?v=wOzP-UZqgsw", embedUrl: "https://www.youtube-nocookie.com/embed/wOzP-UZqgsw", thumbnail: "https://i.ytimg.com/vi/wOzP-UZqgsw/hqdefault.jpg", duration: "7:29", durationSeconds: 449, description: "", category: "linear_algebra", relatedPractice: null, laTutorial: null, isExamQuestion: false, track: "", sessionNote: "Nitzhonot GOA trance", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "song", playlistId: "PLm0oTNdEqyakp7mgEnt8GzCfrpz-YSS1Y", playlistTitle: "Span Of Consciousness (EP)" },
+
+  // ── New upload to the main playlist (PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW). ──
+  // Hedva 2 tutorial 6 (engineering general track). Matched to tirgul6.pdf.
+  { index: 41, title: "חדווא 2 להנדסות - תרגול 6 - נגזרת כיוונית , מישור משיק ושאר החבר׳ס", videoId: "BNwvvzMndGA", url: "https://www.youtube.com/watch?v=BNwvvzMndGA", embedUrl: "https://www.youtube-nocookie.com/embed/BNwvvzMndGA", thumbnail: "https://i.ytimg.com/vi/BNwvvzMndGA/hqdefault.jpg", duration: "1:22:12", durationSeconds: 4932, description: "", category: "hedva2", relatedPractice: "tirgul6", laTutorial: null, isExamQuestion: false, track: "Engineering (general)", sessionNote: "directional derivative, tangent plane, and related topics", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
 ];
 
 // Stamp courseId/courseTag onto every video from its category (single source of
-// truth = the course registry in courses.ts). This is the public export.
+// truth = the course registry in courses.ts). Also default contentType for
+// rows that don't set it ("tutorial", or "exam-solution" for exam questions).
+// This is the public export.
 export const youtubeVideos: YouTubeVideo[] = rawVideos.map((v) => ({
   ...v,
+  contentType:
+    v.contentType ?? (v.isExamQuestion ? "exam-solution" : "tutorial"),
   ...courseFor(v.category),
 }));
 
 export const hedva2Videos = youtubeVideos.filter((v) => v.category === "hedva2");
 export const linearAlgebraVideos = youtubeVideos.filter((v) => v.category === "linear_algebra");
+export const groupTheoryVideos = youtubeVideos.filter((v) => v.category === "group_theory");
 export const unknownVideos = youtubeVideos.filter((v) => v.category === "unknown");
 
 export function videosForPractice(id: string): YouTubeVideo[] {
   return youtubeVideos.filter((v) => v.relatedPractice === id);
+}
+
+export function videosByContentType(type: ContentType): YouTubeVideo[] {
+  return youtubeVideos.filter((v) => v.contentType === type);
+}
+
+export function videosByPlaylist(playlistId: string): YouTubeVideo[] {
+  return youtubeVideos.filter((v) => v.playlistId === playlistId);
 }

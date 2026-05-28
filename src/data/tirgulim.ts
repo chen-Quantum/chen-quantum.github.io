@@ -114,4 +114,16 @@ export const tirgulim: TirgulSession[] = [
     pdfPath: "/files/teaching/calculus-2/tirgul5.pdf",
     videoIds: ["Sa86qqfw4qo", "IeuB2vLrdWE", "r-jm6vs-UKs"],
   },
+  {
+    // tirgul6 PDF was copied from ../tirgulim/tirgul6.pdf. The topics list is
+    // intentionally left empty — the skill does not parse PDFs and does not
+    // invent topic names. Add topics here once the session content is provided.
+    id: "tirgul6",
+    courseId: "hedva2",
+    titleHe: "תרגול 6",
+    titleEn: "Practice sheet 6",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul6.pdf",
+    videoIds: ["BNwvvzMndGA"],
+  },
 ];
