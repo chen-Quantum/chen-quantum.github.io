@@ -42,14 +42,16 @@ export const teachingPlaylists: TeachingPlaylist[] = [
       "Recorded tutorial sessions across multiple engineering tracks " +
       "(Hedva 2 + Linear Algebra; per-video classification).",
     videoIds: [
-      "Sa86qqfw4qo", "IeuB2vLrdWE", "r-jm6vs-UKs", "FtkLBb8Qg3I",
+      // Order mirrors the live YouTube playlist (newest first).
+      "yVU2b8tFQqc", "6KdvvXKJ0Q0", "uELbKWDmI68", "Sa86qqfw4qo",
+      "BNwvvzMndGA", "IeuB2vLrdWE", "r-jm6vs-UKs", "FtkLBb8Qg3I",
       "iLDO1kCc9C0", "AFRe_78THNw", "9h5nFUw8TB8", "jYF3NHwS1nU",
       "YjdVK4S2Jsk", "gdYJK-CAlWk", "_EMDuDfZFR8", "rOSrXbCkRXc",
       "WV6eDm8i1j0", "gqS1pPvu5qg", "ErDLMXsSEJk", "oT-QUUj4fOg",
       "QTUgOMT3XsU", "PuXRbY3MR0Y", "-xXnLM2D0bs", "2_vovGfLaXc",
       "36hPC5Df4QI", "vZoQV4bFF78", "NyXE5_uDZ-A", "uI71yDBKYNs",
       "KIhNvE5yw0I", "klqgBG28a74", "ehtLUKVJWTw", "t44ITGiL-e0",
-      "i6ql3gmfc18", "N6LBon7c3HA", "BNwvvzMndGA",
+      "i6ql3gmfc18", "N6LBon7c3HA",
     ],
     confidence: "high",
     notes:
