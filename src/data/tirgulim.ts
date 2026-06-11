@@ -136,7 +136,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 7",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul7.pdf",
-    videoIds: ["NAefZGXrn-4", "yVU2b8tFQqc", "6KdvvXKJ0Q0"],
+    videoIds: ["yVU2b8tFQqc", "6KdvvXKJ0Q0"],
   },
   {
     // Copied from ../tirgulim/תרגול 8 של הביוקר -משוואות סתומות נק קיצון.pdf.
@@ -147,7 +147,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 8",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul8.pdf",
-    videoIds: ["o5ma3KJTytE"],
+    videoIds: ["o5ma3KJTytE", "NAefZGXrn-4"],
   },
   {
     // Copied from ../tirgulim/תרגול 9 -אינטגרליפ כפולים.pdf.
