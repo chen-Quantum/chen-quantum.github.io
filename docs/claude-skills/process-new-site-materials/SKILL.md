@@ -22,10 +22,11 @@ description: >-
 
 # process-new-site-materials
 
-A repeatable, careful workflow for ingesting whatever the site owner drops into
-the **`new/`** folder and placing it correctly on the live site. It composes
-with the existing `sync-teaching-content` skill (which owns the teaching
-videos/PDF sub-workflow) and follows the same conventions and safety rules.
+A repeatable, careful workflow for Claude Code or Codex to ingest whatever the
+site owner drops into the **`new/`** folder and place it correctly on the live
+site. It composes with the existing `sync-teaching-content` skill (which owns
+the teaching videos/PDF sub-workflow) and follows the same conventions and
+safety rules.
 
 ---
 
@@ -50,9 +51,10 @@ and stop.
 - **Copy into `public/` (or the right data location); never move source files
   destructively.**
 - **No commit / no push unless the user explicitly allows it in this session.**
-  Default: leave changes in the working tree and report. If allowed, author as
-  **Chen Gadi**, plain message, and **never** add `Co-authored-by` / "Generated
-  with Claude" / any AI/bot trailer.
+  Default: leave changes in the working tree and report. If the user explicitly
+  allows commit/push and all checks pass, author as **Chen Gadi**, use a plain
+  message, and **never** add `Co-authored-by` / "Generated with Claude" /
+  "Generated with Codex" / any AI/bot trailer.
 - **`.claude/` and `CLAUDE.md` are gitignored.** Never stage
   `.claude/settings.json` or `.claude/settings.local.json`.
 - **No invented content.** Speakers, dates, talk titles, tutorial numbers,
@@ -108,8 +110,10 @@ Delegate the teaching specifics to **`sync-teaching-content`** and follow it:
   - A source PDF with no matching published file, no recordings, or that is not
     clearly a calculus tirgul (e.g. a Physics-2 syllabus, a different track's
     sheet) → **report under manual review; do not auto-publish.**
-- **Videos:** run `node scripts/sync-teaching-content.mjs --include-local`
-  (report-only; needs `yt-dlp` + network). It diffs every playlist in
+- **Videos:** run `node scripts/sync-teaching-content.mjs` for the required
+  report-only scan; optionally add `--include-local` when you also want the
+  script's local PDF report. It needs `yt-dlp` + network. It diffs every
+  playlist in
   `playlists.ts` against `youtubeVideos.ts`.
   - New video IDs → append rows (verbatim title, `embedUrl` nocookie,
     `hqdefault` thumbnail, `durationSeconds`, `category`, `relatedPractice`,
@@ -169,7 +173,7 @@ padding). Don't break mobile or crowd the page.
 
 ```bash
 pnpm astro build                                   # must pass
-node scripts/sync-teaching-content.mjs --include-local  # report-only
+node scripts/sync-teaching-content.mjs             # report-only / read-only
 git status
 git diff --stat
 ```

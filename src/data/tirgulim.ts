@@ -8,7 +8,7 @@
 // tutorial number (תרגול N). No guessing.
 
 export interface TirgulSession {
-  id: string; // "tirgul1" … "tirgul5" — matches YouTubeVideo.relatedPractice
+  id: string; // "tirgul1" … — matches YouTubeVideo.relatedPractice
   courseId: string; // course identity for /teaching filters (see courses.ts)
   titleHe: string;
   titleEn: string;
@@ -136,6 +136,61 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 7",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul7.pdf",
-    videoIds: ["yVU2b8tFQqc", "6KdvvXKJ0Q0"],
+    videoIds: ["NAefZGXrn-4", "yVU2b8tFQqc", "6KdvvXKJ0Q0"],
+  },
+  {
+    // Copied from ../tirgulim/תרגול 8 של הביוקר -משוואות סתומות נק קיצון.pdf.
+    // Topics are left empty instead of being inferred from the PDF contents.
+    id: "tirgul8",
+    courseId: "hedva2",
+    titleHe: "תרגול 8",
+    titleEn: "Practice sheet 8",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul8.pdf",
+    videoIds: ["o5ma3KJTytE"],
+  },
+  {
+    // Copied from ../tirgulim/תרגול 9 -אינטגרליפ כפולים.pdf.
+    // Topics are left empty instead of being inferred from the PDF contents.
+    id: "tirgul9",
+    courseId: "hedva2",
+    titleHe: "תרגול 9",
+    titleEn: "Practice sheet 9",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul9.pdf",
+    videoIds: [],
+  },
+  {
+    // Copied from ../tirgulim/תרגול 10. אינטגרלים משולשים.pdf.
+    // Topics are left empty instead of being inferred from the PDF contents.
+    id: "tirgul10",
+    courseId: "hedva2",
+    titleHe: "תרגול 10",
+    titleEn: "Practice sheet 10",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul10.pdf",
+    videoIds: [],
+  },
+  {
+    // Copied from ../tirgulim/דף תרגול 11 - איטנגרלים קווים עמקוים פרמטריים משפט גרין.pdf.
+    // Topics are left empty instead of being inferred from the PDF contents.
+    id: "tirgul11",
+    courseId: "hedva2",
+    titleHe: "תרגול 11",
+    titleEn: "Practice sheet 11",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul11.pdf",
+    videoIds: [],
+  },
+  {
+    // Copied from ../tirgulim/דף תרגול 12 ואחרון - אינטגרלים משטחיים , משפט גאוס וסטוקס.pdf.
+    // Topics are left empty instead of being inferred from the PDF contents.
+    id: "tirgul12",
+    courseId: "hedva2",
+    titleHe: "תרגול 12",
+    titleEn: "Practice sheet 12",
+    topics: [],
+    pdfPath: "/files/teaching/calculus-2/tirgul12.pdf",
+    videoIds: [],
   },
 ];

@@ -43,7 +43,8 @@ export const teachingPlaylists: TeachingPlaylist[] = [
       "(Hedva 2 + Linear Algebra; per-video classification).",
     videoIds: [
       // Order mirrors the live YouTube playlist (newest first).
-      "yVU2b8tFQqc", "6KdvvXKJ0Q0", "uELbKWDmI68", "Sa86qqfw4qo",
+      "o5ma3KJTytE", "NAefZGXrn-4", "yVU2b8tFQqc", "6KdvvXKJ0Q0",
+      "uELbKWDmI68", "Sa86qqfw4qo",
       "BNwvvzMndGA", "IeuB2vLrdWE", "r-jm6vs-UKs", "FtkLBb8Qg3I",
       "iLDO1kCc9C0", "AFRe_78THNw", "9h5nFUw8TB8", "jYF3NHwS1nU",
       "YjdVK4S2Jsk", "gdYJK-CAlWk", "_EMDuDfZFR8", "rOSrXbCkRXc",
@@ -78,7 +79,7 @@ export const teachingPlaylists: TeachingPlaylist[] = [
     videoIds: [],
     confidence: "low",
     notes:
-      "Playlist reported empty by yt-dlp on the audit run (title reads like a song line; the start video was not returned). Needs manual review before publishing.",
+      "yt-dlp reported that this playlist does not exist on the 2026-06-11 sync run. Needs manual review before publishing.",
   },
   {
     id: "PLm0oTNdEqyalMoJvzAouqqQoCU3NyWiBI",
