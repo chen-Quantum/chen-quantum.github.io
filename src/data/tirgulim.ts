@@ -147,7 +147,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 8",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul8.pdf",
-    videoIds: ["o5ma3KJTytE", "NAefZGXrn-4"],
+    videoIds: ["o5ma3KJTytE", "NAefZGXrn-4", "ERBwkt_Y58M"],
   },
   {
     // Copied from ../tirgulim/תרגול 9 -אינטגרליפ כפולים.pdf.
