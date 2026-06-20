@@ -137,6 +137,10 @@ const rawVideos: RawVideo[] = [
   // Hedva 2 תרגול 8 (mechanical track). Title clearly states תרגול 8 → tirgul8.
   // Title + duration verbatim from YouTube (yt-dlp flat-playlist).
   { index: 47, title: "חדווא 2ב להנדסה מכנית - תרגול 8 - מישור משיק לגרף סתומה, קיצון עם אילוצי לגראנז וללא כולל לא בקומפקט", videoId: "ERBwkt_Y58M", url: "https://www.youtube.com/watch?v=ERBwkt_Y58M", embedUrl: "https://www.youtube-nocookie.com/embed/ERBwkt_Y58M", thumbnail: "https://i.ytimg.com/vi/ERBwkt_Y58M/hqdefault.jpg", duration: "1:38:48", durationSeconds: 5928, description: "", category: "hedva2", relatedPractice: "tirgul8", laTutorial: null, isExamQuestion: false, track: "Mechanical Engineering", sessionNote: "tangent plane to an implicit graph; constrained extrema with and without Lagrange multipliers (incl. non-compact case)", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
+
+  // Hedva 2 tutorial 9. The title explicitly states תרגול 9, so this recording
+  // is matched to tirgul9.pdf. Title + duration are verbatim from YouTube.
+  { index: 48, title: "חדווא 2ב לחשמל/ביו רפואה - תרגול 9 - אינטגרלים כפולים", videoId: "wvPMXV-uoFw", url: "https://www.youtube.com/watch?v=wvPMXV-uoFw", embedUrl: "https://www.youtube-nocookie.com/embed/wvPMXV-uoFw", thumbnail: "https://i.ytimg.com/vi/wvPMXV-uoFw/hqdefault.jpg", duration: "1:33:12", durationSeconds: 5592, description: "", category: "hedva2", relatedPractice: "tirgul9", laTutorial: null, isExamQuestion: false, track: "Electrical / Biomedical Engineering", sessionNote: "double integrals", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
 ];
 
 // Stamp courseId/courseTag onto every video from its category (single source of

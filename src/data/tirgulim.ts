@@ -158,7 +158,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 9",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul9.pdf",
-    videoIds: [],
+    videoIds: ["wvPMXV-uoFw"],
   },
   {
     // Copied from ../tirgulim/תרגול 10. אינטגרלים משולשים.pdf.
