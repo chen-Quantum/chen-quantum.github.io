@@ -161,12 +161,12 @@ export const tirgulim: TirgulSession[] = [
     videoIds: ["wvPMXV-uoFw"],
   },
   {
-    // Copied from ../tirgulim/תרגול 10. אינטגרלים משולשים.pdf.
+    // Copied from ../tirgulim/תרגול 10 -אינטגרלים משולשים.pdf.
     // Topics are left empty instead of being inferred from the PDF contents.
     id: "tirgul10",
     courseId: "hedva2",
-    titleHe: "תרגול 10",
-    titleEn: "Practice sheet 10",
+    titleHe: "תרגול 10 — אינטגרלים משולשים",
+    titleEn: "Triple integrals",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul10.pdf",
     videoIds: [],
