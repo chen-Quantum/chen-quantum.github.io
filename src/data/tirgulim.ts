@@ -169,7 +169,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Triple integrals",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul10.pdf",
-    videoIds: [],
+    videoIds: ["q6thMbb2VPs", "qLyxqHZCzGE"],
   },
   {
     // Copied from ../tirgulim/דף תרגול 11 - איטנגרלים קווים עמקוים פרמטריים משפט גרין.pdf.
