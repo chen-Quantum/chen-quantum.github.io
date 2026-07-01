@@ -43,6 +43,7 @@ export const teachingPlaylists: TeachingPlaylist[] = [
       "(Hedva 2 + Linear Algebra; per-video classification).",
     videoIds: [
       // Order mirrors the live YouTube playlist (newest first).
+      "PC-q415eLvU", "PBCggtB-Ayk",
       "qLyxqHZCzGE", "q6thMbb2VPs",
       "wvPMXV-uoFw",
       "ERBwkt_Y58M",
