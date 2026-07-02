@@ -180,7 +180,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 11",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul11.pdf",
-    videoIds: [],
+    videoIds: ["VV16DidUM-M"],
   },
   {
     // Copied from ../tirgulim/דף תרגול 12 ואחרון - אינטגרלים משטחיים , משפט גאוס וסטוקס.pdf.
