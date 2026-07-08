@@ -157,6 +157,13 @@ const rawVideos: RawVideo[] = [
   // recording is matched to tirgul11.pdf. Title + duration are verbatim from
   // YouTube (yt-dlp flat-playlist).
   { index: 53, title: "חדווא 2ב לביו רפואה - תרגול 11 : אינטגרלים קווים ,עקומות פרמטריות שדה משמר ומשפט גרין ( יום רביעי)", videoId: "VV16DidUM-M", url: "https://www.youtube.com/watch?v=VV16DidUM-M", embedUrl: "https://www.youtube-nocookie.com/embed/VV16DidUM-M", thumbnail: "https://i.ytimg.com/vi/VV16DidUM-M/hqdefault.jpg", duration: "1:52:54", durationSeconds: 6774, description: "", category: "hedva2", relatedPractice: "tirgul11", laTutorial: null, isExamQuestion: false, track: "Biomedical Engineering", sessionNote: "Wednesday group · line integrals, parametric curves, conservative field, Green's theorem", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
+
+  // Additional Hedva 2 tutorial 11 recordings now present in the live main
+  // playlist (biomedical + mechanical tracks). Both titles explicitly state
+  // תרגול 11 → matched to tirgul11.pdf. Titles + durations verbatim from
+  // YouTube (yt-dlp flat-playlist).
+  { index: 54, title: "חדווא 2ב לביו רפואית - תרגול 11", videoId: "Wl8GTdup7zk", url: "https://www.youtube.com/watch?v=Wl8GTdup7zk", embedUrl: "https://www.youtube-nocookie.com/embed/Wl8GTdup7zk", thumbnail: "https://i.ytimg.com/vi/Wl8GTdup7zk/hqdefault.jpg", duration: "1:33:24", durationSeconds: 5604, description: "", category: "hedva2", relatedPractice: "tirgul11", laTutorial: null, isExamQuestion: false, track: "Biomedical Engineering", sessionNote: "", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
+  { index: 55, title: "חדווא 2ב למכנית - תרגול 11 אינטגרלים קווים", videoId: "uiQYDmSx_cw", url: "https://www.youtube.com/watch?v=uiQYDmSx_cw", embedUrl: "https://www.youtube-nocookie.com/embed/uiQYDmSx_cw", thumbnail: "https://i.ytimg.com/vi/uiQYDmSx_cw/hqdefault.jpg", duration: "1:40:18", durationSeconds: 6018, description: "", category: "hedva2", relatedPractice: "tirgul11", laTutorial: null, isExamQuestion: false, track: "Mechanical Engineering", sessionNote: "line integrals", topics: [], visibilityNote: "Unlisted YouTube video. Anyone with the link can view it.", contentType: "tutorial", playlistId: "PLm0oTNdEqyakr9oIlO9PSWB9RzApsSEoW", playlistTitle: "חדווא 2 2026 סמסטר ב׳" },
 ];
 
 // Stamp courseId/courseTag onto every video from its category (single source of
