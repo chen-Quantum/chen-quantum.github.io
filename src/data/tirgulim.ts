@@ -191,6 +191,6 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 12",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul12.pdf",
-    videoIds: [],
+    videoIds: ["x7daItXdVJc", "vo8dhVKLmFw"],
   },
 ];
