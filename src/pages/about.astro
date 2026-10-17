@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
   title="About"
-  description="About Chen Gadi — researcher, teaching assistant, and educator in mathematics and quantum computing."
+  description="About Chen Gadi — researcher, lecturer, and teaching assistant in mathematics and quantum computing."
 >
   <!-- ─── Page header ───────────────────────────────────────────── -->
   <section class="border-b border-slate-100">
@@ -31,10 +31,9 @@ import Layout from "../layouts/Layout.astro";
           <p
             class="text-lg md:text-xl text-slate-700 leading-relaxed font-medium mb-6 max-w-2xl"
           >
-            M.Sc. student in Particle Physics at Tel Aviv University, with a
+            M.Sc. student in Physics at Tel Aviv University and a member of Prof. Yaron Oz’s research group, with a
             B.Sc. in Mathematics and Physics (Magna Cum Laude, Dean's List
-            2024). I work on quantum computing, quantum machine learning, and
-            physics-inspired algorithms.
+            2024). My research focuses on the intersection of machine learning and physics, including neural-network training dynamics and physics-inspired methods.
           </p>
           <p class="text-base text-slate-500 leading-relaxed max-w-2xl mb-4">
             My research practice is simulator-first and reproducibility-first:
@@ -44,8 +43,7 @@ import Layout from "../layouts/Layout.astro";
             for results that re-run from each project's repository.
           </p>
           <p class="text-base text-slate-500 leading-relaxed max-w-2xl">
-            On the teaching side, I serve as a teaching assistant and run
-            tutorials in linear algebra and calculus for engineering students.
+            I lecture in the International Engineering Program at Tel Aviv University and serve as a teaching assistant in Linear Algebra for Electrical Engineering and Biomedical Engineering. Students can ask questions and contact me through the Student Hub.
           </p>
         </div>
 
@@ -75,8 +73,8 @@ import Layout from "../layouts/Layout.astro";
                   detail: "Hamiltonian dynamics, wavefunction optimization, and Born-rule classifiers.",
                 },
                 {
-                  area: "Mathematical Research Prototypes",
-                  detail: "Reproducible code, honest baselines, and visible limitations.",
+                  area: "Machine Learning & Physics",
+                  detail: "Neural-network training dynamics, perturbation response, and neural tangent kernels.",
                 },
               ].map(({ area, detail }) => (
                 <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
@@ -128,10 +126,10 @@ import Layout from "../layouts/Layout.astro";
               {
                 [
                   {
-                    degree: "M.Sc. in Particle Physics",
+                    degree: "M.Sc. in Physics",
                     school: "Tel Aviv University",
                     period: "2024 — Present",
-                    note: "Focus: quantum computing, quantum machine learning, and physics-inspired algorithms",
+                    note: "Research: machine learning and physics · Prof. Yaron Oz’s group",
                     active: true,
                   },
                   {
@@ -182,7 +180,7 @@ import Layout from "../layouts/Layout.astro";
           </p>
           <p class="text-base text-slate-500 leading-relaxed mb-6 max-w-2xl">
             I have served as a teaching assistant at Tel Aviv University since
-            2022 — running tutorials in linear algebra and calculus (Calculus 1
+            2022, running tutorials in linear algebra and calculus (Calculus 1
             and 2), and grading for linear algebra, calculus, complex functions,
             and ordinary differential equations. I design practice problems and
             record tutorial sessions to extend office hours beyond the classroom.
@@ -233,8 +231,8 @@ import Layout from "../layouts/Layout.astro";
           <dl class="space-y-3.5">
             {
               [
-                { label: "Role", value: "Teaching Assistant & Researcher" },
-                { label: "Focus", value: "Quantum Computing & Quantum ML" },
+                { label: "Role", value: "Lecturer, Teaching Assistant & Researcher" },
+                { label: "Focus", value: "Machine Learning & Physics" },
                 { label: "Status", value: "M.Sc. Student" },
                 { label: "Location", value: "Tel Aviv University" },
               ].map(({ label, value }) => (

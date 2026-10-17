@@ -1,14 +1,326 @@
 @import "tailwindcss";
 
 @theme {
-  --font-family-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  --color-indigo-50: #eef5f0;
+  --color-indigo-100: #dae9df;
+  --color-indigo-200: #b7d2c1;
+  --color-indigo-300: #8cb7a1;
+  --color-indigo-400: #60917b;
+  --color-indigo-500: #35755e;
+  --color-indigo-600: #246451;
+  --color-indigo-700: #1b4e3f;
+  --color-indigo-800: #153c32;
+  --font-family-sans:
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   --font-family-display: "DM Serif Display", Georgia, "Times New Roman", serif;
 }
 
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+body {
+  background: #fcfcf9;
+}
+::selection {
+  background: #d1e3c4;
+  color: #183c2b;
+}
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  z-index: 100;
+  background: #193e32;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+.academic-hero {
+  background: linear-gradient(115deg, #f6f7f0 0%, #fafaf6 62%, #eef2e9 100%);
+  border-bottom: 1px solid #e1e6da;
+  position: relative;
+  overflow: hidden;
+}
+.academic-hero:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#9bb39740 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to right, transparent 40%, black);
+  pointer-events: none;
+}
+.academic-hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 72px;
+  align-items: center;
+  padding-top: 90px;
+  padding-bottom: 88px;
+}
+.academic-kicker {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: #56715d;
+  margin-bottom: 15px;
+}
+.academic-name {
+  font-size: clamp(58px, 7vw, 90px);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  color: #203c31;
+  margin-bottom: 26px;
+}
+.academic-name span {
+  color: #6c8860;
+}
+.academic-lead {
+  font-size: clamp(20px, 2.5vw, 27px);
+  line-height: 1.4;
+  font-weight: 500;
+  color: #294437;
+  letter-spacing: -0.035em;
+  margin-bottom: 23px;
+}
+.academic-bio {
+  font-size: 15px;
+  color: #617365;
+  line-height: 1.85;
+  max-width: 470px;
+  margin-bottom: 28px;
+}
+.academic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.academic-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: #244f3e;
+  border: 1px solid #244f3e;
+  color: #fff;
+  padding: 12px 19px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+  transition: background 0.2s;
+}
+.academic-primary:hover {
+  background: #173b2c;
+}
+.academic-secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 17px;
+  border: 1px solid #c6d2c4;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #31533f;
+  background: #ffffffa0;
+  line-height: 1.6;
+}
+.academic-secondary:hover {
+  background: #edf3e8;
+}
+.academic-signature {
+  font-size: 11px;
+  color: #81907f;
+  margin-top: 30px;
+  letter-spacing: 0.035em;
+}
+.academic-appointments {
+  background: #fffefb;
+  border: 1px solid #d4decd;
+  border-radius: 12px;
+  padding: 8px 28px 14px;
+  box-shadow: 0 18px 60px #2a493b0b;
+}
+.academic-panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e7ece1;
+  padding: 18px 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #6d816a;
+}
+.academic-panel-top img {
+  object-fit: contain;
+}
+.academic-appointment {
+  display: flex;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid #e7ece1;
+}
+.academic-appointment:last-child {
+  border: 0;
+}
+.academic-number {
+  font:
+    11px ui-monospace,
+    monospace;
+  color: #9ba994;
+  padding-top: 2px;
+}
+.academic-role {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: #69885b;
+  margin-bottom: 7px;
+}
+.academic-appointment h2 {
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #2a4333;
+  margin-bottom: 5px;
+}
+.academic-appointment div > p:last-child {
+  font-size: 11px;
+  line-height: 1.65;
+  color: #7a8976;
+}
+.student-entry {
+  border-bottom: 1px solid #e0e7da;
+  background: #fffefb;
+}
+.student-entry-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.student-entry .academic-kicker {
+  margin-bottom: 3px;
+  font-size: 9px;
+}
+.student-entry h2 {
+  font-size: 19px;
+  color: #254633;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 5px;
+}
+.student-entry p {
+  font-size: 12px;
+  color: #798473;
+  line-height: 1.8;
+}
+.student-entry a {
+  flex: none;
+}
+.research-focus {
+  background: #f3f6ed;
+  border: 1px solid #d8e1cf;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 35px;
+}
+.research-focus > p:not(.academic-kicker) {
+  max-width: 780px;
+  line-height: 1.85;
+  font-size: 15px;
+  color: #5a6d56;
+  margin: 18px 0;
+}
+.research-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  border-top: 1px solid #dae3cf;
+  padding-top: 23px;
+  margin: 25px 0;
+}
+.research-focus-grid span {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #7b8c72;
+  margin-bottom: 8px;
+}
+.research-focus-grid strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #355032;
+}
+.contact-route {
+  border: 1px solid #dce4d4;
+  background: #fffefb;
+  border-radius: 12px;
+  padding: 32px;
+}
+.contact-route > p {
+  font-size: 14px;
+  color: #60705a;
+  line-height: 1.85;
+}
+@media (max-width: 850px) {
+  .academic-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding-top: 50px;
+    padding-bottom: 45px;
+  }
+  .academic-appointments {
+    max-width: 520px;
+    width: 100%;
+  }
+  .academic-appointment {
+    padding: 19px 0;
+  }
+  .academic-hero .academic-bio {
+    max-width: 600px;
+  }
+  .student-entry-inner {
+    align-items: start;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .research-focus-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .research-focus {
+    padding: 24px;
+  }
+  .academic-kicker {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* Better focus rings */

@@ -5,7 +5,6 @@ description: "Linear algebra core course for biomedical engineering students at 
 courseId: "linear-algebra-biomedical"
 audience:
   - Biomedical Engineering
-  - Mechanical Engineering
 topics:
   - Systems of linear equations
   - Gaussian elimination

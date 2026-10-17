@@ -8,7 +8,7 @@ papers.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 <Layout
   title="Research"
-  description="Research interests and work by Chen Gadi."
+  description="Research by Chen Gadi in Prof. Yaron Oz’s group at Tel Aviv University, at the intersection of machine learning and physics."
 >
   <!-- Page header -->
   <section class="border-b border-slate-100">
@@ -22,21 +22,27 @@ papers.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
         Research
       </h1>
       <p class="text-base text-slate-500 max-w-xl leading-relaxed">
-        Ongoing research interests, notes, and academic contributions.
+        M.Sc. research in Prof. Yaron Oz’s group at Tel Aviv University, at the intersection of machine learning and physics.
       </p>
     </div>
   </section>
 
   <div class="mx-auto max-w-6xl px-6 py-16">
+    <section class="research-focus" aria-label="Current research">
+      <p class="academic-kicker">MACHINE LEARNING × PHYSICS</p>
+      <h2 class="font-display text-3xl">How do learning systems respond to change?</h2>
+      <p>I study neural-network training dynamics and their response to controlled perturbations, using tools from physics and mathematics. Current interests include neural tangent kernels, approximations beyond linearization, and physics-inspired optimization.</p>
+      <div class="research-focus-grid"><div><span>RESEARCH GROUP</span><strong>Prof. Yaron Oz</strong></div><div><span>INSTITUTION</span><strong>Tel Aviv University</strong></div><div><span>STATUS</span><strong>M.Sc. research in progress</strong></div></div>
+      <a href="/projects" class="academic-secondary">Explore research projects ↗</a>
+    </section>
     {
       papers.length === 0 ? (
         <div class="py-24 max-w-sm">
           <p class="font-display text-3xl text-slate-200 mb-4">
-            Coming soon.
+            Research notes &amp; publications
           </p>
           <p class="text-sm text-slate-400 leading-relaxed">
-            Publications and research summaries will appear here as they are
-            ready.
+            Research summaries and publications will be added as the work develops. Current projects are available on the projects page.
           </p>
         </div>
       ) : (

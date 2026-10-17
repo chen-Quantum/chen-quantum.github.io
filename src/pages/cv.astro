@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
   title="CV"
-  description="Curriculum Vitae of Chen Gadi — researcher, teaching assistant, and educator in mathematics and quantum computing."
+  description="Curriculum Vitae of Chen Gadi — researcher, lecturer, and teaching assistant in mathematics and quantum computing."
 >
   <!-- Page header -->
   <section class="border-b border-slate-100">
@@ -64,10 +64,10 @@ import Layout from "../layouts/Layout.astro";
             <div class="space-y-8 pl-6">
               {[
                 {
-                  degree: "M.Sc. in Particle Physics",
+                  degree: "M.Sc. in Physics",
                   school: "Tel Aviv University",
                   period: "2024 — Present",
-                  note: "Focus: quantum computing, quantum machine learning, and physics-inspired algorithms",
+                  note: "Prof. Yaron Oz’s research group · Machine Learning & Physics",
                   active: true,
                 },
                 {
@@ -107,22 +107,28 @@ import Layout from "../layouts/Layout.astro";
           <div class="space-y-6">
             {[
               {
-                role: "Teaching Assistant — Introduction to Quantum Computing",
-                institution: "Tel Aviv University, Department of Computer Science",
-                period: "Fall 2025",
-                detail: "Weekly tutorials, practice materials, office hours, and grading.",
+                role: "Lecturer · International Engineering Program",
+                institution: "Tel Aviv University",
+                period: "Current",
+                detail: "Teaching in the international engineering program in English.",
               },
               {
-                role: "Teaching Assistant — Linear Algebra",
-                institution: "Tel Aviv University, Department of Mathematics",
-                period: "Spring 2026",
-                detail: "Tutorial design, worksheets, and student mentoring.",
+                role: "Teaching Assistant · Linear Algebra for Electrical Engineering",
+                institution: "Tel Aviv University",
+                period: "Current",
+                detail: "Tutorials, practice materials, and student support through the Student Hub.",
               },
               {
-                role: "Teaching Assistant — Multivariable Calculus",
-                institution: "Tel Aviv University, Department of Mathematics",
-                period: "Fall 2025",
-                detail: "Tutorial sessions and assignment design.",
+                role: "Teaching Assistant · Linear Algebra for Biomedical Engineering",
+                institution: "Tel Aviv University",
+                period: "Current",
+                detail: "Tutorials, recorded sessions, and student support through the Student Hub.",
+              },
+              {
+                role: "Teaching Assistant · Calculus",
+                institution: "Tel Aviv University",
+                period: "Previous teaching",
+                detail: "Calculus tutorials for engineering students. Practice sheets and recordings remain available.",
               },
             ].map(({ role, institution, period, detail }) => (
               <div class="p-5 rounded-xl border border-slate-100 bg-slate-50/50">
@@ -144,9 +150,9 @@ import Layout from "../layouts/Layout.astro";
           </p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { area: "Quantum Algorithms", detail: "Complexity bounds, oracle separations, and circuit optimisation." },
+              { area: "Machine Learning & Physics", detail: "M.Sc. research in Prof. Yaron Oz’s group at Tel Aviv University." },
               { area: "Linear Algebra Methods", detail: "Spectral methods in machine learning and network analysis." },
-              { area: "Mathematical Foundations", detail: "Type theory, proof systems, and foundational CS." },
+              { area: "Training Dynamics", detail: "Neural tangent kernels and responses to controlled perturbations." },
               { area: "Quantum Community", detail: "Building student communities around quantum science in Israel." },
             ].map(({ area, detail }) => (
               <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">

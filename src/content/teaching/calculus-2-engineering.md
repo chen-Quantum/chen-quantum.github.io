@@ -19,7 +19,7 @@ topics:
   - Vector calculus topics
 semester: "2025 — Present"
 institution: "Tel Aviv University"
-status: "active"
+status: "past"
 featured: true
 ---
 

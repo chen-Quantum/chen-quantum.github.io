@@ -5,7 +5,6 @@ description: "Linear algebra core course for electrical engineering students at 
 courseId: "linear-algebra-electrical"
 audience:
   - Electrical Engineering
-  - Industrial Engineering and Management
 topics:
   - Systems of linear equations
   - Gaussian elimination

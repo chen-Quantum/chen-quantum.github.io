@@ -232,6 +232,7 @@ const teaching = defineCollection({
   schema: z.object({
     title: z.string(),
     titleHebrew: z.string().optional(),
+    role: z.enum(["Lecturer", "Teaching Assistant"]).default("Teaching Assistant"),
     description: z.string(),
     courseId: z.string(),
     audience: z.array(z.string()).default([]),

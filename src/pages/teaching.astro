@@ -82,10 +82,9 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         Teaching at Tel Aviv University
       </h1>
       <p class="text-base text-slate-500 max-w-2xl leading-relaxed">
-        Teaching-assistant work in mathematics for engineering students: linear
-        algebra (electrical and biomedical engineering tracks) and calculus 2
-        (Hedva 2). Below are the practice sheets and full tutorial recordings.
+        I lecture in the International Engineering Program and serve as a teaching assistant in Linear Algebra for Electrical Engineering and Biomedical Engineering at Tel Aviv University. Practice sheets and recordings, including the Calculus 2 archive, are available below.
       </p>
+      <div class="mt-6"><a href="/students" class="academic-primary">Student Hub: questions &amp; private requests ↗</a><p class="mt-3 text-sm text-slate-500">For course questions and logistics, use the Student Hub. Replies stay on the website.</p></div>
       <p class="mt-4 text-xs text-slate-400 max-w-2xl leading-relaxed">
         Recordings are <strong class="font-semibold text-slate-500">unlisted YouTube videos</strong>,
         available through this page and the course links. Unlisted videos are not
@@ -106,7 +105,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
           <div class="flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
             <div class="flex items-center justify-between mb-3">
               <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-200">
-                {c.data.semester}
+                {c.data.role === "Lecturer" ? "Lecturer" : "Teaching Assistant"}
               </span>
               {c.data.titleHebrew && (
                 <span class="text-xs text-slate-400" dir="rtl">{c.data.titleHebrew}</span>
@@ -376,18 +375,16 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
     <section class="mt-16 md:mt-20">
       <div class="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-8 max-w-3xl">
         <h2 class="font-display text-xl md:text-2xl text-slate-900 mb-2">
-          Looking for tutoring or specific materials?
+          Questions, missing materials, or course logistics?
         </h2>
         <p class="text-sm text-slate-600 leading-relaxed mb-5">
-          I run tutorials and private lessons in linear algebra and calculus (1 &amp; 2)
-          for engineering students. If you are a current student and need a specific
-          sheet or recording, get in touch.
+          Ask anonymously on your class board, or open a private request for a missing sheet, recording, schedule change, or personal matter. Replies appear in the Student Hub.
         </p>
         <a
-          href="/contact"
+          href="/students"
           class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          Contact page →
+          Open the Student Hub →
         </a>
       </div>
     </section>

@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/portal.css';
+---
+<Layout title="Student Hub" description="Chen Gadi's student hub. Anonymous course questions, peer answers, and private requests with replies on the website.">
+  <div id="student-portal" class="portal" dir="rtl" lang="he">
+    <section class="portal-hero">
+      <div class="portal-wrap">
+        <div class="portal-topline"><a href="/teaching" data-i18n="materials">חומרי הלימוד ↗</a><button type="button" id="portal-language">English</button></div>
+        <p class="portal-eyebrow">CHEN GADI · STUDENT HUB</p>
+        <h1 data-i18n="heading">מקום לשאול. מקום להבין.</h1>
+        <p class="portal-intro" data-i18n="intro">שאלות על החומר, עזרה מהכיתה ופניות אישיות. כל השיחה נשארת כאן באתר.</p>
+        <div class="portal-promises"><span data-i18n="promise1">שאלות ותשובות אנונימיות</span><span data-i18n="promise2">פניות פרטיות לחן</span><span data-i18n="promise3">ללא התכתבות במייל</span></div>
+      </div>
+    </section>
+    <div class="portal-wrap portal-body">
+      <div id="portal-notice" class="portal-notice" role="status" aria-live="polite" hidden></div>
+      <div id="portal-content" aria-busy="true"><p class="portal-loading" data-i18n="loading">טוען את אזור הסטודנטים...</p></div>
+      <noscript><p class="portal-notice">יש להפעיל JavaScript כדי להשתמש באזור הסטודנטים. Enable JavaScript to use the student hub.</p></noscript>
+      <footer class="portal-footnote"><p data-i18n="privacy">בלוח הכיתה לא מוצגים שמות או כתובות מייל. פניות פרטיות גלויות רק לך ולחן. הגישה לדיונים בכיתה היא באמצעות קוד שמקבלים בשיעור.</p><button type="button" id="portal-staff" data-i18n="staff">כניסה למרצה</button></footer>
+    </div>
+  </div>
+</Layout>
+<script>
+  import '../scripts/student-portal';
+</script>

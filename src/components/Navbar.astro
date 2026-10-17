@@ -3,6 +3,7 @@ const navLinks = [
   { href: "/research", label: "Research" },
   { href: "/projects", label: "Projects" },
   { href: "/teaching", label: "Teaching" },
+  { href: "/students", label: "Student Hub", highlight: true },
   {
     href: "/quantum-community",
     label: "Quantum Community",
@@ -10,7 +11,6 @@ const navLinks = [
   },
   { href: "/digital-courses", label: "Digital Courses" },
   { href: "/cv", label: "CV" },
-  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -21,7 +21,7 @@ const isActive = (href: string) =>
 
 <header class="sticky top-0 z-50 bg-white/96 backdrop-blur-md border-b border-slate-100">
   <nav
-    class="mx-auto max-w-6xl px-6 flex items-center justify-between h-14"
+    class="mx-auto max-w-6xl px-6 flex items-center justify-between h-18"
     aria-label="Main navigation"
   >
     <!-- Logo -->
@@ -52,7 +52,7 @@ const isActive = (href: string) =>
           <li>
             <a
               href={href}
-              class={`px-3 py-1.5 rounded-md text-sm transition-colors duration-150 ${
+              class={`px-2.5 py-1.5 rounded-md text-sm transition-colors duration-150 ${
                 isActive(href)
                   ? "font-semibold text-slate-900 bg-slate-100"
                   : highlight

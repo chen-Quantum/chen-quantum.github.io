@@ -10,11 +10,11 @@ interface Props {
 
 const {
   title = "Chen Gadi",
-  description = "Teaching, research, and creative academic media.",
+  description = "Chen Gadi: lecturer and researcher at Tel Aviv University. Machine learning, physics, and mathematics.",
 } = Astro.props;
 
 const fullTitle =
-  title === "Chen Gadi" ? title : `${title} — Chen Gadi`;
+  title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
 ---
 
 <!doctype html>
@@ -30,15 +30,16 @@ const fullTitle =
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body
     class="bg-white text-slate-900 antialiased font-sans min-h-screen flex flex-col"
   >
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <Navbar />
-    <main class="flex-1">
+    <main id="main-content" class="flex-1">
       <slot />
     </main>
     <Footer />
