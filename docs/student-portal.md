@@ -113,3 +113,12 @@ in-memory REST boundary, including contact validation, cross-user isolation,
 private replies without classroom membership, and anonymous-board privacy. It
 creates no production records. The DOM suite covers the logistics and inbox
 links, required fields, selected course, and private email display.
+
+## Custom domain
+
+The canonical public site is `https://chengadi.science`. The API allows that
+origin and `https://www.chengadi.science`, as well as the original GitHub Pages
+origin during the transition. HTTPS and the domain binding are managed in GitHub
+Pages settings; DNS is managed in Cloudflare. Student access keys are stored per
+browser origin. Existing students must restore their saved recovery code on the
+new domain to recover previous conversations.

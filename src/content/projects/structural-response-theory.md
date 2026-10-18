@@ -8,7 +8,7 @@ github: "https://github.com/chen-Quantum/structural-response-theory"
 repoLabel: "GitHub"
 docs:
   - label: "Guide PDF"
-    url: "https://chen-quantum.github.io/media/structural-response-theory/STRUCTURAL_RESPONSE_GUIDE.pdf"
+    url: "https://chengadi.science/media/structural-response-theory/STRUCTURAL_RESPONSE_GUIDE.pdf"
 tech:
   - mathematical physics
   - electrostatics

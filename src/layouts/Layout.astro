@@ -27,6 +27,7 @@ const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     {robots && <meta name="robots" content={robots} />}
     <title>{fullTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

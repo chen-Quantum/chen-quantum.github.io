@@ -31,6 +31,15 @@ const broken = [];
 for (const file of pages) {
   const document = new JSDOM(fs.readFileSync(file, "utf8")).window.document;
   check(
+    document.querySelector('link[rel="canonical"]')?.getAttribute("href") ===
+      new URL(
+        "/" + path.relative(dist, file).replace(/index\.html$/, ""),
+        "https://chengadi.science",
+      ).href,
+    path.relative(dist, file) +
+      ": canonical URL uses the custom domain without query parameters",
+  );
+  check(
     document.documentElement.lang === "en",
     path.relative(dist, file) + ": English document",
   );
@@ -49,7 +58,7 @@ for (const file of pages) {
   for (const link of document.querySelectorAll("a[href]")) {
     const href = link.getAttribute("href");
     if (!href.startsWith("/") || href.startsWith("//")) continue;
-    const url = new URL(href, "https://chen-quantum.github.io");
+    const url = new URL(href, "https://chengadi.science");
     const local = path.join(dist, decodeURIComponent(url.pathname));
     const target =
       fs.existsSync(local) && fs.statSync(local).isFile()

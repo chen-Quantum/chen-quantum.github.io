@@ -10,7 +10,7 @@ const require = createRequire(
 const { JSDOM } = require("jsdom");
 const html = fs.readFileSync("dist/students/index.html", "utf8");
 const dom = new JSDOM(html, {
-  url: "https://chen-quantum.github.io/students",
+  url: "https://chengadi.science/students",
   runScripts: "outside-only",
 });
 const { window } = dom;

@@ -128,8 +128,8 @@ try:
         check(direct.status_code in [401,403],'direct browser access denied: '+table)
     denied=requests.post(BASE+'/functions/v1/student-portal',headers={'Origin':'https://untrusted.example','Content-Type':'application/json'},json={'action':'config'},timeout=35)
     check(denied.status_code==403 and 'Access-Control-Allow-Origin' not in denied.headers,'untrusted browser origin rejected')
-    cors=requests.options(BASE+'/functions/v1/student-portal',headers={'Origin':'https://chen-quantum.github.io','Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'x-portal-key,content-type'},timeout=35)
-    check(cors.status_code==204 and cors.headers.get('Access-Control-Allow-Origin')=='https://chen-quantum.github.io','GitHub Pages CORS preflight succeeds')
+    cors=requests.options(BASE+'/functions/v1/student-portal',headers={'Origin':'https://chengadi.science','Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'x-portal-key,content-type'},timeout=35)
+    check(cors.status_code==204 and cors.headers.get('Access-Control-Allow-Origin')=='https://chengadi.science','Custom domain CORS preflight succeeds')
     requests.post(BASE+'/auth/v1/logout',headers={'apikey':PUBLIC,'Authorization':'Bearer '+token},timeout=35)
     print(json.dumps({'passed':checks,'cleanup_actor_hashes':actor_hashes}),flush=True)
 finally:

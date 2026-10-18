@@ -134,7 +134,7 @@ async function call(
   const headers = {
     "content-type": "application/json",
     "x-portal-key": keys[actor],
-    Origin: "https://chen-quantum.github.io",
+    Origin: "https://chengadi.science",
   };
   if (staff) headers.authorization = "Bearer fixture-staff-token";
   const response = await handler(
@@ -330,5 +330,32 @@ check(
       url === project + "/auth/v1/user",
   ),
   "the request flow sends no outgoing email or external messages",
+);
+for (const origin of [
+  "https://chengadi.science",
+  "https://www.chengadi.science",
+  "https://chen-quantum.github.io",
+]) {
+  const response = await handler(
+    new Request(project + "/functions/v1/student-portal", {
+      method: "OPTIONS",
+      headers: { Origin: origin },
+    }),
+  );
+  check(
+    response.status === 204 &&
+      response.headers.get("access-control-allow-origin") === origin,
+    "CORS permits " + origin,
+  );
+}
+const denied = await handler(
+  new Request(project + "/functions/v1/student-portal", {
+    method: "OPTIONS",
+    headers: { Origin: "https://untrusted.invalid" },
+  }),
+);
+check(
+  denied.status === 403 && !denied.headers.has("access-control-allow-origin"),
+  "CORS still rejects untrusted origins",
 );
 console.log(JSON.stringify({ passed, productionWrites: 0 }));

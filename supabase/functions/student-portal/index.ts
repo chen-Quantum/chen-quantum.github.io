@@ -4,6 +4,8 @@
 const base = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const allowedOrigins = new Set([
+  "https://chengadi.science",
+  "https://www.chengadi.science",
   "https://chen-quantum.github.io",
   "http://localhost:4321",
   "http://127.0.0.1:4321",
