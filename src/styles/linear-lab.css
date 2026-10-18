@@ -1,0 +1,981 @@
+.la-lab {
+  --la-ink: #203c31;
+  --la-green: #1b6655;
+  --la-muted: #607363;
+  --la-border: #dce4d9;
+  --la-paper: #fcfcf7;
+  font-family: "Heebo", "Arial", sans-serif;
+  color: var(--la-ink);
+  background: var(--la-paper);
+  line-height: 1.85;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.la-lab * {
+  box-sizing: border-box;
+}
+.la-lab [hidden] {
+  display: none !important;
+}
+.la-lab a,
+.la-lab button,
+.la-lab input,
+.la-lab select,
+.la-lab summary {
+  touch-action: manipulation;
+}
+.la-lab button,
+.la-lab a,
+.la-lab input,
+.la-lab select,
+.la-lab textarea,
+.la-lab summary {
+  outline-offset: 5px;
+}
+.la-lab :focus-visible {
+  outline: 3px solid #b06a32;
+}
+.la-lab button {
+  cursor: pointer;
+}
+.la-container {
+  width: min(1240px, 100% - 48px);
+  margin-inline: auto;
+}
+.la-hero {
+  border-bottom: 1px solid var(--la-border);
+  background: linear-gradient(105deg, #edf3e6, #fcfcf6 64%);
+}
+.la-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 64px;
+  align-items: center;
+  padding-block: 44px 64px;
+}
+.la-back {
+  font-size: 13px;
+  color: var(--la-muted);
+  display: inline-block;
+  margin-bottom: 28px;
+}
+.la-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #60765c;
+  margin: 0 0 12px;
+}
+.la-hero h1 {
+  font-size: clamp(40px, 5vw, 65px);
+  line-height: 1.22;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin: 0 0 24px;
+}
+.la-hero h1 span {
+  color: #6b8756;
+}
+.la-lead {
+  font-size: 18px;
+  max-width: 530px;
+  color: #586a5b;
+  margin: 0 0 26px;
+}
+.la-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.la-button {
+  border: 1px solid var(--la-green);
+  background: var(--la-green);
+  color: #fff;
+  border-radius: 8px;
+  padding: 11px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-decoration: none;
+  min-height: 46px;
+  transition: background 0.15s;
+}
+.la-button:hover {
+  background: #124e40;
+  color: white;
+}
+.la-secondary {
+  background: transparent;
+  color: var(--la-green);
+  border-color: #b9cbb5;
+}
+.la-secondary:hover {
+  background: #e6efde;
+  color: var(--la-green);
+}
+.la-subtle {
+  font-size: 12px;
+  color: #607363;
+  line-height: 1.8;
+  margin-top: 15px;
+}
+.la-hero-figure {
+  margin: 0;
+  transform: rotate(-2deg);
+}
+.la-hero-figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid #dbe5d6;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px #2944370b;
+}
+.la-hero-figure figcaption {
+  font-size: 12px;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  margin-top: 15px;
+  color: #607363;
+  transform: rotate(2deg);
+}
+.la-live-dot {
+  width: 7px;
+  height: 7px;
+  background: #749d56;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+.la-workspace {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  gap: 32px;
+  padding-block: 44px 70px;
+  align-items: start;
+  scroll-margin-top: 90px;
+}
+.la-sidebar {
+  position: sticky;
+  top: 95px;
+}
+.la-sidebar h2 {
+  font-size: 23px;
+  font-weight: 500;
+  margin: 0 0 17px;
+}
+.la-progress {
+  font-size: 12px;
+  color: var(--la-muted);
+  margin-bottom: 22px;
+}
+.la-progress progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  appearance: none;
+  border: none;
+  margin-top: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #e2e9de;
+}
+.la-progress progress::-webkit-progress-bar {
+  background: #e2e9de;
+}
+.la-progress progress::-webkit-progress-value {
+  background: #5c8251;
+}
+.la-progress progress::-moz-progress-bar {
+  background: #5c8251;
+}
+.la-nav {
+  display: grid;
+  gap: 3px;
+}
+.la-nav-item {
+  display: grid;
+  grid-template-columns: 25px 1fr 15px;
+  gap: 9px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #657365;
+  line-height: 1.5;
+  text-decoration: none;
+  min-height: 40px;
+}
+.la-nav-item:hover {
+  background: #f0f4e9;
+}
+.la-nav-item.is-active {
+  background: #eaf1e1;
+  color: #234b36;
+  border-color: #d8e4cc;
+  font-weight: 600;
+}
+.la-nav-number {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  direction: ltr;
+}
+.la-completion {
+  color: #5d8150;
+  text-align: center;
+}
+.la-sidebar-link {
+  font-size: 12px;
+  display: block;
+  margin-top: 20px;
+  color: var(--la-green);
+  line-height: 1.65;
+}
+.la-mobile-select {
+  display: none;
+}
+.la-main-column {
+  min-width: 0;
+}
+.la-activity {
+  background: #fff;
+  border: 1px solid var(--la-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px #243b2c04;
+}
+.la-activity-heading {
+  padding: 30px 34px 25px;
+}
+.la-activity-heading h2 {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 15px;
+  scroll-margin-top: 110px;
+}
+.la-activity-heading p:not(.la-eyebrow) {
+  font-size: 15px;
+  color: var(--la-muted);
+  max-width: 680px;
+  margin-bottom: 20px;
+}
+.la-formula {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  text-align: left;
+  background: #f7f9f2;
+  border: 1px solid #e7eddf;
+  border-radius: 8px;
+  padding: 14px 17px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  unicode-bidi: isolate;
+  line-height: 1.8;
+}
+.la-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0 30px;
+  border-block: 1px solid #e6ebe0;
+  background: #fbfcf8;
+  gap: 12px;
+}
+.la-steps button {
+  font: inherit;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #73806d;
+  background: none;
+  padding: 13px 4px;
+  font-size: 14px;
+  min-height: 50px;
+}
+.la-steps button span {
+  font-size: 11px;
+  font-family: Georgia, serif;
+  margin-left: 6px;
+}
+.la-steps button[aria-current="step"] {
+  color: var(--la-green);
+  border-bottom-color: var(--la-green);
+  font-weight: 600;
+}
+.la-stage {
+  padding: 28px 34px 32px;
+}
+.la-step-label {
+  font-size: 11px;
+  color: #8a6744;
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+.la-stage h3 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+.la-stage > p {
+  font-size: 14px;
+  color: var(--la-muted);
+  margin-bottom: 18px;
+}
+.la-stage fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 22px;
+  min-width: 0;
+}
+.la-stage legend {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  line-height: 1.8;
+}
+.la-choices {
+  display: grid;
+  gap: 10px;
+}
+.la-choices label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fbfcf9;
+  border: 1px solid #e0e7d9;
+  border-radius: 9px;
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  min-height: 48px;
+}
+.la-choices label:has(input:checked) {
+  background: #edf3e7;
+  border-color: #739267;
+}
+.la-choices input {
+  margin-top: 6px;
+  accent-color: var(--la-green);
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.la-text-button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  border: 0;
+  background: none;
+  color: var(--la-green);
+  padding: 8px 0;
+  min-height: 40px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.la-stage > .la-text-button {
+  display: block;
+  margin-top: 20px;
+}
+.la-feedback {
+  padding: 15px 18px;
+  border: 1px solid #d5e3c8;
+  border-radius: 8px;
+  background: #f3f7eb;
+  color: #2e4b33 !important;
+  font-size: 14px;
+  margin-block: 20px;
+}
+.la-experiment-grid {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  margin: 24px 0 18px;
+}
+.la-controls {
+  display: grid;
+  gap: 22px;
+  padding-top: 12px;
+}
+.la-control label {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.la-control output {
+  background: #eef3e7;
+  color: #244b35;
+  padding: 1px 7px;
+  border-radius: 4px;
+  min-width: 30px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.la-control input[type="range"] {
+  width: 100%;
+  accent-color: var(--la-green);
+  direction: ltr;
+  min-height: 30px;
+}
+.la-lab select {
+  font: inherit;
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid #cddac6;
+  border-radius: 6px;
+  min-height: 44px;
+  padding: 8px 10px;
+  width: 100%;
+  color: var(--la-ink);
+}
+.la-plot {
+  margin: 0;
+  min-width: 0;
+}
+.la-plot svg {
+  width: 100%;
+  height: auto;
+  border: 1px solid #e2e9db;
+  border-radius: 12px;
+  display: block;
+  font-family: Arial, sans-serif;
+  overflow: visible;
+}
+.la-plot figcaption {
+  font-size: 11px;
+  line-height: 1.75;
+  color: #697864;
+  margin-top: 10px;
+}
+.la-readouts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0 24px;
+}
+.la-readouts > div {
+  padding: 12px 14px;
+  background: #f7f9f2;
+  border: 1px solid #e8eddf;
+  border-radius: 8px;
+  min-width: 0;
+}
+.la-readouts dt {
+  font-size: 11px;
+  color: #6c7e65;
+  margin-bottom: 6px;
+}
+.la-readouts dd {
+  margin: 0;
+  font-size: 14px;
+  unicode-bidi: plaintext;
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+.la-observe {
+  padding: 18px 20px;
+  background: #fcfaf4;
+  border-right: 3px solid #b89763;
+  margin: 22px 0;
+}
+.la-observe h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 9px;
+}
+.la-observe ol {
+  list-style: decimal;
+  padding-inline-start: 22px;
+  font-size: 13px;
+  color: #716447;
+}
+.la-observe li + li {
+  margin-top: 8px;
+}
+.la-proof {
+  border: 1px solid var(--la-border);
+  border-radius: 9px;
+  padding: 13px 18px;
+  margin-bottom: 25px;
+  background: #f8faf4;
+}
+.la-proof summary {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.la-proof p {
+  font-size: 14px;
+  color: #566e54;
+  margin-top: 14px;
+  white-space: pre-wrap;
+}
+.la-reflection-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.la-lab textarea,
+.la-journal input {
+  font: inherit;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #cddac6;
+  border-radius: 8px;
+  line-height: 1.8;
+  width: 100%;
+  padding: 12px 14px;
+  resize: vertical;
+  unicode-bidi: plaintext;
+}
+.la-stage textarea {
+  min-height: 125px;
+  margin: 0;
+}
+.la-bottom-bar {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: start;
+  font-size: 12px;
+  color: #75816d;
+}
+.la-bottom-bar p {
+  margin-top: 10px;
+}
+.la-notice {
+  padding: 15px;
+  border: 1px solid #e1d5b4;
+  border-radius: 7px;
+  background: #fffbec;
+  margin-bottom: 20px;
+}
+.la-llm-hero {
+  padding: 44px 0 50px;
+  border-bottom: 1px solid var(--la-border);
+  background: #f3f6ec;
+}
+.la-llm-hero h1 {
+  font-size: clamp(32px, 4.5vw, 49px);
+  font-weight: 500;
+  line-height: 1.35;
+  max-width: 780px;
+  margin: 0 0 20px;
+}
+.la-llm-hero .la-lead {
+  max-width: 720px;
+}
+.la-llm-content {
+  padding-block: 40px 65px;
+  max-width: 980px;
+}
+.la-protocol {
+  background: #fff;
+  border: 1px solid var(--la-border);
+  border-radius: 13px;
+  padding: 24px 28px;
+  margin-bottom: 30px;
+}
+.la-protocol h2,
+.la-journal h2 {
+  font-size: 25px;
+  font-weight: 500;
+  margin: 0 0 15px;
+}
+.la-protocol ol,
+.la-llm-card ol {
+  list-style: decimal;
+  padding-inline-start: 24px;
+  font-size: 14px;
+}
+.la-protocol li + li,
+.la-llm-card li + li {
+  margin-top: 10px;
+}
+.la-llm-index {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-block: 25px 32px;
+}
+.la-llm-index a {
+  padding: 7px 11px;
+  border: 1px solid #d8e1cf;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #fff;
+  color: #46663b;
+}
+.la-llm-card {
+  padding: 28px 32px;
+  background: #fff;
+  border: 1px solid var(--la-border);
+  border-radius: 14px;
+  margin-bottom: 22px;
+  scroll-margin-top: 100px;
+}
+.la-llm-card h2 {
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+.la-llm-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 23px 0 10px;
+}
+.la-llm-card p {
+  font-size: 14px;
+  color: #5a6f53;
+}
+.la-llm-card code,
+.la-lab .la-inline-math {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+  font-family: Georgia, serif;
+  color: #263e2a;
+  background: #f4f6ec;
+  padding-inline: 4px;
+  border-radius: 3px;
+}
+.la-prompt {
+  background: #f5f8ef;
+  border: 1px solid #dfe7d7;
+  padding: 17px 19px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  unicode-bidi: plaintext;
+  font:
+    13px/1.85 "Heebo",
+    Arial,
+    sans-serif;
+  text-align: start;
+  margin: 0;
+}
+.la-llm-card details {
+  border-top: 1px solid #e3e9dd;
+  padding-top: 15px;
+  margin-top: 23px;
+}
+.la-llm-card summary {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.la-flawed {
+  background: #fcf7ec;
+  border-right: 3px solid #b79964;
+  padding: 14px 18px;
+  margin-top: 15px;
+}
+.la-evidence {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.la-evidence span {
+  font-size: 11px;
+  padding: 4px 9px;
+  background: #f1f5ea;
+  border-radius: 4px;
+  color: #5a7050;
+}
+.la-journal {
+  border: 1px solid #cddcc2;
+  border-radius: 14px;
+  background: #f2f6e9;
+  padding: 26px 30px;
+  margin: 35px 0;
+}
+.la-journal label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+.la-journal-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+.la-journal-field-wide {
+  grid-column: 1/-1;
+}
+.la-journal textarea {
+  min-height: 100px;
+}
+.la-journal .la-actions {
+  margin-top: 20px;
+}
+.la-teacher {
+  border-block: 1px solid #dbe3d3;
+  padding: 24px 0;
+  margin: 30px 0;
+}
+.la-teacher summary {
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.la-teacher p {
+  font-size: 13px;
+  margin-top: 13px;
+  color: #5a6f53;
+}
+.la-teacher a {
+  color: var(--la-green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.la-copy-status {
+  font-size: 12px;
+  color: #567449;
+  min-height: 1.8em;
+}
+.la-print-button {
+  margin-top: 16px;
+}
+@media (max-width: 1100px) {
+  .la-workspace {
+    grid-template-columns: 215px minmax(0, 1fr);
+    gap: 22px;
+  }
+  .la-experiment-grid {
+    grid-template-columns: 1fr;
+  }
+  .la-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .la-hero-grid {
+    gap: 35px;
+  }
+  .la-activity-heading,
+  .la-stage {
+    padding-inline: 25px;
+  }
+  .la-nav-item {
+    font-size: 12px;
+    gap: 7px;
+  }
+}
+@media (max-width: 760px) {
+  .la-container {
+    width: calc(100% - 32px);
+  }
+  .la-hero-grid {
+    grid-template-columns: 1fr;
+    padding-block: 28px 36px;
+    gap: 30px;
+  }
+  .la-back {
+    margin-bottom: 24px;
+  }
+  .la-hero h1 {
+    font-size: 44px;
+  }
+  .la-lead {
+    font-size: 16px;
+  }
+  .la-hero-figure {
+    max-width: 450px;
+    margin-inline: auto;
+    width: 100%;
+    transform: none;
+  }
+  .la-hero-figure figcaption {
+    transform: none;
+  }
+  .la-workspace {
+    display: block;
+    padding-block: 26px 45px;
+  }
+  .la-sidebar {
+    position: static;
+    margin-bottom: 24px;
+  }
+  .la-sidebar h2,
+  .la-sidebar > .la-eyebrow,
+  .la-nav,
+  .la-sidebar-link {
+    display: none;
+  }
+  .la-progress {
+    margin-bottom: 14px;
+  }
+  .la-mobile-select {
+    display: block;
+    font-size: 13px;
+  }
+  .la-mobile-select select {
+    margin-top: 6px;
+  }
+  .la-activity-heading,
+  .la-stage {
+    padding: 23px 20px;
+  }
+  .la-activity-heading h2 {
+    font-size: 26px;
+  }
+  .la-steps {
+    padding-inline: 15px;
+    gap: 3px;
+  }
+  .la-steps button {
+    font-size: 13px;
+    padding: 13px 0;
+  }
+  .la-controls {
+    gap: 17px;
+  }
+  .la-readouts {
+    gap: 8px;
+  }
+  .la-readouts > div {
+    padding: 11px;
+  }
+  .la-readouts dd {
+    font-size: 13px;
+  }
+  .la-plot figcaption {
+    font-size: 12px;
+  }
+  .la-bottom-bar {
+    display: block;
+  }
+  .la-llm-card,
+  .la-protocol {
+    padding: 22px 20px;
+  }
+  .la-llm-card h2 {
+    font-size: 23px;
+  }
+  .la-journal {
+    padding: 23px 20px;
+  }
+  .la-journal-fields {
+    grid-template-columns: 1fr;
+  }
+  .la-llm-hero {
+    padding-top: 28px;
+  }
+  .la-formula {
+    font-size: 16px;
+  }
+  .la-hero-figure svg {
+    max-height: 280px;
+  }
+  .la-llm-content {
+    padding-top: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .la-lab * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media print {
+  header:has(nav),
+  footer,
+  .la-back,
+  .la-actions,
+  .la-llm-index,
+  .la-copy-status,
+  .la-print-button,
+  .la-llm-card button,
+  .la-journal,
+  .la-sidebar,
+  .la-steps,
+  .la-bottom-bar {
+    display: none !important;
+  }
+  .la-lab {
+    background: #fff;
+    color: #111;
+    font-size: 11pt;
+  }
+  .la-container {
+    width: 100%;
+  }
+  .la-llm-hero {
+    padding: 10px 0;
+    background: white;
+  }
+  .la-llm-hero h1 {
+    font-size: 25pt;
+  }
+  .la-llm-card {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    margin: 15px 0;
+    padding: 18px;
+  }
+  .la-llm-card details:not([open]) {
+    display: none;
+  }
+  .la-llm-card h2 {
+    font-size: 18pt;
+  }
+  .la-prompt {
+    font-size: 10pt;
+  }
+  .la-workspace {
+    display: block;
+  }
+  .la-activity {
+    box-shadow: none;
+  }
+  .la-hero-figure {
+    display: none;
+  }
+}
+
+/* Site navigation remains English; Hebrew is scoped to teaching content. */
+.la-lab[lang="en"] {
+  text-align: left;
+}
+.la-lab [lang="he"][dir="rtl"] {
+  text-align: right;
+}
+.la-lab [lang="en"][dir="ltr"] {
+  text-align: left;
+  font-family: "Inter", Arial, sans-serif;
+}
+.la-hero h1,
+.la-llm-hero h1 {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-weight: 400;
+}
+.la-feedback {
+  white-space: pre-line;
+  unicode-bidi: plaintext;
+}
+.la-journal textarea {
+  text-align: start;
+}
+.la-llm-index a {
+  unicode-bidi: isolate;
+}
+
+.la-lab[lang="en"] {
+  font-family: "Inter", Arial, sans-serif;
+}
+.la-lab [lang="he"] {
+  font-family: "Heebo", Arial, sans-serif;
+}
