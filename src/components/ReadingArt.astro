@@ -1,0 +1,98 @@
+---
+interface Props {
+  kind: "light" | "probability" | "atoms" | "clock";
+}
+const { kind } = Astro.props;
+---
+
+<div class={`reading-art reading-art-${kind}`} aria-hidden="true">
+  <svg viewBox="0 0 400 190" fill="none" focusable="false">
+    <g stroke="currentColor" stroke-width="1" opacity="0.2">
+      {[40, 80, 120, 160].map((y) => <path d={`M0 ${y}H400`} />)}
+      {
+        [40, 80, 120, 160, 200, 240, 280, 320, 360].map((x) => (
+          <path d={`M${x} 0V190`} />
+        ))
+      }
+    </g>
+    {
+      kind === "light" && (
+        <g stroke="currentColor" stroke-width="1.5">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <path
+              opacity={1 - i * 0.15}
+              d={`M-20 ${85 + i * 8}C40 ${-30 + i * 20} 80 ${210 - i * 15} 150 95S250 ${15 + i * 18} 300 95S370 ${170 - i * 20} 430 75`}
+            />
+          ))}
+          <circle cx="150" cy="95" r="6" fill="currentColor" stroke="none" />
+          <circle cx="300" cy="95" r="4" fill="currentColor" stroke="none" />
+        </g>
+      )
+    }
+    {
+      kind === "probability" && (
+        <g>
+          {[24, 45, 79, 115, 90, 60, 31, 18].map((h, i) => (
+            <rect
+              x={65 + i * 35}
+              y={153 - h}
+              width="17"
+              height={h}
+              rx="2"
+              fill="currentColor"
+              opacity={0.3 + i * 0.08}
+            />
+          ))}
+          <path d="M55 154H350M55 154V30" stroke="currentColor" opacity="0.7" />
+        </g>
+      )
+    }
+    {
+      kind === "atoms" && (
+        <g stroke="currentColor">
+          <path
+            d="M65 30Q85 95 65 160M335 30Q315 95 335 160"
+            stroke-width="3"
+          />
+          {[0, 1, 2, 3, 4, 5, 6].map((i) =>
+            [0, 1, 2, 3].map((j) => (
+              <circle
+                cx={116 + i * 28}
+                cy={53 + j * 28}
+                r="4"
+                fill="currentColor"
+                opacity={0.55 + ((i + j) % 3) * 0.2}
+              />
+            )),
+          )}
+          <ellipse cx="200" cy="95" rx="119" ry="63" opacity="0.2" />
+        </g>
+      )
+    }
+    {
+      kind === "clock" && (
+        <g stroke="currentColor">
+          <circle cx="200" cy="95" r="66" opacity="0.35" />
+          <circle
+            cx="200"
+            cy="95"
+            r="52"
+            stroke-dasharray="1 8"
+            stroke-width="5"
+          />
+          <path
+            d="M200 51V95L232 113"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+          <circle cx="200" cy="95" r="4" fill="currentColor" />
+          <path
+            d="M30 95H114M286 95H370"
+            stroke-dasharray="4 6"
+            opacity="0.45"
+          />
+        </g>
+      )
+    }
+  </svg>
+</div>

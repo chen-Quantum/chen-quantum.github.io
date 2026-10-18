@@ -36,7 +36,9 @@ const projects = defineCollection({
     repoNote: z.string().optional(),
     live: z.string().url().optional(),
     // Optional extra document links rendered as small buttons (e.g. PDFs).
-    docs: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
+    docs: z
+      .array(z.object({ label: z.string(), url: z.string().url() }))
+      .default([]),
     // Short status badge: e.g. "Research prototype", "Public preview".
     status: z.string().optional(),
     featured: z.boolean().default(false),
@@ -81,7 +83,7 @@ const courses = defineCollection({
         z.object({
           title: z.string(),
           url: z.string().url(),
-        })
+        }),
       )
       .default([]),
     tutorials: z
@@ -90,7 +92,7 @@ const courses = defineCollection({
           title: z.string(),
           url: z.string().url(),
           type: z.string().default("tutorial"),
-        })
+        }),
       )
       .default([]),
     assignments: z
@@ -99,7 +101,7 @@ const courses = defineCollection({
           title: z.string(),
           url: z.string().url().optional(),
           dueDate: z.string().optional(),
-        })
+        }),
       )
       .default([]),
     resources: z
@@ -107,7 +109,7 @@ const courses = defineCollection({
         z.object({
           title: z.string(),
           url: z.string().url(),
-        })
+        }),
       )
       .default([]),
     draft: z.boolean().default(false),
@@ -186,7 +188,7 @@ const communityEvents = defineCollection({
           speaker: z.string(),
           role: z.string().optional(),
           talk: z.string().optional(),
-        })
+        }),
       )
       .default([]),
     // Partner / sponsor logos shown on the poster (names only).
@@ -199,6 +201,9 @@ const communityEvents = defineCollection({
     // Short editorial note (e.g. an unresolved detail). Shown subtly.
     notes: z.string().optional(),
     featured: z.boolean().default(false),
+    announcementStatus: z
+      .enum(["confirmed", "save-the-date", "planned"])
+      .default("confirmed"),
     status: z.enum(["upcoming", "past"]).default("upcoming"),
     draft: z.boolean().default(false),
   }),
@@ -215,12 +220,14 @@ const communityGallery = defineCollection({
     description: z.string(),
     eventDate: z.coerce.date(),
     // Paths relative to /public/community/gallery/
-    photos: z.array(
-      z.object({
-        file: z.string(),
-        caption: z.string().optional(),
-      })
-    ).default([]),
+    photos: z
+      .array(
+        z.object({
+          file: z.string(),
+          caption: z.string().optional(),
+        }),
+      )
+      .default([]),
     coverPhoto: z.string().optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
@@ -232,7 +239,9 @@ const teaching = defineCollection({
   schema: z.object({
     title: z.string(),
     titleHebrew: z.string().optional(),
-    role: z.enum(["Lecturer", "Teaching Assistant"]).default("Teaching Assistant"),
+    role: z
+      .enum(["Lecturer", "Teaching Assistant"])
+      .default("Teaching Assistant"),
     description: z.string(),
     courseId: z.string(),
     audience: z.array(z.string()).default([]),

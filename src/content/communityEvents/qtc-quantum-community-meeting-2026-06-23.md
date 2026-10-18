@@ -21,7 +21,7 @@ talks:
     talk: "Quantum Computing with Spatial Modes of Light"
 registrationUrl: "https://luma.com/8rwnqbg8"
 featured: true
-status: "upcoming"
+status: "past"
 ---
 
 A Quantum Community Meeting of the Quantum Technologies & Science Community (QTC)

@@ -404,3 +404,860 @@ body {
   font-style: italic;
   margin-bottom: 1.25rem;
 }
+
+/* October edition: a quiet editorial rhythm, with generous type and restrained colour. */
+.edition-label {
+  color: #637a63;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.editorial-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+.editorial-heading h2 {
+  font-family: var(--font-family-display);
+  color: #243e31;
+  font-size: clamp(29px, 3.3vw, 41px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+.editorial-heading > p {
+  max-width: 350px;
+  color: #677269;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #315c46;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.8;
+  text-underline-offset: 5px;
+}
+.text-link:hover {
+  text-decoration: underline;
+}
+.page-intro {
+  padding: 65px 0 58px;
+  background: #f5f6ef;
+  border-bottom: 1px solid #e1e6da;
+}
+.page-intro h1 {
+  font-family: var(--font-family-display);
+  font-size: clamp(38px, 5.4vw, 64px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #254032;
+  margin-bottom: 25px;
+}
+.page-intro h1 em {
+  color: #6b7956;
+  font-weight: 400;
+}
+.page-intro > div > p:not(.edition-label) {
+  color: #637361;
+  font-size: 15px;
+  line-height: 1.9;
+  max-width: 660px;
+}
+.page-intro .academic-actions {
+  margin-top: 28px;
+}
+.teaching-feature-grid,
+.app-grid,
+.reading-grid,
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.teaching-feature {
+  padding: 30px;
+  border: 1px solid #dce4d6;
+  border-radius: 12px;
+  background: #fcfcf8;
+  position: relative;
+}
+.resource-index {
+  font-family: ui-monospace, monospace;
+  color: #9aa68e;
+  font-size: 12px;
+}
+.teaching-feature > .resource-index {
+  position: absolute;
+  right: 27px;
+  top: 30px;
+}
+.teaching-feature h3,
+.app-card h3,
+.syllabus-callout h3 {
+  font-family: var(--font-family-display);
+  font-size: 27px;
+  color: #2c4234;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 13px;
+}
+.teaching-feature > p:not(.edition-label),
+.app-card > p,
+.syllabus-callout p:not(.edition-label) {
+  font-size: 13px;
+  color: #6c7968;
+  line-height: 1.85;
+  max-width: 400px;
+  margin-bottom: 24px;
+}
+.learning-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 30px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #6d7969;
+  border-bottom: 1px solid #e3e8de;
+  padding: 23px 0;
+}
+.learning-strip p {
+  margin-right: auto;
+}
+.learning-strip strong {
+  color: #2c4c39;
+  font-size: 13px;
+}
+.learning-strip p span {
+  margin: 0 9px;
+  color: #b0b9a9;
+}
+.learning-strip a {
+  font-weight: 600;
+  color: #315a44;
+}
+.learning-strip a:hover {
+  text-decoration: underline;
+}
+.events-edition {
+  background: #f6f6f0;
+  border-block: 1px solid #e4e7dc;
+}
+.event-date-panel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 16px;
+  min-height: 113px;
+  padding: 20px 25px;
+  background: #e9eee2;
+  color: #35503a;
+  border-bottom: 1px solid #dfe5d8;
+  overflow: hidden;
+}
+.event-date-panel > span:not(.event-date-line) {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  z-index: 1;
+}
+.event-date-panel strong {
+  font-family: var(--font-family-display);
+  font-size: 58px;
+  line-height: 1;
+  z-index: 1;
+}
+.event-date-line {
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  border: 1px solid #a5b69680;
+  border-radius: 50%;
+  right: -100px;
+  top: -85px;
+}
+.event-date-line:after {
+  content: "";
+  position: absolute;
+  inset: 17px;
+  border: 1px solid #a5b69660;
+  border-radius: 50%;
+}
+.event-confirmation-note {
+  background: #f8f5eb;
+  color: #7b6a3c;
+  font-size: 11px;
+  line-height: 1.8;
+  border-left: 2px solid #b8a468;
+  padding: 10px 12px;
+  margin-bottom: 17px;
+}
+.source-note {
+  font-size: 11px;
+  color: #74816d;
+  line-height: 1.9;
+  margin-top: 24px;
+  max-width: 780px;
+}
+.reading-card {
+  border: 1px solid #e0e4db;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fffefa;
+  display: flex;
+  flex-direction: column;
+}
+.reading-art {
+  background: #1d3c32;
+  color: #c4d2a4;
+  height: 190px;
+  overflow: hidden;
+}
+.reading-art svg {
+  width: 100%;
+  height: 100%;
+}
+.reading-art-probability {
+  background: #ebe9df;
+  color: #717f59;
+}
+.reading-art-atoms {
+  background: #e8eee4;
+  color: #4d7357;
+}
+.reading-art-clock {
+  background: #263b40;
+  color: #d2cba8;
+}
+.reading-card-body {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.reading-card h3 {
+  font-family: var(--font-family-display);
+  color: #2a4235;
+  font-size: clamp(23px, 2.5vw, 29px);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.reading-card h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.reading-summary,
+.reading-reason {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #70796a;
+}
+.reading-reason {
+  margin-top: 21px;
+  padding-left: 13px;
+  border-left: 2px solid #c7d2b5;
+  margin-bottom: 24px;
+}
+.reading-reason span {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #4b6449;
+  margin-bottom: 4px;
+}
+.reading-source {
+  padding-top: 16px;
+  border-top: 1px solid #e7eadf;
+  font-size: 10px;
+  font-weight: 500;
+  color: #7d8674;
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+.reading-source > span:last-child {
+  margin-left: auto;
+}
+.reading-students {
+  background: #f6f6f0;
+  border-block: 1px solid #e3e7dc;
+}
+.resource-card {
+  display: flex;
+  gap: 22px;
+  padding: 28px;
+  background: #fffefa;
+  border: 1px solid #dfe4d7;
+  border-radius: 10px;
+}
+.resource-card .resource-index {
+  flex: none;
+  padding-top: 3px;
+}
+.resource-card .edition-label {
+  font-size: 9px;
+  margin-bottom: 8px;
+}
+.resource-card h3 {
+  font-family: var(--font-family-display);
+  font-size: 24px;
+  color: #2d4837;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.resource-card h3 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.resource-card h3 span {
+  font-family: var(--font-family-sans);
+  font-size: 15px;
+}
+.resource-card p:not(.edition-label) {
+  font-size: 12px;
+  line-height: 1.85;
+  color: #727d6a;
+  margin-bottom: 16px;
+}
+.resource-card p.resource-author {
+  font-size: 10px;
+  color: #5e7257;
+  margin-bottom: 17px;
+}
+.resource-format,
+.status-pill {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 4px;
+  color: #5c704e;
+  background: #edf1e5;
+  font-size: 9px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.syllabus-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  background: #edf2e7;
+  border: 1px solid #d4dfc7;
+  border-radius: 10px;
+  padding: 30px;
+  margin-top: 38px;
+}
+.syllabus-callout .edition-label {
+  margin-bottom: 8px;
+}
+.syllabus-callout p:not(.edition-label) {
+  margin-bottom: 0;
+  max-width: 530px;
+}
+.syllabus-callout > a {
+  flex-shrink: 0;
+}
+.syllabus-callout .academic-actions {
+  flex-shrink: 0;
+}
+.app-section {
+  background: #f6f6f1;
+  border-block: 1px solid #e2e6da;
+}
+.app-card {
+  background: #fffefa;
+  border: 1px solid #dce3d3;
+  border-radius: 10px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.app-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+.app-symbol {
+  font-family: var(--font-family-display);
+  font-size: 40px;
+  color: #4c6850;
+  line-height: 1;
+}
+.app-symbol > span {
+  vertical-align: top;
+  font-family: ui-monospace, monospace;
+  font-size: 9px;
+  margin: 3px 0 0 6px;
+  display: inline-block;
+}
+.app-note {
+  color: #8b9380;
+  font-size: 11px;
+  margin-top: auto;
+}
+.app-card > .text-link {
+  margin-top: auto;
+}
+.community-invitation {
+  background: #203e32;
+  color: #c7d0ac;
+}
+.community-invitation-inner {
+  padding-block: 65px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.community-invitation .edition-label {
+  color: #a6bb91;
+}
+.community-invitation h2 {
+  font-family: var(--font-family-display);
+  font-size: clamp(35px, 4.6vw, 54px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #f3f3df;
+  margin-bottom: 23px;
+}
+.community-invitation h2 em {
+  color: #bac99c;
+}
+.community-invitation p:not(.edition-label) {
+  color: #b2c0aa;
+  max-width: 460px;
+  font-size: 13px;
+  line-height: 1.85;
+  margin-bottom: 28px;
+}
+.community-invitation .academic-primary {
+  background: #eef0df;
+  color: #294632;
+  border-color: #eef0df;
+}
+.community-invitation .academic-primary:hover {
+  background: #dce5cb;
+}
+.community-orbits svg {
+  width: 100%;
+  max-width: 360px;
+  margin-inline: auto;
+}
+.community-orbits > span {
+  display: block;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: #9fb291;
+  margin-top: 10px;
+}
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 75px;
+  align-items: start;
+}
+.profile-description {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #6c7a65;
+  margin: 24px 0;
+}
+.profile-roles article {
+  padding: 26px 0;
+  border-top: 1px solid #dce3d4;
+}
+.profile-roles article:first-child {
+  padding-top: 0;
+  border: 0;
+}
+.profile-roles h3 {
+  font-size: 18px;
+  color: #2d4835;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.profile-roles p:not(.edition-label) {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #6e7b67;
+}
+.education-section {
+  margin-top: 65px;
+}
+.education-row {
+  display: grid;
+  grid-template-columns: 125px 1fr auto;
+  align-items: start;
+  gap: 25px;
+  border-top: 1px solid #e0e5d9;
+  padding: 27px 0;
+}
+.education-row > span:first-child {
+  font-size: 11px;
+  color: #819175;
+  line-height: 1.8;
+}
+.education-row h3 {
+  font-size: 16px;
+  color: #2d4835;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.education-row p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #73826a;
+}
+.cv-lock {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #dbe2d2;
+  border-radius: 14px;
+  background: #f2f5eb;
+  color: #5e7952;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.syllabus-back {
+  margin-bottom: 28px;
+}
+.syllabus-source {
+  padding: 20px 24px;
+  background: #f5f5ed;
+  border-left: 2px solid #94a879;
+  font-size: 12px;
+  color: #6b785e;
+  line-height: 1.85;
+}
+.syllabus-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4c6c41;
+  margin-top: 30px;
+}
+.syllabus-nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.syllabus-section {
+  margin-top: 65px;
+}
+.assessment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.assessment-grid article {
+  padding: 25px;
+  border: 1px solid #dfe4d8;
+  border-radius: 10px;
+  background: #fffefa;
+}
+.assessment-weight {
+  display: block;
+  font-family: var(--font-family-display);
+  font-size: 36px;
+  color: #3d5b39;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.assessment-weight small {
+  display: block;
+  font-family: var(--font-family-sans);
+  font-size: 10px;
+  margin-top: 7px;
+  color: #7d896e;
+}
+.assessment-grid h3,
+.exam-panel h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2e4835;
+  margin-bottom: 15px;
+}
+.assessment-grid p {
+  font-size: 12px;
+  color: #6e7a62;
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+.assessment-grid p:last-child {
+  margin-bottom: 0;
+}
+.assessment-grid strong {
+  font-weight: 600;
+  color: #3f5c36;
+}
+.exam-panel {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 40px;
+  padding: 32px;
+  border: 1px solid #dfe5d6;
+  border-radius: 10px;
+}
+.exam-panel ul {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #6a795d;
+  line-height: 1.9;
+}
+.exam-panel li {
+  padding-left: 3px;
+  margin-bottom: 10px;
+}
+.exam-rule {
+  border-left: 1px solid #e1e7d8;
+  padding-left: 32px;
+}
+.exam-rule > span {
+  font-size: 35px;
+  color: #849773;
+  display: block;
+  margin-bottom: 18px;
+}
+.exam-rule p {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #6b785f;
+}
+.syllabus-topics article {
+  display: grid;
+  grid-template-columns: 35px 1fr 70px;
+  gap: 20px;
+  padding: 23px 0;
+  border-top: 1px solid #e0e5d9;
+}
+.topic-index,
+.topic-hours {
+  font-size: 11px;
+  color: #819173;
+  padding-top: 3px;
+  line-height: 1.8;
+}
+.topic-index {
+  font-family: ui-monospace, monospace;
+}
+.topic-hours {
+  text-align: right;
+}
+.syllabus-topics h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e4833;
+  margin-bottom: 8px;
+}
+.syllabus-topics p {
+  font-size: 13px;
+  color: #707e64;
+  line-height: 1.85;
+  max-width: 800px;
+}
+.syllabus-books {
+  list-style: disc;
+  padding-left: 18px;
+  color: #68795b;
+  font-size: 13px;
+  line-height: 2.2;
+}
+.syllabus-access {
+  margin-top: 55px;
+  padding: 26px;
+  background: #f1f4eb;
+  border-radius: 10px;
+}
+.syllabus-access h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #405d38;
+  margin-bottom: 16px;
+}
+.syllabus-access p {
+  font-size: 12px;
+  color: #718164;
+  line-height: 1.85;
+  margin-bottom: 14px;
+}
+.syllabus-access p:last-child {
+  margin-bottom: 0;
+}
+.syllabus-access a {
+  color: #3f6232;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .syllabus-callout {
+    align-items: start;
+    flex-direction: column;
+  }
+  .profile-grid {
+    gap: 40px;
+  }
+  .assessment-grid {
+    grid-template-columns: 1fr;
+  }
+  .assessment-grid article {
+    display: block;
+  }
+  .assessment-weight {
+    margin-bottom: 18px;
+  }
+}
+@media (max-width: 650px) {
+  .editorial-heading {
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+  }
+  .editorial-heading > p {
+    max-width: 100%;
+  }
+  .teaching-feature-grid,
+  .app-grid,
+  .reading-grid,
+  .resource-grid,
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .page-intro {
+    padding: 45px 0;
+  }
+  .teaching-feature,
+  .app-card {
+    padding: 25px;
+  }
+  .reading-card-body {
+    padding: 23px;
+  }
+  .resource-card {
+    padding: 23px;
+    gap: 16px;
+  }
+  .community-invitation-inner {
+    grid-template-columns: 1fr;
+    padding-block: 50px;
+    gap: 30px;
+  }
+  .community-orbits svg {
+    max-width: 250px;
+  }
+  .education-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .education-row .status-pill {
+    width: fit-content;
+  }
+  .profile-roles {
+    margin-top: 30px;
+  }
+  .syllabus-callout {
+    padding: 24px;
+  }
+  .exam-panel {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    gap: 20px;
+  }
+  .exam-rule {
+    border-left: 0;
+    border-top: 1px solid #e1e7d8;
+    padding: 23px 0 0;
+  }
+  .syllabus-topics article {
+    grid-template-columns: 23px 1fr;
+    gap: 12px;
+  }
+  .topic-hours {
+    grid-column: 2;
+    text-align: left;
+    padding-top: 0;
+  }
+}
+@media print {
+  body > header,
+  body > footer,
+  .skip-link,
+  .print-controls,
+  .syllabus-back {
+    display: none !important;
+  }
+  .syllabus-page .page-intro {
+    background: white;
+    padding: 0 0 22px;
+  }
+  .syllabus-page .page-intro h1 {
+    font-size: 32px;
+  }
+  .syllabus-page .mx-auto {
+    max-width: none;
+    padding-inline: 0;
+  }
+  .syllabus-page .py-12 {
+    padding-block: 20px;
+  }
+  .syllabus-page p,
+  .syllabus-page li {
+    color: #222 !important;
+    font-size: 10pt;
+  }
+  .syllabus-page .syllabus-section {
+    margin-top: 28px;
+  }
+  .syllabus-page h2 {
+    font-size: 24px;
+  }
+  .syllabus-page .assessment-grid {
+    grid-template-columns: 1fr;
+  }
+  .syllabus-page .assessment-grid article {
+    padding: 15px;
+    break-inside: avoid;
+  }
+  .syllabus-page .assessment-weight {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+  .syllabus-page .exam-panel {
+    grid-template-columns: 1fr;
+  }
+  .syllabus-page .exam-rule {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .syllabus-page .syllabus-topics article {
+    break-inside: avoid;
+    grid-template-columns: 25px 1fr 60px;
+    padding: 15px 0;
+  }
+  .syllabus-page .topic-hours {
+    grid-column: auto;
+    text-align: right;
+  }
+  .syllabus-page .syllabus-access {
+    break-inside: avoid;
+  }
+}

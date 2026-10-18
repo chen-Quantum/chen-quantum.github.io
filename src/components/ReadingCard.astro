@@ -1,0 +1,26 @@
+---
+import ReadingArt from "./ReadingArt.astro";
+import { formatReadingDate, type ReadingPick } from "../data/reading";
+interface Props {
+  article: ReadingPick;
+}
+const { article } = Astro.props;
+---
+
+<article class="reading-card">
+  <ReadingArt kind={article.art} />
+  <div class="reading-card-body">
+    <p class="edition-label">{article.category}</p>
+    <h3>
+      <a href={article.url} target="_blank" rel="noopener noreferrer"
+        >{article.title}<span class="sr-only"> (opens in a new tab)</span></a>
+    </h3>
+    <p class="reading-summary">{article.summary}</p>
+    <p class="reading-reason"><span>Why I recommend it</span>{article.why}</p>
+    <p class="reading-source">
+      APS Physics <span aria-hidden="true">·</span>
+      <time datetime={article.date}>{formatReadingDate(article.date)}</time
+      ><span aria-hidden="true">↗</span>
+    </p>
+  </div>
+</article>

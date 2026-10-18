@@ -9,8 +9,7 @@ const navLinks = [
     label: "Quantum Community",
     highlight: true,
   },
-  { href: "/digital-courses", label: "Digital Courses" },
-  { href: "/cv", label: "CV" },
+  { href: "/reading", label: "Reading" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -19,7 +18,9 @@ const isActive = (href: string) =>
   pathname === href || (href !== "/" && pathname.startsWith(href));
 ---
 
-<header class="sticky top-0 z-50 bg-white/96 backdrop-blur-md border-b border-slate-100">
+<header
+  class="sticky top-0 z-50 bg-white/96 backdrop-blur-md border-b border-slate-100"
+>
   <nav
     class="mx-auto max-w-6xl px-6 flex items-center justify-between h-18"
     aria-label="Main navigation"
@@ -30,7 +31,9 @@ const isActive = (href: string) =>
       class="flex items-center gap-2.5 group flex-shrink-0"
       aria-label="Chen Gadi home"
     >
-      <div class="w-7 h-7 rounded-lg overflow-hidden border border-slate-100 flex-shrink-0">
+      <div
+        class="w-7 h-7 rounded-lg overflow-hidden border border-slate-100 flex-shrink-0"
+      >
         <img
           src="/brand/logo.png"
           alt=""
@@ -85,14 +88,16 @@ const isActive = (href: string) =>
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
-          d="M4 6h16M4 12h16M4 18h16"
-        ></path>
+          d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
     </button>
   </nav>
 
   <!-- Mobile menu -->
-  <div id="nav-menu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+  <div
+    id="nav-menu"
+    class="hidden lg:hidden border-t border-slate-100 bg-white"
+  >
     <ul class="mx-auto max-w-6xl px-4 py-2 flex flex-col" role="list">
       {
         navLinks.map(({ href, label, highlight }) => (

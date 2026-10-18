@@ -1,0 +1,173 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { electricalSyllabus as syllabus } from "../../../data/electricalSyllabus";
+const totalHours = syllabus.topics.reduce((sum, topic) => sum + topic.hours, 0);
+---
+
+<Layout
+  title="Linear Algebra: Electrical Engineering Syllabus"
+  description="English syllabus for TAU course 05091724, Linear Algebra for Electrical and Electronics Engineering, Semester A 2026–2027. Topics, assessment, and exam format."
+>
+  <article class="syllabus-page">
+    <header class="page-intro">
+      <div class="mx-auto max-w-6xl px-6">
+        <a href="/teaching" class="text-link syllabus-back">← Teaching</a><p
+          class="edition-label"
+        >
+          English syllabus · {syllabus.code}
+        </p><h1>Linear Algebra<br /><em>for Electrical Engineering.</em></h1><p>
+          Linear Algebra for Electrical and Electronics Engineering<br />{
+            syllabus.semester
+          } · Tel Aviv University
+        </p><div class="academic-actions print-controls">
+          <button id="print-syllabus" type="button" class="academic-primary"
+            >Print / save as PDF ↗</button
+          ><a href="/students" class="academic-secondary"
+            >Ask a course question ↗</a>
+        </div>
+      </div>
+    </header>
+    <div class="mx-auto max-w-6xl px-6 py-12 md:py-16">
+      <p class="syllabus-source">
+        English rendering of the supplied course-team syllabus for {
+          syllabus.semester
+        }. Official course announcements and the material taught in lectures and
+        tutorials govern. The order and pace may change.
+      </p>
+      <nav class="syllabus-nav print-controls" aria-label="Syllabus sections">
+        <a href="#assessment">Assessment</a><a href="#exam">Final exam</a><a
+          href="#topics">Course topics</a
+        ><a href="#bibliography">Bibliography</a>
+      </nav>
+      <section id="assessment" class="syllabus-section scroll-mt-24">
+        <div class="editorial-heading">
+          <div>
+            <p class="edition-label">How the course is assessed</p><h2>
+              Assessment &amp; practice.
+            </h2>
+          </div>
+        </div><div class="assessment-grid">
+          <article>
+            <span class="assessment-weight"
+              >15%<small>protective component</small></span
+            ><h3>Written homework</h3><p>
+              Approximately weekly open-ended sheets. Some questions are
+              submitted; others are for independent practice. Grading and
+              recording may cover only part of a submission.
+            </p><p>
+              The average of the <strong>best 8 sheet grades</strong> provides the
+              15% protective component, only when the final exam grade is <strong
+                >at least 50</strong
+              >. Submission is recommended, not mandatory.
+            </p>
+          </article>
+          <article>
+            <span class="assessment-weight"
+              >5%<small>protective component</small></span
+            ><h3>WeBWorK</h3><p>
+              Approximately weekly online exercises. The average of the <strong
+                >best 10 scores</strong
+              > provides the 5% protective component, only when the final exam grade
+              is <strong>at least 50</strong>.
+            </p><p>Solutions to the WeBWorK assignments are not published.</p>
+          </article>
+          <article>
+            <span class="assessment-weight"
+              >80–100%<small>of the final grade</small></span
+            ><h3>Final examination</h3><p>
+              The final exam carries 80%–100% of the grade, according to the
+              applicable protective components.
+            </p><p>
+              Protective components improve the exam-based grade under the
+              course rules. They are not unconditional deductions from the exam
+              weight.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section id="exam" class="syllabus-section scroll-mt-24">
+        <p class="edition-label">Both exam sittings: A and B</p><h2
+          class="font-display text-3xl mb-6"
+        >
+          What to expect in the exam.
+        </h2><div class="exam-panel">
+          <div>
+            <h3>Format and scope</h3><ul>
+              <li>A multiple-choice part and an open-ended part.</li><li>
+                At least one subsection concerns a topic discussed in a lecture,
+                potentially not covered elsewhere.
+              </li><li>
+                At least two subsections are based on homework questions,
+                including questions that were not submitted.
+              </li><li>
+                Lectures, tutorials, and homework determine the examinable
+                material.
+              </li>
+            </ul>
+          </div><div class="exam-rule">
+            <span aria-hidden="true">∅</span><h3>No aids permitted</h3><p>
+              No calculator, formula sheet, or other reference material.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="topics" class="syllabus-section scroll-mt-24">
+        <div class="editorial-heading">
+          <div>
+            <p class="edition-label">Course outline</p><h2>
+              From foundations to operators.
+            </h2>
+          </div><p>
+            {syllabus.topics.length} topic blocks · {totalHours} lecture hours listed
+            in the supplied syllabus. The allocation is a guide to course planning.
+          </p>
+        </div><div class="syllabus-topics">
+          {
+            syllabus.topics.map((topic, i) => (
+              <article>
+                <>
+                  <span class="topic-index">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <>
+                      <h3>{topic.title}</h3>
+                      <p>{topic.detail}</p>
+                    </>
+                  </div>
+                  <span class="topic-hours">{topic.hours} hours</span>
+                </>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+      <section id="bibliography" class="syllabus-section scroll-mt-24">
+        <p class="edition-label">
+          Optional bibliography from the course syllabus
+        </p><h2 class="font-display text-3xl mb-6">
+          Books for further reference.
+        </h2><ul class="syllabus-books">
+          {syllabus.bibliography.map((book) => <li>{book}</li>)}
+        </ul><a href="/reading#for-students" class="text-link mt-6"
+          >My additional recommendations, including free resources ↗</a>
+      </section>
+      <section class="syllabus-access">
+        <h2>Recordings and course communication</h2><p>
+          Zoom access or recordings, when available, support catching up with
+          missed classes. Technical or human issues may affect availability.
+          Keep your own notes and follow the course’s official announcements.
+        </p><p>
+          For questions, logistics, and private requests to Chen, use the <a
+            href="/students">Student Hub</a
+          >. Read replies on the website.
+        </p>
+      </section>
+    </div>
+  </article>
+</Layout>
+<script>
+  document
+    .getElementById("print-syllabus")
+    ?.addEventListener("click", () => window.print());
+</script>

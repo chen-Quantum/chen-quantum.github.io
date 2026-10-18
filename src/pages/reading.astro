@@ -1,0 +1,106 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ReadingCard from "../components/ReadingCard.astro";
+import { readingPicks, readingEdition, studentReading } from "../data/reading";
+---
+
+<Layout
+  title="Recommended Reading"
+  description="Chen Gadi’s October 2026 physics reading selection and recommended linear algebra resources for students."
+>
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">The reading room · {readingEdition}</p><h1>
+        Ideas worth<br /><em>spending time with.</em>
+      </h1><p>
+        A short selection from quantum science and physics, alongside resources
+        I recommend for learning linear algebra.
+      </p><div class="academic-actions">
+        <a href="#physics" class="academic-primary">Physics this month ↓</a><a
+          href="#for-students"
+          class="academic-secondary">For my students ↓</a>
+      </div>
+    </div>
+  </section>
+  <section
+    id="physics"
+    class="mx-auto max-w-6xl px-6 py-16 md:py-20 scroll-mt-24"
+  >
+    <div class="editorial-heading">
+      <div>
+        <p class="edition-label">October 2026 selection</p><h2>
+          From the world of physics.
+        </h2>
+      </div><p>
+        Four articles published this month. Sources and publication dates
+        checked on 18 October 2026. My notes explain what to look for while
+        reading.
+      </p>
+    </div>
+    <div class="reading-grid">
+      {readingPicks.map((article) => <ReadingCard article={article} />)}
+    </div>
+    <p class="source-note">
+      These links open the publisher’s articles. This is a dated selection,
+      updated by hand.
+    </p>
+  </section>
+  <section id="for-students" class="reading-students scroll-mt-24">
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+      <div class="editorial-heading">
+        <div>
+          <p class="edition-label">Recommended for students</p><h2>
+            Build understanding.<br />Then practise.
+          </h2>
+        </div><p>
+          Choose a resource for the question you are working on. The course
+          syllabus and class material remain your guide to what is assessed.
+        </p>
+      </div>
+      <div class="resource-grid">
+        {
+          studentReading.map((item, i) => (
+            <article class="resource-card">
+              <>
+                <span class="resource-index">0{i + 1}</span>
+                <div>
+                  <>
+                    <p class="edition-label">{item.level}</p>
+                    <h3>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {item.title}{" "}
+                        <>
+                          <span aria-hidden="true">↗</span>
+                          <span class="sr-only"> (opens in a new tab)</span>
+                        </>
+                      </a>
+                    </h3>
+                    <p class="resource-author">{item.author}</p>
+                    <p>{item.description}</p>
+                    <span class="resource-format">{item.format}</span>
+                  </>
+                </div>
+              </>
+            </article>
+          ))
+        }
+      </div>
+      <div class="syllabus-callout">
+        <div>
+          <p class="edition-label">
+            Electrical &amp; Electronics Engineering · 05091724
+          </p><h3>Your English course syllabus.</h3><p>
+            Topics, assessment rules, exam format, and bibliography for Semester
+            A, 2026–2027.
+          </p>
+        </div><a
+          href="/teaching/linear-algebra-electrical/syllabus"
+          class="academic-primary">Read the syllabus ↗</a>
+      </div>
+    </div>
+  </section>
+</Layout>

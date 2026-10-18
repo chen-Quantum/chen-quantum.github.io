@@ -1,15 +1,24 @@
 ---
+import { isUpcomingEvent } from "../../data/eventStatus";
 import Layout from "../../layouts/Layout.astro";
 import EventCard from "../../components/EventCard.astro";
 import SectionHeading from "../../components/SectionHeading.astro";
 import { getCollection } from "astro:content";
 
-const allEvents = await getCollection("communityEvents", ({ data }) => !data.draft);
+const allEvents = await getCollection(
+  "communityEvents",
+  ({ data }) => !data.draft,
+);
 allEvents.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const upcoming = allEvents.filter((e) => e.data.status === "upcoming");
-const past = allEvents.filter((e) => e.data.status === "past");
-const featured = allEvents.filter((e) => e.data.featured).slice(0, 3);
+const upcoming = allEvents
+  .filter((e) => isUpcomingEvent(e.data))
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+const past = allEvents.filter((e) => !isUpcomingEvent(e.data));
+const featured = [...upcoming, ...past.filter((e) => e.data.featured)].slice(
+  0,
+  3,
+);
 
 // Real, data-derived community metrics (no invented numbers).
 const speakersHosted = new Set(allEvents.flatMap((e) => e.data.speakers)).size;
@@ -21,22 +30,33 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
   description="The TAU Quantum Community (QTC) — a student-led quantum community at Tel Aviv University, in collaboration with QuanTAU, the university's Quantum Science & Technology center."
 >
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
-  <section class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
+  <section
+    class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white"
+  >
     <div class="mx-auto max-w-6xl px-6 pt-20 pb-20 md:pt-28 md:pb-28">
       <div class="max-w-3xl">
         <!-- Label -->
-        <div class="inline-flex items-center gap-2 mb-8 px-3 py-1.5 rounded-full bg-white/10 border border-white/20">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
-          <span class="text-xs font-semibold text-white/80 tracking-wide uppercase">
+        <div
+          class="inline-flex items-center gap-2 mb-8 px-3 py-1.5 rounded-full bg-white/10 border border-white/20"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"
+          ></span>
+          <span
+            class="text-xs font-semibold text-white/80 tracking-wide uppercase"
+          >
             Student-Led · Tel Aviv University
           </span>
         </div>
 
-        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] tracking-tight mb-6">
+        <h1
+          class="font-display text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] tracking-tight mb-6"
+        >
           TAU Quantum<br />Community.
         </h1>
 
-        <p class="text-lg md:text-xl text-white/70 leading-relaxed mb-10 max-w-2xl">
+        <p
+          class="text-lg md:text-xl text-white/70 leading-relaxed mb-10 max-w-2xl"
+        >
           A student-led community at Tel Aviv University connecting students,
           researchers, and the broader Israeli quantum ecosystem through events,
           workshops, and collaboration.
@@ -48,8 +68,18 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
             class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-colors"
           >
             View Events
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
           </a>
           <a
@@ -68,38 +98,44 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
     <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-16 items-center">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
+          >
             Our Mission
           </p>
-          <h2 class="font-display text-3xl md:text-4xl text-slate-900 mb-6 leading-tight">
+          <h2
+            class="font-display text-3xl md:text-4xl text-slate-900 mb-6 leading-tight"
+          >
             Building the next generation of quantum scientists and engineers.
           </h2>
           <p class="text-base text-slate-600 leading-relaxed mb-5">
             The TAU Quantum Community was founded by students who believed that
             the best way to learn quantum computing is together — through
-            workshops, peer teaching, and direct contact with researchers at
-            the frontier.
+            workshops, peer teaching, and direct contact with researchers at the
+            frontier.
           </p>
           <p class="text-base text-slate-600 leading-relaxed">
             We operate in close collaboration with
             <strong class="text-slate-800">QuanTAU</strong> — Tel Aviv University's
-            Quantum Science &amp; Technology center — giving students access to
-            leading researchers and events as they explore quantum science.
+            Quantum Science &amp; Technology center — giving students access to leading
+            researchers and events as they explore quantum science.
           </p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          {[
-            { label: "Community events", value: `${allEvents.length}` },
-            { label: "Speakers hosted", value: `${speakersHosted}+` },
-            { label: "Partners", value: `${partnersCount}` },
-            { label: "Active since", value: "2023" },
-          ].map(({ label, value }) => (
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-              <p class="font-display text-4xl text-slate-900 mb-2">{value}</p>
-              <p class="text-sm text-slate-500">{label}</p>
-            </div>
-          ))}
+          {
+            [
+              { label: "Community events", value: `${allEvents.length}` },
+              { label: "Speakers hosted", value: `${speakersHosted}+` },
+              { label: "Partners", value: `${partnersCount}` },
+              { label: "Active since", value: "2023" },
+            ].map(({ label, value }) => (
+              <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                <p class="font-display text-4xl text-slate-900 mb-2">{value}</p>
+                <p class="text-sm text-slate-500">{label}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
@@ -109,7 +145,9 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
   <section class="border-b border-slate-100">
     <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
       <div class="mb-10">
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        <p
+          class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
+        >
           Activities
         </p>
         <h2 class="font-display text-3xl md:text-4xl text-slate-900">
@@ -118,126 +156,200 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
-            title: "Workshops",
-            description: "Hands-on technical workshops on quantum programming and quantum software — designed for students who learn by building.",
-          },
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
-            title: "Conferences & Symposia",
-            description: "Student-organised academic events where researchers from across Israeli universities present and discuss their work.",
-          },
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
-            title: "Community Events",
-            description: "Regular meetups, reading groups, and social events that build the connections that last beyond university.",
-          },
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>`,
-            title: "Guest Lectures",
-            description: "Invited talks from leading researchers in quantum computing, quantum hardware, and adjacent fields — at TAU and virtually.",
-          },
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
-            title: "Industry Connections",
-            description: "Events and workshops with quantum companies — including Classiq, Quantum Machines, and Microsoft — to help students explore careers in quantum technology.",
-          },
-          {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
-            title: "Across Israeli Academia",
-            description: "Talks by researchers from across Israeli academia — Tel Aviv University, Ben-Gurion University, and the Technion — and the wider quantum ecosystem.",
-          },
-        ].map(({ icon, title, description }) => (
-          <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-sm transition-all duration-200">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4" set:html={icon} />
-            <h3 class="text-sm font-semibold text-slate-900 mb-2">{title}</h3>
-            <p class="text-sm text-slate-500 leading-relaxed">{description}</p>
-          </div>
-        ))}
+        {
+          [
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
+              title: "Workshops",
+              description:
+                "Hands-on technical workshops on quantum programming and quantum software — designed for students who learn by building.",
+            },
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
+              title: "Conferences & Symposia",
+              description:
+                "Student-organised academic events where researchers from across Israeli universities present and discuss their work.",
+            },
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
+              title: "Community Events",
+              description:
+                "Regular meetups, reading groups, and social events that build the connections that last beyond university.",
+            },
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>`,
+              title: "Guest Lectures",
+              description:
+                "Invited talks from leading researchers in quantum computing, quantum hardware, and adjacent fields — at TAU and virtually.",
+            },
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
+              title: "Industry Connections",
+              description:
+                "Events and workshops with quantum companies — including Classiq, Quantum Machines, and Microsoft — to help students explore careers in quantum technology.",
+            },
+            {
+              icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+              title: "Across Israeli Academia",
+              description:
+                "Talks by researchers from across Israeli academia — Tel Aviv University, Ben-Gurion University, and the Technion — and the wider quantum ecosystem.",
+            },
+          ].map(({ icon, title, description }) => (
+            <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-sm transition-all duration-200">
+              <div
+                class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4"
+                set:html={icon}
+              />
+              <h3 class="text-sm font-semibold text-slate-900 mb-2">{title}</h3>
+              <p class="text-sm text-slate-500 leading-relaxed">
+                {description}
+              </p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <!-- ─── Featured Events ──────────────────────────────────────── -->
-  {allEvents.length > 0 && (
-    <section class="border-b border-slate-100">
-      <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
-        <div class="flex items-end justify-between mb-10">
-          <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Events</p>
-            <h2 class="font-display text-3xl md:text-4xl text-slate-900">
-              {upcoming.length > 0 ? "Upcoming & Recent Events" : "Past Events"}
-            </h2>
+  {
+    allEvents.length > 0 && (
+      <section class="border-b border-slate-100">
+        <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+          <div class="flex items-end justify-between mb-10">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+                Events
+              </p>
+              <h2 class="font-display text-3xl md:text-4xl text-slate-900">
+                {upcoming.length > 0
+                  ? "Upcoming & Recent Events"
+                  : "Past Events"}
+              </h2>
+            </div>
+            <a
+              href="/quantum-community/events"
+              class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              All events
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </a>
           </div>
-          <a
-            href="/quantum-community/events"
-            class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-          >
-            All events
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
 
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {featured.map((event) => (
-            <EventCard
-              title={event.data.title}
-              description={event.data.description}
-              date={event.data.date}
-              dateDisplay={event.data.dateDisplay}
-              dateConfirmed={event.data.dateConfirmed}
-              time={event.data.time}
-              eventType={event.data.eventType}
-              venue={event.data.venue}
-              status={event.data.status}
-              featured={event.data.featured}
-              slug={event.id}
-              partners={event.data.partners}
-              speakers={event.data.speakers}
-              posterImage={event.data.posterImage}
-              registrationUrl={event.data.registrationUrl}
-            />
-          ))}
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((event) => (
+              <EventCard
+                title={event.data.title}
+                description={event.data.description}
+                date={event.data.date}
+                dateDisplay={event.data.dateDisplay}
+                dateConfirmed={event.data.dateConfirmed}
+                time={event.data.time}
+                eventType={event.data.eventType}
+                venue={event.data.venue}
+                status={isUpcomingEvent(event.data) ? "upcoming" : "past"}
+                announcementStatus={event.data.announcementStatus}
+                notes={event.data.notes}
+                featured={event.data.featured}
+                slug={event.id}
+                partners={event.data.partners}
+                speakers={event.data.speakers}
+                posterImage={event.data.posterImage}
+                registrationUrl={event.data.registrationUrl}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
   <!-- ─── Gallery Preview ──────────────────────────────────────── -->
   <section class="border-b border-slate-100">
     <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
       <div class="flex items-end justify-between mb-10">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Community</p>
-          <h2 class="font-display text-3xl md:text-4xl text-slate-900">Gallery</h2>
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3"
+          >
+            Community
+          </p>
+          <h2 class="font-display text-3xl md:text-4xl text-slate-900">
+            Gallery
+          </h2>
         </div>
         <a
           href="/quantum-community/gallery"
           class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
         >
           View gallery
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-3.5 w-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
           </svg>
         </a>
       </div>
-      <div class="py-16 text-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
-        <svg class="mx-auto h-12 w-12 text-slate-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      <div
+        class="py-16 text-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50"
+      >
+        <svg
+          class="mx-auto h-12 w-12 text-slate-200 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          ></path>
         </svg>
-        <p class="text-sm font-medium text-slate-500 mb-2">Event photos coming soon</p>
-        <p class="text-xs text-slate-400 mb-6">Photos from our workshops and events will be added here.</p>
+        <p class="text-sm font-medium text-slate-500 mb-2">
+          Event photos coming soon
+        </p>
+        <p class="text-xs text-slate-400 mb-6">
+          Photos from our workshops and events will be added here.
+        </p>
         <a
           href="/quantum-community/gallery"
           class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
         >
           Open gallery
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-3.5 w-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
           </svg>
         </a>
       </div>
@@ -249,7 +361,9 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
     <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
       <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-16 items-center">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+          <p
+            class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
+          >
             Collaboration
           </p>
           <h2 class="font-display text-3xl md:text-4xl text-slate-900 mb-6">
@@ -274,19 +388,21 @@ const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
         </div>
 
         <div class="space-y-3">
-          {[
-            "QuanTAU — Quantum Science & Technology, TAU",
-            "QUBIT — Israel's Quantum Tech Community",
-            "IQCC — Israeli Quantum Computing Center",
-            "Classiq",
-            "Quantum Machines",
-            "Microsoft",
-          ].map((org) => (
-            <div class="flex items-center gap-3 p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <div class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></div>
-              <p class="text-sm font-medium text-slate-700">{org}</p>
-            </div>
-          ))}
+          {
+            [
+              "QuanTAU — Quantum Science & Technology, TAU",
+              "QUBIT — Israel's Quantum Tech Community",
+              "IQCC — Israeli Quantum Computing Center",
+              "Classiq",
+              "Quantum Machines",
+              "Microsoft",
+            ].map((org) => (
+              <div class="flex items-center gap-3 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                <div class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0" />
+                <p class="text-sm font-medium text-slate-700">{org}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>

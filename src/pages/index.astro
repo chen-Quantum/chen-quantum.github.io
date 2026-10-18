@@ -1,565 +1,233 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import CourseCard from "../components/CourseCard.astro";
-import MaterialCard from "../components/MaterialCard.astro";
+import EventCard from "../components/EventCard.astro";
+import ReadingCard from "../components/ReadingCard.astro";
+import AppDevelopment from "../components/AppDevelopment.astro";
 import { getCollection } from "astro:content";
 import { youtubeVideos } from "../data/youtubeVideos";
 import { tirgulim } from "../data/tirgulim";
+import { readingPicks, readingEdition } from "../data/reading";
+import { isUpcomingEvent } from "../data/eventStatus";
 
-const allCourses = await getCollection("courses", ({ data }) => !data.draft);
-const featuredCourses = allCourses.filter((c) => c.data.featured);
-featuredCourses.sort((a, b) => b.data.semester.localeCompare(a.data.semester));
-
-const allMaterials = await getCollection("materials", ({ data }) => !data.draft);
-const featuredMaterials = allMaterials.filter((m) => m.data.featured);
-featuredMaterials.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-const teachingCourses = await getCollection(
-  "teaching",
-  ({ data }) => !data.draft && data.status === "active"
+const allEvents = await getCollection(
+  "communityEvents",
+  ({ data }) => !data.draft,
 );
-
-const allEvents = await getCollection("communityEvents", ({ data }) => !data.draft);
-const upcomingEvents = allEvents.filter((e) => e.data.status === "upcoming" && e.data.date.valueOf() >= new Date().setHours(0, 0, 0, 0));
-const featuredEvents = allEvents.filter((e) => e.data.featured).slice(0, 2);
-
-// Nearest upcoming community event — surfaced as a homepage announcement while relevant.
-const nextEvent = [...upcomingEvents].sort(
-  (a, b) => a.data.date.valueOf() - b.data.date.valueOf()
-)[0] ?? null;
-
-// Real, data-derived counts only — no invented metrics.
-const totalRecordings = youtubeVideos.length;
-const totalPracticeSheets = tirgulim.length;
-const speakersHosted = new Set(allEvents.flatMap((e) => e.data.speakers)).size;
-const partnersCount = new Set(allEvents.flatMap((e) => e.data.partners)).size;
+const upcoming = allEvents
+  .filter((e) => isUpcomingEvent(e.data))
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  .slice(0, 3);
+const teaching = [
+  {
+    role: "Lecturer",
+    title: "International Engineering",
+    detail: "International Engineering Program at Tel Aviv University.",
+    href: "/students",
+    action: "Enter your classroom",
+  },
+  {
+    role: "Teaching Assistant",
+    title: "Linear Algebra",
+    detail: "Electrical & Electronics Engineering and Biomedical Engineering.",
+    href: "/teaching/linear-algebra",
+    action: "Recordings & tutorials",
+  },
+];
 ---
 
 <Layout
   title="Chen Gadi"
-  description="Chen Gadi: lecturer, teaching assistant, and M.Sc. researcher in Prof. Yaron Oz’s group at Tel Aviv University. Machine learning, physics, and teaching."
+  description="Chen Gadi, M.Sc. student in Physics at Tel Aviv University, completing a thesis under Prof. Yaron Oz. Teaching, student resources, and quantum community events."
 >
   <section class="academic-hero">
     <div class="mx-auto max-w-6xl px-6 academic-hero-grid">
       <div>
-        <p class="academic-kicker">TEL AVIV UNIVERSITY · PHYSICS &amp; MACHINE LEARNING</p>
+        <p class="academic-kicker">TEL AVIV UNIVERSITY · PHYSICS</p>
         <h1 class="font-display academic-name">Chen Gadi<span>.</span></h1>
-        <p class="academic-lead">Exploring the physics of learning.<br />Making mathematics accessible.</p>
-        <p class="academic-bio">I am an M.Sc. student in Physics and a member of Prof. Yaron Oz’s research group at Tel Aviv University, working at the intersection of machine learning and physics.</p>
+        <p class="academic-lead">
+          M.Sc. student in Physics.<br />Thesis supervised by Prof. Yaron Oz.
+        </p>
+        <p class="academic-bio">
+          I am a master’s student in Physics and a member of Prof. Yaron Oz’s
+          research group at Tel Aviv University. Alongside my studies, I
+          lecture, teach linear algebra, and help bring the quantum community
+          together.
+        </p>
         <div class="academic-actions">
-          <a href="/research" class="academic-primary">Explore my research <span aria-hidden="true">↗</span></a>
-          <a href="/teaching" class="academic-secondary">Teaching &amp; materials</a>
+          <a href="/about" class="academic-primary"
+            >Academic profile <span aria-hidden="true">↗</span></a
+          ><a href="/teaching" class="academic-secondary"
+            >Teaching &amp; materials</a>
         </div>
-        <p class="academic-signature">Research · Teaching · Quantum Community</p>
+        <p class="academic-signature">Physics · Teaching · Quantum Community</p>
       </div>
-      <aside class="academic-appointments" aria-label="Current academic appointments">
-        <div class="academic-panel-top"><span>CURRENTLY AT TAU</span><img src="/brand/logo.png" alt="Chen Gadi logo" width="48" height="48" /></div>
-        <div class="academic-appointment"><span class="academic-number">01</span><div><p class="academic-role">LECTURER</p><h2>International Engineering Program</h2><p>Tel Aviv University</p></div></div>
-        <div class="academic-appointment"><span class="academic-number">02</span><div><p class="academic-role">TEACHING ASSISTANT</p><h2>Linear Algebra</h2><p>Electrical Engineering · Biomedical Engineering</p></div></div>
-        <div class="academic-appointment"><span class="academic-number">03</span><div><p class="academic-role">RESEARCH GROUP</p><h2>Prof. Yaron Oz</h2><p>Machine Learning × Physics</p></div></div>
+      <aside class="academic-appointments" aria-label="Current academic roles">
+        <div class="academic-panel-top">
+          <span>CURRENTLY AT TAU</span><img
+            src="/brand/logo.png"
+            alt="Chen Gadi logo"
+            width="48"
+            height="48"
+          />
+        </div>
+        <div class="academic-appointment">
+          <span class="academic-number">01</span><div>
+            <p class="academic-role">M.SC. THESIS · IN PROGRESS</p><h2>
+              Physics
+            </h2><p>Supervisor: Prof. Yaron Oz</p>
+          </div>
+        </div>
+        <div class="academic-appointment">
+          <span class="academic-number">02</span><div>
+            <p class="academic-role">LECTURER</p><h2>
+              International Engineering Program
+            </h2><p>Tel Aviv University</p>
+          </div>
+        </div>
+        <div class="academic-appointment">
+          <span class="academic-number">03</span><div>
+            <p class="academic-role">TEACHING ASSISTANT</p><h2>
+              Linear Algebra
+            </h2><p>Electrical Engineering · Biomedical Engineering</p>
+          </div>
+        </div>
       </aside>
     </div>
   </section>
   <section class="student-entry" aria-label="Student hub">
-    <div class="mx-auto max-w-6xl px-6 student-entry-inner"><div><span class="academic-kicker">FOR MY STUDENTS</span><h2>Your questions belong here.</h2><p>Anonymous Q&amp;A, peer discussions, and private requests. Replies stay on the website.</p></div><a href="/students" class="academic-primary">Enter the Student Hub <span aria-hidden="true">↗</span></a></div>
-  </section>
-
-  <!-- ─── Stats bar ──────────────────────────────────────────────── -->
-  {
-    totalRecordings > 0 && (
-      <div class="border-b border-slate-100 bg-slate-50">
-        <div class="mx-auto max-w-6xl px-6 py-4">
-          <dl class="flex flex-wrap items-center gap-6 md:gap-8">
-            <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">current teaching courses</dt>
-              <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {teachingCourses.length}
-              </dd>
-            </div>
-            <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
-            <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">tutorial recordings</dt>
-              <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {totalRecordings}
-              </dd>
-            </div>
-            <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
-            <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">practice sheets</dt>
-              <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {totalPracticeSheets}
-              </dd>
-            </div>
-            <span class="text-slate-200 hidden sm:inline" aria-hidden="true">|</span>
-            <div class="flex items-baseline gap-1.5">
-              <dt class="text-xs text-slate-400 order-2">community events</dt>
-              <dd class="text-sm font-semibold text-slate-900 order-1 tabular-nums">
-                {allEvents.length}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-    )
-  }
-
-  <!-- ─── Upcoming event announcement ────────────────────────────── -->
-  {
-    nextEvent && (
-      <section class="border-b border-slate-100 bg-slate-50/60">
-        <div class="mx-auto max-w-6xl px-6 py-10 md:py-12">
-          <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 items-center rounded-2xl border border-indigo-100 bg-white p-5 md:p-6 shadow-sm">
-            {nextEvent.data.posterImage && (
-              <a
-                href={nextEvent.data.registrationUrl ?? "/quantum-community/events"}
-                class="block overflow-hidden rounded-xl border border-slate-100"
-                target={nextEvent.data.registrationUrl ? "_blank" : undefined}
-                rel={nextEvent.data.registrationUrl ? "noopener noreferrer" : undefined}
-              >
-                <img
-                  src={`/community/${nextEvent.data.posterImage}`}
-                  alt={`${nextEvent.data.title} — poster`}
-                  class="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-              </a>
-            )}
-
-            <div>
-              <div class="inline-flex items-center gap-2 mb-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                <span class="text-xs font-semibold text-indigo-600 uppercase tracking-widest">
-                  Upcoming · Quantum Community
-                </span>
-              </div>
-
-              <h2 class="font-display text-2xl md:text-3xl text-slate-900 mb-2">
-                {nextEvent.data.title}
-              </h2>
-
-              <p class="text-sm font-medium text-slate-500 mb-4">
-                {nextEvent.data.dateDisplay ?? ""}
-                {nextEvent.data.venue ? ` · ${nextEvent.data.venue}` : ""}
-                {nextEvent.data.time ? ` · ${nextEvent.data.time}` : ""}
-              </p>
-
-              {nextEvent.data.talks.length > 0 && (
-                <ul class="space-y-1.5 mb-6">
-                  {nextEvent.data.talks.map((t) => (
-                    <li class="text-sm text-slate-600 leading-snug">
-                      <span class="font-semibold text-slate-800">{t.speaker}</span>
-                      {t.talk ? ` — ${t.talk}` : ""}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <div class="flex flex-wrap gap-3">
-                {nextEvent.data.registrationUrl && (
-                  <a
-                    href={nextEvent.data.registrationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
-                  >
-                    Register
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </a>
-                )}
-                <a
-                  href="/quantum-community/events"
-                  class="inline-flex items-center gap-2 px-5 py-2.5 text-slate-600 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:text-slate-900 transition-colors"
-                >
-                  All events
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- ─── Teaching & Learning ────────────────────────────────────── -->
-  <section class="mx-auto max-w-6xl px-6 py-20 md:py-24">
-    <div class="flex items-end justify-between mb-10">
+    <div class="mx-auto max-w-6xl px-6 student-entry-inner">
       <div>
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
-          Teaching &amp; Learning
+        <span class="academic-kicker">FOR MY STUDENTS</span><h2>
+          Your questions belong here.
+        </h2><p>
+          Anonymous questions, peer answers, and private requests. Read every
+          reply on the website.
         </p>
-        <h2 class="font-display text-3xl md:text-4xl text-slate-900">
-          Mathematics for engineering students at TAU
-        </h2>
-      </div>
-      <a
-        href="/teaching"
-        class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-      >
-        All teaching
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-        </svg>
-      </a>
-    </div>
-
-    <div class="grid gap-4 md:grid-cols-3">
-      <a href="/teaching" class="group flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
-        <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-200 self-start mb-3">Active</span>
-        <h3 class="text-base font-semibold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Linear Algebra</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-2 flex-1">
-          Linear algebra for electrical and biomedical engineering. Systems,
-          vector spaces, transformations, determinants, eigenvalues.
-        </p>
-        <p class="text-xs text-slate-400" dir="ltr">Electrical Engineering · Biomedical Engineering</p>
-      </a>
-
-      <a href="/teaching" class="group flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
-        <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-200 self-start mb-3">Active</span>
-        <h3 class="text-base font-semibold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Calculus 2</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-2 flex-1">
-          Sequences and series of functions, uniform convergence, Taylor and
-          Fourier series, multivariable foundations, double integrals.
-        </p>
-        <p class="text-xs text-slate-400" dir="ltr">Calculus 2</p>
-      </a>
-
-      <a href="/digital-courses" class="group flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
-        <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-amber-700 bg-amber-50 border border-amber-200 self-start mb-3">Coming soon</span>
-        <h3 class="text-base font-semibold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Digital Courses</h3>
-        <p class="text-sm text-slate-500 leading-relaxed flex-1">
-          Structured online courses in physics and quantum computing are in
-          preparation. Details will be announced here.
-        </p>
-      </a>
+      </div><a href="/students" class="academic-primary"
+        >Enter the Student Hub <span aria-hidden="true">↗</span></a>
     </div>
   </section>
-
-  <!-- ─── Quantum Community teaser ───────────────────────────────── -->
-  <section class="border-t border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
-      <div class="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/60 to-slate-50 p-8 md:p-10">
-        <p class="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">
-          Community
-        </p>
-        <h2 class="font-display text-2xl md:text-3xl text-slate-900 mb-3 max-w-3xl">
-          Quantum Technologies &amp; Science Community at Tel Aviv University
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+    <div class="editorial-heading">
+      <div>
+        <p class="edition-label">Teaching &amp; learning</p><h2>
+          Clarity in the classroom.<br />Support beyond it.
         </h2>
-        <p class="text-base text-slate-600 leading-relaxed mb-6 max-w-3xl">
-          A student-led community at Tel Aviv University that brings together
-          students and researchers around invited talks, evenings on quantum
-          computing and quantum technologies, and informal gatherings.
-          Past events have hosted Prof. Yakir Aharonov, Prof. John M. Martinis,
-          Prof. Emanuele Dalla Torre, Dr. Adi Pick, and others.
-        </p>
-        <a
-          href="/quantum-community"
-          class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+      </div><a class="text-link" href="/teaching">All teaching resources ↗</a>
+    </div>
+    <div class="teaching-feature-grid">
+      {
+        teaching.map((course, i) => (
+          <article class="teaching-feature">
+            <>
+              <span class="resource-index">0{i + 1}</span>
+              <p class="edition-label">{course.role}</p>
+              <h3>{course.title}</h3>
+              <p>{course.detail}</p>
+              <a href={course.href} class="text-link">
+                {course.action} ↗
+              </a>
+            </>
+          </article>
+        ))
+      }
+    </div>
+    <div class="learning-strip">
+      <p>
+        <strong>{youtubeVideos.length}</strong> tutorial recordings <span
+          aria-hidden="true">/</span
         >
-          See community events
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
+        <strong>{tirgulim.length}</strong> practice sheets
+      </p><a href="/teaching/linear-algebra-electrical/syllabus"
+        >Electrical Engineering: English syllabus ↗</a
+      ><a href="/reading#for-students">Recommended books &amp; resources ↗</a>
     </div>
   </section>
-
-  <!-- ─── Featured Courses ───────────────────────────────────────── -->
   {
-    featuredCourses.length > 0 && (
-      <section class="mx-auto max-w-6xl px-6 py-20 md:py-24">
-        <div class="flex items-end justify-between mb-10">
-          <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
-              Teaching
+    upcoming.length > 0 && (
+      <section class="events-edition">
+        <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+          <>
+            <div class="editorial-heading">
+              <>
+                <div>
+                  <>
+                    <p class="edition-label">On the calendar</p>
+                    <h2>Next in quantum.</h2>
+                  </>
+                </div>
+                <a class="text-link" href="/quantum-community/events">
+                  All community events ↗
+                </a>
+              </>
+            </div>
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {upcoming.map((event) => (
+                <EventCard {...event.data} slug={event.id} />
+              ))}
+            </div>
+            <p class="source-note">
+              Save-the-date announcements and planned sessions are labelled
+              separately. Programme details will be added when confirmed.
             </p>
-            <h2 class="font-display text-3xl md:text-4xl text-slate-900">
-              Featured Courses
-            </h2>
-          </div>
-          <a
-            href="/courses"
-            class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-          >
-            All courses
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCourses.map((course) => (
-            <CourseCard
-              title={course.data.title}
-              shortDescription={course.data.shortDescription}
-              semester={course.data.semester}
-              tags={course.data.tags}
-              slug={course.id}
-              featured={course.data.featured}
-            />
-          ))}
-        </div>
-
-        <div class="mt-8 sm:hidden">
-          <a
-            href="/courses"
-            class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-          >
-            View all courses →
-          </a>
+          </>
         </div>
       </section>
     )
   }
-
-  <!-- ─── Featured Materials ────────────────────────────────────── -->
-  {
-    featuredMaterials.length > 0 && (
-      <section class="border-t border-slate-100">
-        <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
-          <div class="flex items-end justify-between mb-10">
-            <div>
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
-                Resources
-              </p>
-              <h2 class="font-display text-3xl md:text-4xl text-slate-900">
-                Practice Materials
-              </h2>
-            </div>
-            <a
-              href="/materials"
-              class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-            >
-              All materials
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
-
-          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {featuredMaterials.slice(0, 3).map((m) => (
-              <MaterialCard
-                title={m.data.title}
-                description={m.data.description}
-                subject={m.data.subject}
-                type={m.data.type}
-                tags={m.data.tags}
-                slug={m.id}
-                featured={m.data.featured}
-                passwordProtected={m.data.passwordProtected}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- ─── Site areas (Research, Projects, Library) ──────────────── -->
-  <section class="border-t border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
-      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-12">
-        Explore
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
-        <!-- Research -->
-        <div class="group">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h3 class="font-display text-xl text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
-            Research
-          </h3>
-          <p class="text-sm text-slate-500 leading-relaxed mb-4">
-            Quantum computing, quantum machine learning, and physics-inspired
-            algorithms — explored through simulator-based prototypes.
-          </p>
-          <a
-            href="/research"
-            class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors"
-          >
-            Explore research
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Projects -->
-        <div class="group">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
-          </div>
-          <h3 class="font-display text-xl text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
-            Projects
-          </h3>
-          <p class="text-sm text-slate-500 leading-relaxed mb-4">
-            Tools and experiments built alongside research and teaching —
-            from quantum simulators to learning aids.
-          </p>
-          <a
-            href="/projects"
-            class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors"
-          >
-            See projects
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Digital Courses -->
-        <div class="group">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h3 class="font-display text-xl text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
-            Digital Courses
-          </h3>
-          <p class="text-sm text-slate-500 leading-relaxed mb-4">
-            Structured online courses in mathematics and quantum computing —
-            currently in development.
-          </p>
-          <a
-            href="/digital-courses"
-            class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors"
-          >
-            Learn more
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
-      </div>
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+    <div class="editorial-heading">
+      <div>
+        <p class="edition-label">Reading room · {readingEdition}</p><h2>
+          A few things I recommend.
+        </h2>
+      </div><a class="text-link" href="/reading"
+        >The full reading selection ↗</a>
+    </div><div class="reading-grid reading-grid-home">
+      {
+        readingPicks
+          .slice(0, 2)
+          .map((article) => <ReadingCard article={article} />)
+      }
     </div>
   </section>
-
-  <!-- ─── Quantum Community ──────────────────────────────────────── -->
-  <section class="border-t border-slate-100 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
-    <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-16 items-center">
-        <div>
-          <div class="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full bg-white/10 border border-white/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
-            <span class="text-xs font-semibold text-white/80 tracking-wide uppercase">
-              Student Initiative
-            </span>
-          </div>
-          <h2 class="font-display text-3xl md:text-4xl text-white mb-6 leading-tight">
-            TAU Quantum Community
-          </h2>
-          <p class="text-base text-white/70 leading-relaxed mb-5">
-            A student-led quantum computing community at Tel Aviv University —
-            organising workshops, conferences, and lectures in collaboration
-            with QuanTAU, the university's Quantum Science &amp; Technology center.
-          </p>
-          <p class="text-base text-white/70 leading-relaxed mb-8">
-            Open to students, researchers, and anyone curious about quantum
-            science and technology.
-          </p>
-          <div class="flex flex-wrap gap-3">
-            <a
-              href="/quantum-community"
-              class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              Explore the Community
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-            <a
-              href="/quantum-community/events"
-              class="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-semibold rounded-lg border border-white/30 hover:bg-white/10 transition-colors"
-            >
-              View Events
-            </a>
-          </div>
-        </div>
-
-        <!-- Community highlights -->
-        <div class="grid grid-cols-2 gap-4">
-          {[
-            { label: "Community events", icon: "🗓️", value: `${allEvents.length}` },
-            { label: "Speakers hosted", icon: "🎤", value: `${speakersHosted}+` },
-            { label: "Partners", icon: "🤝", value: `${partnersCount}` },
-            { label: "Active since", icon: "✨", value: "2023" },
-          ].map(({ label, icon, value }) => (
-            <div class="p-5 rounded-xl bg-white/10 border border-white/20">
-              <p class="text-xl mb-2">{icon}</p>
-              <p class="font-display text-2xl text-white mb-1">{value}</p>
-              <p class="text-xs text-white/60">{label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── CV / Contact CTA ──────────────────────────────────────── -->
-  <section class="border-t border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- CV card -->
-        <div class="p-8 rounded-2xl border border-slate-200 bg-slate-50 flex flex-col">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
-            Academic Profile
-          </p>
-          <h3 class="font-display text-2xl text-slate-900 mb-3">
-            Curriculum Vitae
-          </h3>
-          <p class="text-sm text-slate-500 leading-relaxed mb-6 flex-1">
-            Full academic CV — education, teaching positions, research, and skills.
-          </p>
-          <div class="flex gap-3">
-            <a
-              href="/cv"
-              class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-900 transition-colors"
-            >
-              View CV
-            </a>
-            <a
-              href="/files/cv/chen-gadi-cv-2026.pdf"
-              download
-              class="inline-flex items-center gap-2 px-5 py-2.5 text-slate-600 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:text-slate-900 transition-colors"
-            >
-              Download PDF
-            </a>
-          </div>
-        </div>
-
-        <!-- Contact card -->
-        <div class="p-8 rounded-2xl border border-indigo-100 bg-indigo-50 flex flex-col">
-          <p class="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-4">
-            Student Support
-          </p>
-          <h3 class="font-display text-2xl text-slate-900 mb-3">
-            Let’s talk here.
-          </h3>
-          <p class="text-sm text-slate-600 leading-relaxed mb-6 flex-1">
-            Anonymous class questions, peer answers, and private requests for course logistics or personal matters. All in one place.
-          </p>
-          <a
-            href="/students"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors w-fit"
-          >
-            Open the Student Hub
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </div>
+  <AppDevelopment />
+  <section class="community-invitation">
+    <div class="mx-auto max-w-6xl px-6 community-invitation-inner">
+      <div>
+        <p class="edition-label">TAU Quantum Community</p><h2>
+          Beyond classical.<br /><em>Into quantum.</em>
+        </h2><p>
+          A student community connecting people through quantum science,
+          conversations, and events, in collaboration with QuanTAU.
+        </p><a class="academic-primary" href="/quantum-community"
+          >Meet the community ↗</a>
+      </div><div class="community-orbits" aria-hidden="true">
+        <svg viewBox="0 0 360 300" fill="none"
+          ><circle cx="180" cy="150" r="118" stroke="currentColor" opacity=".18"
+          ></circle><ellipse
+            cx="180"
+            cy="150"
+            rx="145"
+            ry="55"
+            transform="rotate(-35 180 150)"
+            stroke="currentColor"></ellipse><ellipse
+            cx="180"
+            cy="150"
+            rx="145"
+            ry="55"
+            transform="rotate(35 180 150)"
+            stroke="currentColor"
+            opacity=".5"></ellipse><circle
+            cx="180"
+            cy="150"
+            r="8"
+            fill="currentColor"></circle><circle
+            cx="294"
+            cy="59"
+            r="5"
+            fill="currentColor"></circle></svg
+        ><span>QTC / QUANTAU / TEL AVIV UNIVERSITY</span>
       </div>
     </div>
   </section>

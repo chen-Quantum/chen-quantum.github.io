@@ -279,6 +279,11 @@ check(
   $("#portal-course-select").value === "linear-algebra-electrical",
   "correct code opens the requested classroom",
 );
+check(
+  !!$('.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]') &&
+    !!$('.portal-resource-links a[href="/reading#for-students"]'),
+  "electrical classroom provides its English syllabus and recommended resources",
+);
 click('[data-action="compose"]');
 check(
   $('[data-form="question"] input[name="title"]').getAttribute("maxlength") ===
@@ -390,6 +395,10 @@ await until(
 check(
   !$(".portal-question-head"),
   "failed classroom change does not show stale content from another class",
+);
+check(
+  !$('.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]'),
+  "electrical syllabus is not presented as the biomedical syllabus",
 );
 click('[data-action="logout"]');
 await until(() => $$('[data-form="join"]').length === 3);

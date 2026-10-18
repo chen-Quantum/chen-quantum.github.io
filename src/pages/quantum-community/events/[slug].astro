@@ -1,11 +1,18 @@
 ---
+import {
+  isUpcomingEvent,
+  eventAnnouncementLabel,
+} from "../../../data/eventStatus";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Layout from "../../../layouts/Layout.astro";
 import GalleryGrid from "../../../components/GalleryGrid.astro";
 
 export async function getStaticPaths() {
-  const events = await getCollection("communityEvents", ({ data }) => !data.draft);
+  const events = await getCollection(
+    "communityEvents",
+    ({ data }) => !data.draft,
+  );
   return events.map((event) => ({
     params: { slug: event.id },
     props: { event },
@@ -18,6 +25,7 @@ interface Props {
 
 const { event } = Astro.props;
 const { data } = event;
+const upcoming = isUpcomingEvent(data);
 const { Content } = await render(event);
 
 const formattedDate = data.date.toLocaleDateString("en-GB", {
@@ -27,7 +35,9 @@ const formattedDate = data.date.toLocaleDateString("en-GB", {
   year: "numeric",
 });
 // Never display a year the poster did not print.
-const shownDate = data.dateConfirmed ? formattedDate : (data.dateDisplay ?? formattedDate);
+const shownDate = data.dateConfirmed
+  ? formattedDate
+  : (data.dateDisplay ?? formattedDate);
 
 const typeLabel: Record<string, string> = {
   conference: "Conference",
@@ -48,12 +58,18 @@ const typeColors: Record<string, string> = {
   symposium: "text-violet-600 bg-violet-50 border-violet-100",
   hackathon: "text-rose-600 bg-rose-50 border-rose-100",
 };
-const badgeClass = typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 border-slate-200";
+const badgeClass =
+  typeColors[data.eventType] ?? "text-slate-600 bg-slate-50 border-slate-200";
 
 // Prefer rich talks; fall back to plain speaker names.
-const talks = data.talks.length > 0
-  ? data.talks
-  : data.speakers.map((s) => ({ speaker: s, role: undefined, talk: undefined }));
+const talks =
+  data.talks.length > 0
+    ? data.talks
+    : data.speakers.map((s) => ({
+        speaker: s,
+        role: undefined,
+        talk: undefined,
+      }));
 const partners = data.partners.length > 0 ? data.partners : data.collaborators;
 ---
 
@@ -61,20 +77,58 @@ const partners = data.partners.length > 0 ? data.partners : data.collaborators;
   <!-- Breadcrumb -->
   <div class="border-b border-slate-100 bg-slate-50">
     <div class="mx-auto max-w-6xl px-6 py-3">
-      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500">
+      <nav
+        aria-label="Breadcrumb"
+        class="flex items-center gap-2 text-sm text-slate-500"
+      >
         <a href="/" class="hover:text-slate-900 transition-colors">Home</a>
-        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <svg
+          class="h-3.5 w-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
         </svg>
-        <a href="/quantum-community" class="hover:text-slate-900 transition-colors">Quantum Community</a>
-        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <a
+          href="/quantum-community"
+          class="hover:text-slate-900 transition-colors">Quantum Community</a
+        >
+        <svg
+          class="h-3.5 w-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
         </svg>
-        <a href="/quantum-community/events" class="hover:text-slate-900 transition-colors">Events</a>
-        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <a
+          href="/quantum-community/events"
+          class="hover:text-slate-900 transition-colors">Events</a
+        >
+        <svg
+          class="h-3.5 w-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
         </svg>
-        <span class="text-slate-700 font-medium truncate max-w-xs">{data.title}</span>
+        <span class="text-slate-700 font-medium truncate max-w-xs"
+          >{data.title}</span
+        >
       </nav>
     </div>
   </div>
@@ -84,39 +138,87 @@ const partners = data.partners.length > 0 ? data.partners : data.collaborators;
     <div class="mx-auto max-w-6xl px-6 py-12 md:py-16">
       <div class="max-w-3xl">
         <div class="flex flex-wrap items-center gap-2 mb-4">
-          <span class={`text-sm font-semibold uppercase tracking-wider border px-3 py-1 rounded-full ${badgeClass}`}>
+          <span
+            class={`text-sm font-semibold uppercase tracking-wider border px-3 py-1 rounded-full ${badgeClass}`}
+          >
             {typeLabel[data.eventType] ?? data.eventType}
           </span>
-          <span class="text-sm font-medium px-3 py-1 rounded-full text-slate-500 bg-slate-100">
-            {data.status === "upcoming" ? "Upcoming" : "Past"}
+          <span
+            class="text-sm font-medium px-3 py-1 rounded-full text-slate-500 bg-slate-100"
+          >
+            {
+              upcoming
+                ? eventAnnouncementLabel(data.announcementStatus)
+                : "Past"
+            }
           </span>
         </div>
 
-        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3 leading-tight">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-slate-900 mb-3 leading-tight"
+        >
           {data.title}
         </h1>
-        <p class="text-lg text-slate-500 leading-relaxed mb-6">{data.description}</p>
+        <p class="text-lg text-slate-500 leading-relaxed mb-6">
+          {data.description}
+        </p>
 
         <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500">
           <span class="flex items-center gap-1.5">
-            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              class="h-4 w-4 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
             </svg>
             {shownDate}{data.time ? ` · ${data.time}` : ""}
           </span>
-          {data.venue && (
-            <span class="flex items-center gap-1.5">
-              <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              {data.venue}
-            </span>
-          )}
+          {
+            data.venue && (
+              <span class="flex items-center gap-1.5">
+                <svg
+                  class="h-4 w-4 text-slate-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                {data.venue}
+              </span>
+            )
+          }
         </div>
-        {!data.dateConfirmed && (
-          <p class="mt-3 text-xs text-slate-400 italic">The original poster did not print a year; the date is shown exactly as printed.</p>
-        )}
+        {
+          upcoming && data.notes && (
+            <p class="event-confirmation-note mt-5">{data.notes}</p>
+          )
+        }
+        {
+          !data.dateConfirmed && (
+            <p class="mt-3 text-xs text-slate-400 italic">
+              The original poster did not print a year; the date is shown
+              exactly as printed.
+            </p>
+          )
+        }
       </div>
     </div>
   </section>
@@ -126,18 +228,22 @@ const partners = data.partners.length > 0 ? data.partners : data.collaborators;
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-12 items-start">
       <div>
         <!-- Poster -->
-        {data.posterImage && (
-          <figure class="mb-10">
-            <img
-              src={`/community/${data.posterImage}`}
-              alt={`Event poster — ${data.title}`}
-              class="w-full max-w-xl rounded-2xl border border-slate-200 bg-slate-50"
-              loading="lazy"
-              decoding="async"
-            />
-            <figcaption class="mt-2 text-xs text-slate-400">Original event poster.</figcaption>
-          </figure>
-        )}
+        {
+          data.posterImage && (
+            <figure class="mb-10">
+              <img
+                src={`/community/${data.posterImage}`}
+                alt={`Event poster — ${data.title}`}
+                class="w-full max-w-xl rounded-2xl border border-slate-200 bg-slate-50"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="mt-2 text-xs text-slate-400">
+                Original event poster.
+              </figcaption>
+            </figure>
+          )
+        }
 
         <!-- Body content -->
         <section class="mb-12">
@@ -147,41 +253,57 @@ const partners = data.partners.length > 0 ? data.partners : data.collaborators;
         </section>
 
         <!-- Talks / Speakers -->
-        {talks.length > 0 && (
-          <section class="mb-12">
-            <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
-              Speakers &amp; Talks
-            </h2>
-            <ul class="space-y-5">
-              {talks.map((t) => (
-                <li>
-                  <p class="text-sm font-semibold text-slate-900">{t.speaker}</p>
-                  {t.role && <p class="text-xs text-slate-500 leading-snug mt-0.5">{t.role}</p>}
-                  {t.talk && <p class="text-sm text-slate-600 italic mt-1">“{t.talk}”</p>}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        {
+          talks.length > 0 && (
+            <section class="mb-12">
+              <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
+                Speakers &amp; Talks
+              </h2>
+              <ul class="space-y-5">
+                {talks.map((t) => (
+                  <li>
+                    <p class="text-sm font-semibold text-slate-900">
+                      {t.speaker}
+                    </p>
+                    {t.role && (
+                      <p class="text-xs text-slate-500 leading-snug mt-0.5">
+                        {t.role}
+                      </p>
+                    )}
+                    {t.talk && (
+                      <p class="text-sm text-slate-600 italic mt-1">
+                        “{t.talk}”
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
 
         <!-- Photos -->
-        {data.photos.length > 0 && (
-          <section class="mb-12">
-            <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
-              Event Photos
-            </h2>
-            <GalleryGrid
-              photos={data.photos.map((p) => ({ file: p }))}
-              basePath="/community/"
-            />
-          </section>
-        )}
+        {
+          data.photos.length > 0 && (
+            <section class="mb-12">
+              <h2 class="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
+                Event Photos
+              </h2>
+              <GalleryGrid
+                photos={data.photos.map((p) => ({ file: p }))}
+                basePath="/community/"
+              />
+            </section>
+          )
+        }
       </div>
 
       <!-- Sidebar -->
       <aside class="lg:sticky lg:top-24">
         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+          <h3
+            class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4"
+          >
             Event Details
           </h3>
           <dl class="space-y-4">
@@ -189,43 +311,67 @@ const partners = data.partners.length > 0 ? data.partners : data.collaborators;
               <dt class="text-xs text-slate-400 mb-1">Date</dt>
               <dd class="text-sm font-medium text-slate-700">{shownDate}</dd>
             </div>
-            {data.time && (
-              <div>
-                <dt class="text-xs text-slate-400 mb-1">Time</dt>
-                <dd class="text-sm font-medium text-slate-700">{data.time}</dd>
-              </div>
-            )}
-            {data.venue && (
-              <div>
-                <dt class="text-xs text-slate-400 mb-1">Venue</dt>
-                <dd class="text-sm font-medium text-slate-700">{data.venue}</dd>
-              </div>
-            )}
-            {partners.length > 0 && (
-              <div>
-                <dt class="text-xs text-slate-400 mb-2">Partners</dt>
-                <dd class="flex flex-wrap gap-1.5">
-                  {partners.map((p) => (
-                    <span class="text-[0.65rem] font-medium text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-full">{p}</span>
-                  ))}
-                </dd>
-              </div>
-            )}
+            {
+              data.time && (
+                <div>
+                  <dt class="text-xs text-slate-400 mb-1">Time</dt>
+                  <dd class="text-sm font-medium text-slate-700">
+                    {data.time}
+                  </dd>
+                </div>
+              )
+            }
+            {
+              data.venue && (
+                <div>
+                  <dt class="text-xs text-slate-400 mb-1">Venue</dt>
+                  <dd class="text-sm font-medium text-slate-700">
+                    {data.venue}
+                  </dd>
+                </div>
+              )
+            }
+            {
+              partners.length > 0 && (
+                <div>
+                  <dt class="text-xs text-slate-400 mb-2">Partners</dt>
+                  <dd class="flex flex-wrap gap-1.5">
+                    {partners.map((p) => (
+                      <span class="text-[0.65rem] font-medium text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
+                        {p}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              )
+            }
           </dl>
 
-          {data.notes && (
-            <p class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-400 leading-relaxed">
-              {data.notes}
-            </p>
-          )}
+          {
+            data.notes && (
+              <p class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-400 leading-relaxed">
+                {data.notes}
+              </p>
+            )
+          }
 
           <div class="mt-5 pt-4 border-t border-slate-200">
             <a
               href="/quantum-community/events"
               class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 19l-7-7 7-7"></path>
               </svg>
               All events
             </a>
