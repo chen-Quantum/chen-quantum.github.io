@@ -1,0 +1,178 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import {
+  academicYear,
+  engineeringNotesPdf,
+  engineeringTutorials,
+} from "../../data/academicYear2026";
+const courses = (
+  await getCollection(
+    "teaching",
+    ({ data }) => !data.draft && data.status === "active",
+  )
+).sort(
+  (a, b) =>
+    (a.data.role === "Lecturer" ? 0 : 1) -
+      (b.data.role === "Lecturer" ? 0 : 1) ||
+    a.data.title.localeCompare(b.data.title),
+);
+---
+
+<Layout
+  title={`Courses ${academicYear}`}
+  description="Courses and tutorial notes for the 2026–2027 academic year. Linear Algebra for engineering students, with a topic-by-topic guide to Chen Gadi's notes."
+>
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">Teaching · Academic year 5787</p>
+      <h1>Courses <span class="cv-title-dot">2026–2027.</span></h1>
+      <p>
+        Your courses, tutorial notes, and classroom conversations in one place.
+      </p>
+      <div class="academic-actions mt-6">
+        <a class="academic-primary" href="#linear-algebra"
+          >Browse the tutorial notes ↓</a
+        ><a class="academic-secondary" href="/students">Student Hub ↗</a>
+      </div>
+    </div>
+  </section>
+  <div class="mx-auto max-w-6xl px-6 py-12 md:py-16">
+    <section aria-labelledby="year-courses">
+      <p class="edition-label">This academic year</p><h2
+        id="year-courses"
+        class="font-display text-3xl mb-7"
+      >
+        Courses &amp; classrooms
+      </h2>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          courses.map(({ data: c }) => (
+            <article class="contact-route flex flex-col">
+              <p class="academic-kicker">
+                {c.role} · {academicYear}
+              </p>
+              <h3 class="font-display text-2xl mt-4 mb-4">{c.title}</h3>
+              <p class="flex-1">{c.description}</p>
+              <div class="academic-actions mt-6">
+                <a
+                  class="academic-secondary"
+                  href={`/students?course=${c.courseId}`}
+                >
+                  Enter classroom ↗
+                </a>
+                {c.courseId.startsWith("linear-algebra-") && (
+                  <a class="text-link" href="#linear-algebra">
+                    Tutorial notes (Hebrew) ↓
+                  </a>
+                )}
+                {c.courseId === "linear-algebra-electrical" && (
+                  <a
+                    class="text-link"
+                    href="/teaching/linear-algebra-electrical/syllabus"
+                  >
+                    English syllabus ↗
+                  </a>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+    <section
+      id="linear-algebra"
+      class="mt-16 scroll-mt-24"
+      aria-labelledby="notes-title"
+    >
+      <div class="research-focus">
+        <p class="edition-label">
+          Linear Algebra for Engineering · {academicYear}
+        </p>
+        <h2 id="notes-title" class="font-display text-3xl mb-4">
+          Tutorial notes, explanations &amp; solutions.
+        </h2>
+        <p>
+          The complete 198-page handbook by Chen Gadi, with 13 tutorials and an
+          appendix on logic and proof methods. The PDF is in Hebrew; the topic
+          guide below is in English. These are study notes, not a replacement
+          for the lectures or official course announcements.
+        </p>
+        <div class="academic-actions mt-6">
+          <a
+            class="academic-primary"
+            href={engineeringNotesPdf}
+            target="_blank"
+            rel="noopener">Open the complete notes (PDF) ↗</a
+          ><a class="academic-secondary" href="/students?mode=logistics"
+            >Course logistics ↗</a>
+        </div>
+      </div>
+      <div class="mt-8 flex items-baseline justify-between gap-4 flex-wrap">
+        <h3 class="font-display text-2xl">Tutorial list</h3><p
+          class="text-sm text-slate-500"
+        >
+          Each link opens the relevant page in the handbook.
+        </p>
+      </div>
+      <ol
+        class="mt-5 grid gap-4 md:grid-cols-2"
+        aria-label="Linear Algebra tutorials"
+      >
+        {
+          engineeringTutorials.map((t) => (
+            <li
+              class="rounded-2xl border border-slate-200 bg-white p-6 flex gap-4 items-start"
+              data-tutorial={t.number}
+            >
+              <span
+                class="font-display text-3xl text-indigo-600 tabular-nums"
+                aria-hidden="true"
+              >
+                {String(t.number).padStart(2, "0")}
+              </span>
+              <div>
+                <>
+                  <p class="text-xs uppercase tracking-wider text-slate-500 mb-2">
+                    Tutorial {t.number}
+                  </p>
+                  <h4 class="font-semibold text-slate-900 mb-3">{t.title}</h4>
+                  <a
+                    class="text-link"
+                    href={`${engineeringNotesPdf}#page=${t.page}`}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Open tutorial {t.number} · PDF page {t.page} ↗
+                  </a>
+                </>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-6 text-sm text-slate-500">
+        PDF page numbers count from the cover. Some mobile viewers may open the
+        document at its beginning; use the PDF bookmarks to jump to a tutorial.
+      </p>
+      <div class="academic-actions mt-6">
+        <a
+          class="academic-secondary"
+          href={`${engineeringNotesPdf}#page=194`}
+          target="_blank"
+          rel="noopener">Appendix: logic &amp; proof methods ↗</a
+        ><a class="text-link" href="/teaching/linear-algebra"
+          >Earlier tutorial recordings ↗</a>
+      </div>
+    </section>
+    <section class="mt-16">
+      <h2 class="font-display text-2xl mb-4">Earlier materials</h2><p
+        class="text-slate-600 mb-5"
+      >
+        Recordings and practice sheets from earlier teaching remain available in
+        the teaching archive.
+      </p><a class="academic-secondary" href="/teaching#hedva-2"
+        >Calculus 2 &amp; recording archive ↗</a>
+    </section>
+  </div>
+</Layout>
