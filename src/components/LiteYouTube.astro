@@ -5,6 +5,8 @@
 //
 // These are UNLISTED videos — anyone with the link can view them. We do not claim
 // they are private or secure anywhere in the UI.
+import { youtubeVideos } from '../data/youtubeVideos';
+import { englishVideoTitle } from '../data/englishTeaching';
 interface Props {
   videoId: string;
   title: string;
@@ -15,7 +17,9 @@ interface Props {
   track?: string;
   note?: string;
 }
-const { title, thumbnail, embedUrl, url, duration, track, note } = Astro.props;
+const { title: sourceTitle, videoId, thumbnail, embedUrl, url, duration, track, note } = Astro.props;
+const sourceVideo = youtubeVideos.find(video => video.videoId === videoId);
+const title = sourceVideo ? englishVideoTitle(sourceVideo) : sourceTitle;
 ---
 
 <div class="flex flex-col rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -54,7 +58,7 @@ const { title, thumbnail, embedUrl, url, duration, track, note } = Astro.props;
         <span class="text-[0.6rem] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{note}</span>
       )}
     </div>
-    <p class="text-sm text-slate-700 leading-snug mb-3 flex-1" dir="rtl">{title}</p>
+    <p class="text-sm text-slate-700 leading-snug mb-3 flex-1" dir="ltr">{title}</p>
     <a
       href={url}
       target="_blank"

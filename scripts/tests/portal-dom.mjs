@@ -219,6 +219,11 @@ const input = (s) =>
   $(s).dispatchEvent(new window.Event("input", { bubbles: true }));
 const change = (s) =>
   $(s).dispatchEvent(new window.Event("change", { bubbles: true }));
+window.localStorage.setItem("cg-portal-lang", "he");
+check(
+  !/[\u0590-\u05ff]/.test($("#student-portal").textContent),
+  "first-load HTML is English before JavaScript runs",
+);
 window.eval(
   stripTypeScriptTypes(
     fs.readFileSync("src/scripts/student-portal.ts", "utf8"),
@@ -226,7 +231,18 @@ window.eval(
   ),
 );
 await until(() => $$('[data-form="join"]').length === 3);
-check($("#student-portal").dir === "rtl", "Hebrew interface starts in RTL");
+check(
+  $("#student-portal").dir === "ltr" && $("#student-portal").lang === "en",
+  "English interface starts in LTR despite an old Hebrew preference",
+);
+check(
+  !$("#portal-language"),
+  "no language control can switch the interface away from English",
+);
+check(
+  !/[\u0590-\u05ff]/.test($("#student-portal").textContent),
+  "student landing labels and course names are English",
+);
 check(
   window.localStorage.getItem("cg-portal-key").length === 64,
   "student recovery key is generated and persisted",
@@ -242,6 +258,10 @@ set(
 submit('[data-form="join"][data-course="linear-algebra-electrical"]');
 await until(() => $("#portal-notice").classList.contains("error"));
 check(
+  $("#portal-notice").textContent.includes("Incorrect class code"),
+  "validation errors are English",
+);
+check(
   $$('[data-form="join"]').length === 3,
   "incorrect class code keeps the student on the join screen",
 );
@@ -252,7 +272,8 @@ set(
 submit('[data-form="join"][data-course="linear-algebra-electrical"]');
 await until(
   () =>
-    $("#portal-board-tab") && !$("#portal-list").textContent.includes("טוען"),
+    $("#portal-board-tab") &&
+    !$("#portal-list").textContent.includes("Loading"),
 );
 check(
   $("#portal-course-select").value === "linear-algebra-electrical",
@@ -281,7 +302,7 @@ set('[data-form="answer"] textarea', "An anonymous peer reply");
 submit('[data-form="answer"]');
 await until(() => $$(".portal-reply").length === 1);
 check(
-  $(".portal-reply").textContent.includes("תשובה אנונימית"),
+  $(".portal-reply").textContent.includes("Anonymous reply"),
   "peer answer is labeled anonymous",
 );
 click('[data-action="vote"]');
@@ -299,7 +320,7 @@ click('[data-action="view-tickets"]');
 await until(
   () =>
     $("#portal-tickets-tab")?.getAttribute("aria-selected") === "true" &&
-    !$("#portal-list").textContent.includes("טוען"),
+    !$("#portal-list").textContent.includes("Loading"),
 );
 click('[data-action="compose"]');
 check(
@@ -320,15 +341,6 @@ check(
   copied === window.localStorage.getItem("cg-portal-key"),
   "copy recovery code uses the current private key",
 );
-click("#portal-language");
-check(
-  $("#student-portal").dir === "ltr" && $("#student-portal").lang === "en",
-  "English switch updates language and direction",
-);
-check(
-  $("#portal-list").textContent.includes("Private logistics"),
-  "language switch preserves loaded conversation data",
-);
 click("#portal-staff");
 set('[data-form="login"] input[name="email"]', "qa@example.invalid");
 set('[data-form="login"] input[name="password"]', "fixture-only");
@@ -337,6 +349,10 @@ await until(() => $$(".portal-code").length === 3 && $("#portal-board-tab"));
 check(
   $("#portal-content").textContent.includes("instructor dashboard"),
   "instructor gets a distinct management dashboard",
+);
+check(
+  !/[\u0590-\u05ff]/.test($("#portal-content").textContent),
+  "instructor dashboard and class codes use English labels",
 );
 check(
   $$(".portal-code").length === 3,

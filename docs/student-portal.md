@@ -1,12 +1,16 @@
 # Student Hub
 
-The public site stays on GitHub Pages. `/students` provides Hebrew and English
+The public site stays on GitHub Pages. `/students` provides an English interface for
 class discussions and private conversations. `/contact` routes all inquiries
 into this system. No email or WhatsApp submission is used.
 
+The student and instructor interfaces are English only, including first load,
+loading states, validation errors, course titles, and blocked-storage messages.
+Previous browser language preferences do not change the interface language.
+
 ## Instructor workflow
 
-1. Open `/students` and choose **Instructor sign in / כניסה למרצה**.
+1. Open `/students` and choose **Instructor sign in**.
 2. Sign in with the existing teaching-workspace account. No new password was
    created or assigned to the owner by this change.
 3. The dashboard shows open questions, active private requests, and the three
