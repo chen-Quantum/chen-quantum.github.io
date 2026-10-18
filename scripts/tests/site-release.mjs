@@ -45,6 +45,11 @@ for (const file of pages) {
   );
   const visible = document.body.cloneNode(true);
   visible.querySelectorAll("script,style").forEach((node) => node.remove());
+  // Course material may be Hebrew, while the site's surrounding UI stays English.
+  // The dedicated activity pages explicitly mark Hebrew teaching regions.
+  if (/teaching\/linear-algebra\/(lab|llm)\/index\.html$/.test(path.relative(dist, file))) {
+    visible.querySelectorAll('[lang="he"]').forEach((node) => node.remove());
+  }
   check(
     !/[\u0590-\u05ff]/.test(visible.textContent),
     path.relative(dist, file) + ": English interface text",
