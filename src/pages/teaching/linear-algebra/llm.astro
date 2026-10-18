@@ -1,0 +1,349 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import workshop from "../../../../public/files/linear-algebra-lab/llm-activities.json";
+import { escapeHtml } from "../../../lib/linearLabPlot.mjs";
+import "../../../styles/linear-lab.css";
+---
+
+<Layout
+  title="Guided LLM Activities | Linear Algebra"
+  description="Eight guided Linear Algebra activities by Chen Gadi: create plots with an LLM, identify missing assumptions, and verify answers independently. Learning content in Hebrew."
+>
+  <div class="la-lab" dir="ltr" lang="en" id="linear-llm">
+    <header class="la-llm-hero">
+      <div class="la-container">
+        <a class="la-back" href="/teaching/linear-algebra/lab"
+          >← Back to the interactive lab</a
+        ><p class="la-eyebrow">Chen Gadi · Working critically with an LLM</p>
+        <h1>Ask better questions.<br />Check the answers yourself.</h1><p
+          class="la-lead"
+        >
+          Use an LLM to create a plot, explore an approach, or improve code.
+          Then verify the answer and its assumptions. The learning activities
+          below are in Hebrew.
+        </p>
+        <div class="la-actions">
+          <a href="#activities" class="la-button">Choose an activity ↓</a><a
+            href="#journal"
+            class="la-button la-secondary">My experiment notebook ↓</a
+          ><button type="button" id="llm-print" class="la-text-button"
+            >Print or save as PDF</button>
+        </div>
+        <p class="la-subtle">
+          Copy a prompt into your preferred model. This page does not call an
+          LLM automatically; no paid subscription is required.
+        </p>
+      </div>
+    </header>
+    <div class="la-container la-llm-content">
+      <section
+        class="la-protocol"
+        lang="he"
+        dir="rtl"
+        aria-labelledby="protocol-title"
+      >
+        <p class="la-eyebrow">הדרך חשובה כמו התשובה</p><h2 id="protocol-title">
+          אותו סדר עבודה בכל פעילות
+        </h2><ol>{workshop.protocol.map((p) => <li>{p}</li>)}</ol>
+        <p class="la-subtle">
+          אין כאן שאלה שמובטח שכל מודל יטעה בה. המטרה היא לבדוק טיעון מתמטי, גם
+          כשהתשובה נשמעת משכנעת וגם כשהיא נכונה.
+        </p>
+      </section>
+      <nav
+        id="activities"
+        class="la-llm-index"
+        aria-label="Choose an LLM activity"
+      >
+        {
+          workshop.activities.map((a, i) => (
+            <a href={`#${a.id}`} lang="he" dir="rtl">
+              {String(i + 1).padStart(2, "0")} · {a.title}
+            </a>
+          ))
+        }
+      </nav>
+      {
+        workshop.activities.map((a, i) => (
+          <article
+            class="la-llm-card"
+            lang="he"
+            dir="rtl"
+            id={a.id}
+            aria-labelledby={`title-${a.id}`}
+          >
+            <>
+              <p class="la-eyebrow" lang="en" dir="ltr">
+                Activity {i + 1} · Homework {a.homework} · After tutorial{" "}
+                {a.tutorial}
+              </p>
+              <h2 id={`title-${a.id}`}>{a.title}</h2>
+              <p>{a.purpose}</p>
+            </>
+            <>
+              <h3>01 · לפני שפונים למודל</h3>
+              <p>{a.prediction}</p>
+            </>
+            <>
+              <h3>02 · הנחיה שאותה בודקים</h3>
+              <pre class="la-prompt" id={`prompt-${a.id}`} tabindex="0" set:html={escapeHtml(a.prompt)} />
+              <button
+                class="la-text-button"
+                lang="en"
+                dir="ltr"
+                data-copy={`prompt-${a.id}`}
+                type="button"
+              >
+                Copy prompt ⧉
+              </button>
+              <p
+                class="la-copy-status"
+                id={`copy-status-${a.id}`}
+                role="status"
+              />
+            </>
+            <p class="la-subtle">
+              בחלק מההנחיות משולבת בכוונה הנחה שיש לבדוק. הוראת הפתרון המחייבת
+              היא לברר אם ההנחה תקפה, ולא לאמץ אותה.
+            </p>
+            <>
+              <h3>03 · העבודה שלכם</h3>
+              <ol>
+                {a.tasks.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ol>
+            </>
+            <div class="la-evidence" aria-label="תוצרי הפעילות">
+              {a.deliverables.map((d) => (
+                <span>{d}</span>
+              ))}
+            </div>
+            <div class="la-actions" style="margin-top:18px">
+              <>
+                <a
+                  class="la-text-button"
+                  lang="en"
+                  dir="ltr"
+                  href={`/teaching/linear-algebra/lab#tutorial-${a.tutorial}`}
+                >
+                  Related interactive lab ↗
+                </a>
+                <button
+                  class="la-text-button"
+                  lang="en"
+                  dir="ltr"
+                  type="button"
+                  data-journal={a.id}
+                >
+                  Open this activity in my notebook ↓
+                </button>
+              </>
+            </div>
+            <details>
+              <>
+                <summary>רמז להנחיה מדויקת יותר</summary>
+                <pre
+                  class="la-prompt"
+                  id={`repair-${a.id}`}
+                  style="margin-top:15px"
+                  set:html={escapeHtml(a.repairedPrompt)}
+                />
+                <button
+                  type="button"
+                  class="la-text-button"
+                  lang="en"
+                  dir="ltr"
+                  data-copy={`repair-${a.id}`}
+                >
+                  Copy revised prompt ⧉
+                </button>
+              </>
+            </details>
+            <details>
+              <>
+                <summary>לניתוח כשאין גישה למודל: תשובת דוגמה שגויה</summary>
+                <p class="la-flawed">{a.flawedExample}</p>
+                <p class="la-subtle">
+                  זהו טקסט לימודי שנכתב לפעילות. הוא אינו תיעוד של תשובת
+                  ChatGPT, Gemini או מודל אחר.
+                </p>
+              </>
+            </details>
+            <details class="llm-solution">
+              <summary>לאחר ניסיון עצמאי: דרך בדיקה ופתרון</summary>
+              {a.solution.map((p) => (
+                <p>{p}</p>
+              ))}
+            </details>
+          </article>
+        ))
+      }
+      <section id="journal" class="la-journal" aria-labelledby="journal-title">
+        <p class="la-eyebrow">From prediction to evidence</p><h2
+          id="journal-title"
+        >
+          My experiment notebook
+        </h2><p class="la-subtle">
+          Notes stay in this browser. They are not sent to Chen or submitted for
+          grading. Download all records as a text file. No name or student ID is
+          needed.
+        </p>
+        <form id="llm-journal-form">
+          <label for="llm-activity">Activity</label><select id="llm-activity"
+            >{
+              workshop.activities.map((a, i) => (
+                <option value={a.id} lang="he" dir="rtl">
+                  {i + 1} · {a.title}
+                </option>
+              ))
+            }</select
+          >
+          <div class="la-journal-fields">
+            <div>
+              <label for="llm-model">Model and version as displayed</label
+              ><input
+                id="llm-model"
+                maxlength="200"
+                placeholder="If no version is shown, say so"
+                autocomplete="off"
+              />
+            </div>
+            <div>
+              <label for="llm-date">Date of experiment</label><input
+                type="date"
+                id="llm-date"
+              />
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-prediction"
+                >My prediction and independent attempt</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-prediction"
+                rows="3"
+                maxlength="12000"></textarea>
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-prompt">The prompt I actually sent</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-prompt"
+                rows="4"
+                maxlength="20000"></textarea>
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-response"
+                >Original response, or the clearly labelled teaching example</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-response"
+                rows="5"
+                maxlength="30000"></textarea>
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-check"
+                >My verification: definition, substitution, or counterexample</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-check"
+                rows="4"
+                maxlength="20000"></textarea>
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-revision"
+                >Revised prompt and changes in the response</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-revision"
+                rows="4"
+                maxlength="20000"></textarea>
+            </div>
+            <div class="la-journal-field-wide">
+              <label for="llm-conclusion"
+                >My conclusion and what remains unchecked</label
+              ><textarea
+                dir="auto"
+                lang="he"
+                id="llm-conclusion"
+                rows="3"
+                maxlength="12000"></textarea>
+            </div>
+          </div><div class="la-actions">
+            <button type="submit" class="la-button"
+              >Save this record in my browser ✓</button
+            ><button
+              type="button"
+              id="llm-export"
+              class="la-button la-secondary">Download all my records ↓</button>
+          </div><p id="llm-journal-status" class="la-copy-status" role="status">
+          </p>
+        </form>
+      </section>
+      <section class="la-protocol" lang="he" dir="rtl">
+        <h2>כלי עזר שאפשר לבדוק</h2><p>
+          אחרי החישוב העצמאי אפשר להריץ את בדיקות הדוגמאות ב־Python, או להשתמש
+          בקוד ההתחלתי לגרפים. הרצה מוצלחת אינה מחליפה הוכחה כללית.
+        </p><div class="la-actions">
+          <a
+            class="la-text-button"
+            lang="en"
+            dir="ltr"
+            href="/files/linear-algebra-lab/verify_examples.py"
+            download>Exact example checks (Python) ↓</a
+          ><a
+            class="la-text-button"
+            lang="en"
+            dir="ltr"
+            href="/files/linear-algebra-lab/plot_starter.py"
+            download>Starter plotting code ↓</a
+          ><a
+            class="la-text-button"
+            lang="en"
+            dir="ltr"
+            href="/files/linear-algebra-lab/llm-activities.json"
+            download>Activity pack (JSON) ↓</a>
+        </div><p class="la-subtle">
+          קוד הבדיקה משתמש בספרייה התקנית של Python. קוד הגרפים דורש Matplotlib;
+          ההנחיות נמצאות בראש הקובץ.
+        </p>
+      </section>
+      <details class="la-teacher" lang="he" dir="rtl">
+        <summary>לחן ולצוות ההוראה: שילוב, מחוון ומקורות</summary><p>
+          שמונה פעילויות חדשות משולבות לפי נושא במטלות 1, 2, 3, 6, 9 ו־11. במטלה
+          11 שלוש פעילויות, המתאימות לשלבים שונים: לכסון, היטלים ומכפלה פנימית
+          מרוכבת. בוחרים פעילות לפי הנושאים שכבר נלמדו. הוראות ההגשה הקובעות
+          מתפרסמות בעמוד הקורס.
+        </p><p>{workshop.teacherNotes.grading}</p><p>
+          {workshop.teacherNotes.success}
+        </p><p>{workshop.teacherNotes.evidence}</p>{
+          workshop.teacherNotes.research.map((r) => (
+            <p>
+              <a href={r.url} target="_blank" rel="noopener noreferrer">
+                {r.title} ↗
+              </a>{" "}
+              · {r.note}
+            </p>
+          ))
+        }
+      </details>
+      <p class="la-subtle">
+        Questions for Chen? Use the <a href="/students" class="la-text-button"
+          >Student Hub ↗</a>
+      </p>
+    </div>
+  </div>
+  <script
+    id="llm-workshop-data"
+    type="application/json"
+    set:html={JSON.stringify(workshop).replace(/</g, "\\u003c")}
+  />
+  <script>
+    import "../../../scripts/linear-llm.js";
+  </script>
+</Layout>
