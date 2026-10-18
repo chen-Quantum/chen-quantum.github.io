@@ -2,7 +2,8 @@
 
 The public site stays on GitHub Pages. `/students` provides an English interface for
 class discussions and private conversations. `/contact` routes all inquiries
-into this system. No email or WhatsApp submission is used.
+into this system. Messages and replies stay on the site; no outgoing email is sent.
+The course logistics form collects an email address privately for identification.
 
 The student and instructor interfaces are English only, including first load,
 loading states, validation errors, course titles, and blocked-storage messages.
@@ -17,7 +18,8 @@ Previous browser language preferences do not change the interface language.
    class access codes. Share each code in the appropriate class.
 4. Select a class. Official replies identify Chen; peer replies stay anonymous.
    The instructor can pin, hide, close, or reopen discussions and hide replies.
-5. Under Student requests, reply privately and update the request status.
+5. Under Student requests, review the selected course and submitted contact email
+   for logistics requests, reply privately on the site, and update the request status.
    A student's follow-up reopens a resolved request.
 
 The current owner account is registered server-side in `student_portal_staff`.
@@ -30,8 +32,16 @@ access to these private conversations.
   not independent verification of enrollment.
 - Post course questions or anonymous peer replies. Only instructor replies are
   marked official. Students can add an “I have this question too” vote once.
-- Open private requests for logistical, material, or personal matters. A name
-  is optional and appears only within that private conversation.
+- Use **Write a logistics request** (or `/students?mode=logistics`) for course
+  logistics. Select one of the three courses and provide a valid email address.
+  Both are required in the browser and API; the database also enforces contact
+  details on newly identified logistics requests. A name is optional.
+- Other private requests for material or personal matters remain available
+  through the classroom. Anonymous Q&A does not collect email.
+- **My private requests** (`/students?mode=requests`) lists the sender’s private
+  conversations across courses. Logistics requires no classroom code and does
+  not grant access to class discussions. The private recovery code remains the
+  access key; the submitted email does not authenticate ownership.
 - Read replies on the website. No outgoing email notification is sent.
 - Save the private recovery code. Browser storage preserves access on this
   device. The recovery code restores the same conversations on another device.
@@ -65,7 +75,17 @@ access to these private conversations.
 `supabase/student-portal.sql` records the complete schema, including the explicit
 deny policies added in the follow-up migration. The live migration history has
 `add_student_communication_portal` and
-`explicitly_deny_direct_student_portal_access`.
+`explicitly_deny_direct_student_portal_access`, and
+`add_private_logistics_contact_details`. Existing requests remain readable with
+nullable contact details. New logistics requests are marked separately.
+
+`my_tickets` always filters by the hashed visitor capability. `ticket_message`
+checks both that hash and the matching course/ticket pair before writing a
+student follow-up; staff access still requires verified Auth plus the allowlist.
+
+The Supabase security advisor found no table/RLS issues in this change. It also
+reported the existing disabled [leaked-password protection setting](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+No authentication plan or billing changes were made.
 
 To deploy API changes, deploy `supabase/functions/student-portal/index.ts` as
 `student-portal` in the teaching project. Keep its own authentication checks and
@@ -87,3 +107,9 @@ GitHub Pages workflow when `main` changes.
 
 The instructor's login credentials are deliberately absent from this repository.
 Class codes are generated in the database and are not checked into source.
+
+The offline `scripts/tests/portal-api.mjs` runs the actual Edge Function with an
+in-memory REST boundary, including contact validation, cross-user isolation,
+private replies without classroom membership, and anonymous-board privacy. It
+creates no production records. The DOM suite covers the logistics and inbox
+links, required fields, selected course, and private email display.

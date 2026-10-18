@@ -44,6 +44,9 @@ type Question = {
 };
 type Ticket = {
   id: string;
+  course_id: string;
+  student_email?: string | null;
+  request_kind?: "private" | "logistics";
   subject: string;
   body: string;
   category: string;
@@ -68,6 +71,7 @@ const state = {
   session: null as StaffSession | null,
   view: "board",
   compose: "",
+  logisticsCourse: "",
   questions: [] as Question[],
   tickets: [] as Ticket[],
   offset: 0,
@@ -103,6 +107,11 @@ function errorText(error: unknown) {
     rate_limit: "Too many requests. Please try again in a few minutes.",
     join_required: "Join this class with its access code first.",
     invalid_input: "Please check the fields and text length.",
+    email_required: "Enter your email address for a logistics request.",
+    invalid_email: "Enter a valid email address, such as name@example.com.",
+    course_required: "Choose the course your logistics request concerns.",
+    logistics_form_required:
+      "For logistics, use the Course logistics form with your email and course. Refresh this page if needed.",
     thread_closed: "This discussion is closed to new replies.",
     staff_session_expired:
       "Your instructor session expired. Please sign in again.",
@@ -200,7 +209,20 @@ function recovery() {
 }
 function landing() {
   const courses = state.courses.filter((c) => c.board_enabled);
-  return `<div class="portal-section-head"><div><h2>${"Your classroom, in one place"}</h2><p class="portal-muted">${"Choose your class and enter the code shared in class. No email or registration needed."}</p></div>${button("Refresh", "refresh-config")}</div><div class="portal-grid">${courses.map((c, i) => `<article class="portal-card portal-course"><span class="portal-course-number">0${i + 1} / ${c.role === "Lecturer" ? "LECTURE" : "TUTORIAL"}</span><h3>${escapeHtml(courseTitle(c))}</h3><p class="portal-muted">${"Anonymous discussions and private requests to Chen"}</p><form class="portal-form" data-form="join" data-course="${escapeHtml(c.id)}">${state.members.includes(c.id) ? "" : `<label><span class="portal-label">${"Class code"}</span><input name="code" required maxlength="24" autocomplete="off" autocapitalize="characters" dir="ltr" /></label>`}<button class="portal-button">${state.members.includes(c.id) ? "Return to my class" : "Enter classroom"}</button></form></article>`).join("")}</div><div class="portal-card portal-section-head"><div><h3>${"General inquiry, research or collaboration?"}</h3><p class="portal-muted">${"Start a private conversation here without a class code."}</p></div>${button("Start a private request", "general", "", "")}</div>${recovery()}`;
+  return `<div class="portal-contact-routes"><section class="portal-card"><p class="portal-eyebrow">COURSE LOGISTICS</p><h3>A private request with contact details</h3><p class="portal-muted">Choose your course and provide your email. Replies stay here. No class code is needed for this form.</p>${button("Write a logistics request", "logistics")}</section><section class="portal-card"><p class="portal-eyebrow">YOUR CONVERSATIONS</p><h3>Return to your private requests</h3><p class="portal-muted">Read replies and follow up using this browser or your saved recovery code.</p>${button("My private requests", "inbox", "", "secondary")}</section></div><div class="portal-section-head"><div><h2>${"Your classroom, in one place"}</h2><p class="portal-muted">${"Choose your class and enter the code shared in class. No email or registration needed."}</p></div>${button("Refresh", "refresh-config")}</div><div class="portal-grid">${courses.map((c, i) => `<article class="portal-card portal-course"><span class="portal-course-number">0${i + 1} / ${c.role === "Lecturer" ? "LECTURE" : "TUTORIAL"}</span><h3>${escapeHtml(courseTitle(c))}</h3><p class="portal-muted">${"Anonymous discussions and private requests to Chen"}</p><form class="portal-form" data-form="join" data-course="${escapeHtml(c.id)}">${state.members.includes(c.id) ? "" : `<label><span class="portal-label">${"Class code"}</span><input name="code" required maxlength="24" autocomplete="off" autocapitalize="characters" dir="ltr" /></label>`}<button class="portal-button">${state.members.includes(c.id) ? "Return to my class" : "Enter classroom"}</button></form></article>`).join("")}</div><div class="portal-card portal-section-head"><div><h3>${"General inquiry, research or collaboration?"}</h3><p class="portal-muted">${"Start a private conversation here without a class code."}</p></div>${button("Start a private request", "general", "", "")}</div>${recovery()}`;
+}
+function logisticsForm() {
+  const courses = state.courses.filter((course) => course.board_enabled);
+  return `<section class="portal-card portal-logistics"><div class="portal-section-head"><div><p class="portal-eyebrow">PRIVATE COURSE LOGISTICS</p><h2>A practical question? Start here.</h2></div>${button("Back to the Student Hub", "landing", "", "secondary")}</div><p class="portal-muted">Choose your course and enter your email address. These details stay within your private request, visible only to you and Chen. Your email is for identification; replies appear on this website.</p><form class="portal-form" data-form="logistics"><div class="portal-form-row"><label><span class="portal-label">Course (required)</span><select name="course" required><option value="" disabled ${state.logisticsCourse ? "" : "selected"}>Choose a course</option>${courses.map((course) => `<option value="${escapeHtml(course.id)}" ${state.logisticsCourse === course.id ? "selected" : ""}>${escapeHtml(courseTitle(course))}</option>`).join("")}</select></label><label><span class="portal-label">Email address (required)</span><input type="email" name="student_email" required maxlength="254" autocomplete="email" inputmode="email" dir="ltr" placeholder="name@example.com" /></label></div><label><span class="portal-label">Name (optional)</span><input name="student_name" maxlength="120" autocomplete="name" dir="auto" /></label><label><span class="portal-label">Subject</span><input name="subject" required minlength="4" maxlength="180" dir="auto" /></label><label><span class="portal-label">Your logistics question</span><textarea name="body" required minlength="5" maxlength="8000" rows="6" dir="auto"></textarea></label><label class="portal-checkbox"><input type="checkbox" required /><span>I have saved my recovery code and will check My private requests for replies on this website.</span></label><div class="portal-form-actions"><button class="portal-button">Send private logistics request</button>${button("Cancel", "landing", "", "secondary")}</div></form></section>${recovery()}`;
+}
+function inbox() {
+  return `<div class="portal-section-head"><div><p class="portal-eyebrow">YOUR PRIVATE INBOX</p><h2>My private requests</h2><p class="portal-muted">Conversations from all your courses, including logistics requests. Email details stay private.</p></div><div class="portal-form-actions">${button("Student Hub", "landing", "", "secondary")}${button("Refresh", "refresh", "", "secondary")}</div></div><div class="portal-form-actions portal-inbox-actions">${button("+ Logistics request", "logistics")}</div><div class="portal-list" id="portal-list">${list()}</div><div class="portal-more">${state.offset ? button("Previous", "previous") : ""}${state.more ? button("Next", "next") : ""}</div>${recovery()}`;
+}
+async function openInbox() {
+  state.phase = "inbox";
+  state.view = "tickets";
+  state.compose = "";
+  await loadView(true);
 }
 function login() {
   return `<section class="portal-card portal-login"><p class="portal-eyebrow">INSTRUCTOR ACCESS</p><h2>${"Instructor sign in"}</h2><p class="portal-muted">${"Use your existing teaching workspace account. Account details are used for sign-in only. Messages and replies stay on the website."}</p><form class="portal-form" data-form="login"><label><span class="portal-label">${"Teaching workspace account"}</span><input type="email" name="email" autocomplete="username" dir="ltr" required /></label><label><span class="portal-label">${"Password"}</span><input type="password" name="password" autocomplete="current-password" required /></label><div class="portal-form-actions"><button class="portal-button">${"Sign in"}</button>${button("Back", "landing")}</div></form></section>`;
@@ -219,19 +241,19 @@ function dashboard() {
 function compose() {
   if (!state.compose) return "";
   const q = state.compose === "question";
-  return `<section class="portal-card portal-compose"><h2>${q ? "Ask your class" : "Private request to Chen"}</h2><p class="portal-muted">${q ? "Your question appears without a name to your class. Include the tutorial and exercise number where useful. Keep personal information off the board." : "Only you and Chen can access this conversation. Return to My requests to read replies and continue the conversation."}</p><form class="portal-form" data-form="${q ? "question" : "ticket"}"><div class="portal-form-row"><label><span class="portal-label">${"Category"}</span><select name="category">${options(q ? ["concept", "exercise", "logistics", "technical"] : ["logistics", "material", "personal", "other"], categoryLabel)}</select></label>${q ? "" : `<label><span class="portal-label">${"Name or identifying detail, only if needed (optional)"}</span><input name="student_name" maxlength="120" dir="auto" autocomplete="off" /></label>`}</div><label><span class="portal-label">${"Subject"}</span><input name="${q ? "title" : "subject"}" required minlength="4" maxlength="180" dir="auto" /></label><label><span class="portal-label">${"Message"}</span><textarea name="body" required minlength="5" maxlength="8000" rows="6" dir="auto"></textarea></label><label class="portal-checkbox"><input type="checkbox" required /><span>${q ? "I understand this will appear anonymously on the class board and have not included personal information." : "I have saved my recovery code and will check for replies here."}</span></label><div class="portal-form-actions"><button class="portal-button">${q ? "Post anonymous question" : "Send private request"}</button>${button("Cancel", "cancel-compose")}</div></form></section>`;
+  return `<section class="portal-card portal-compose"><h2>${q ? "Ask your class" : "Private request to Chen"}</h2><p class="portal-muted">${q ? "Your question appears without a name to your class. Include the tutorial and exercise number where useful. Keep personal information off the board." : "Only you and Chen can access this conversation. Return to My requests to read replies and continue the conversation."}</p><form class="portal-form" data-form="${q ? "question" : "ticket"}"><div class="portal-form-row"><label><span class="portal-label">${"Category"}</span><select name="category">${options(q ? ["concept", "exercise", "logistics", "technical"] : ["material", "personal", "other"], categoryLabel)}</select></label>${q ? "" : `<label><span class="portal-label">${"Name or identifying detail, only if needed (optional)"}</span><input name="student_name" maxlength="120" dir="auto" autocomplete="off" /></label>`}</div><label><span class="portal-label">${"Subject"}</span><input name="${q ? "title" : "subject"}" required minlength="4" maxlength="180" dir="auto" /></label><label><span class="portal-label">${"Message"}</span><textarea name="body" required minlength="5" maxlength="8000" rows="6" dir="auto"></textarea></label><label class="portal-checkbox"><input type="checkbox" required /><span>${q ? "I understand this will appear anonymously on the class board and have not included personal information." : "I have saved my recovery code and will check for replies here."}</span></label><div class="portal-form-actions"><button class="portal-button">${q ? "Post anonymous question" : "Send private request"}</button>${button("Cancel", "cancel-compose")}</div></form></section>`;
 }
 function reply(message: Message, questionId?: string) {
   return `<div class="portal-reply ${message.official ? "official" : ""}"><div class="portal-tags"><span class="portal-badge ${message.official ? "official" : ""}">${message.official ? "Chen Gadi · Instructor" : "Anonymous reply"}</span>${message.hidden ? `<span class="portal-badge hidden">${"Hidden"}</span>` : ""}<time class="portal-meta">${date(message.created_at)}</time></div><p class="portal-text" dir="auto">${escapeHtml(message.body)}</p>${state.staff && questionId ? button(message.hidden ? "Show reply" : "Hide reply", "moderate-answer", `data-id="${questionId}" data-answer="${message.id}" data-hidden="${!message.hidden}"`) : ""}</div>`;
 }
-function answerForm(id: string, ticket = false) {
-  return `<form class="portal-form" data-form="${ticket ? "ticket_message" : "answer"}" data-id="${id}"><label><span class="portal-label">${state.staff ? "Your instructor reply" : ticket ? "Continue this private conversation" : "Your anonymous reply"}</span><textarea name="body" required minlength="2" maxlength="8000" rows="3" dir="auto"></textarea></label><div><button class="portal-button small">${"Send reply"}</button></div></form>`;
+function answerForm(id: string, ticket = false, course = state.course) {
+  return `<form class="portal-form" data-form="${ticket ? "ticket_message" : "answer"}" data-id="${id}" data-course="${escapeHtml(course)}"><label><span class="portal-label">${state.staff ? "Your instructor reply" : ticket ? "Continue this private conversation" : "Your anonymous reply"}</span><textarea name="body" required minlength="2" maxlength="8000" rows="3" dir="auto"></textarea></label><div><button class="portal-button small">${"Send reply"}</button></div></form>`;
 }
 function questionCard(q: Question) {
   return `<article class="portal-card"><div class="portal-tags"><span class="portal-badge ${q.status}">${statusLabel(q.status)}</span><span class="portal-badge">${categoryLabel(q.category)}</span>${q.own ? `<span class="portal-badge">${"My question"}</span>` : ""}${q.pinned ? `<span class="portal-badge">${"Pinned"}</span>` : ""}${q.hidden ? `<span class="portal-badge hidden">${"Hidden from class"}</span>` : ""}</div><div class="portal-question-head"><h3 dir="auto">${escapeHtml(q.title)}</h3></div><p class="portal-text" dir="auto">${escapeHtml(q.body)}</p><p class="portal-meta">${"Anonymous question"} · ${date(q.created_at)}</p><div class="portal-question-actions"><span class="portal-meta">${q.answers.length} ${"replies"}</span><button class="portal-vote" data-action="vote" data-id="${q.id}" aria-pressed="${q.voted}">+1 · ${q.votes} ${"I have this question too"}</button></div><details class="portal-replies"><summary>${"Read replies & join the discussion"}</summary>${q.answers.map((a) => reply(a, q.id)).join("")}${q.status === "closed" && !state.staff ? `<p class="portal-muted">${"This discussion is closed to new replies."}</p>` : answerForm(q.id)}</details>${state.staff ? `<div class="portal-admin-actions"><label class="portal-label">${"Discussion status"}<select data-moderate-question="${q.id}">${options(["open", "answered", "closed"], statusLabel, q.status)}</select></label>${button(q.pinned ? "Unpin" : "Pin", "pin", `data-id="${q.id}"`)}${button(q.hidden ? "Show to class" : "Hide from class", "hide-question", `data-id="${q.id}"`)}</div>` : ""}</article>`;
 }
 function ticketCard(t: Ticket) {
-  return `<article class="portal-card"><div class="portal-tags"><span class="portal-badge ${t.status}">${statusLabel(t.status)}</span><span class="portal-badge">${categoryLabel(t.category)}</span><span class="portal-meta">${"Private conversation"}</span></div><h3 dir="auto">${escapeHtml(t.subject)}</h3>${t.student_name ? `<p class="portal-meta portal-break" dir="auto">${escapeHtml(t.student_name)}</p>` : ""}<p class="portal-text" dir="auto">${escapeHtml(t.body)}</p><p class="portal-meta">${date(t.updated_at)} · <span class="portal-ticket-id">#${t.id}</span></p><details class="portal-replies"><summary>${"Open conversation"} · ${t.messages.length} ${"replies"}</summary>${t.messages.map((m) => reply(m)).join("")}${answerForm(t.id, true)}</details>${state.staff ? `<div class="portal-admin-actions"><label class="portal-label">${"Request status"}<select data-ticket-status="${t.id}">${options(["open", "in_progress", "resolved"], statusLabel, t.status)}</select></label></div>` : ""}</article>`;
+  return `<article class="portal-card"><div class="portal-tags"><span class="portal-badge ${t.status}">${statusLabel(t.status)}</span><span class="portal-badge">${categoryLabel(t.category)}</span><span class="portal-meta">${"Private conversation"}</span></div><h3 dir="auto">${escapeHtml(t.subject)}</h3>${t.student_name ? `<p class="portal-meta portal-break" dir="auto">${escapeHtml(t.student_name)}</p>` : ""}<dl class="portal-private-contact"><div><dt>Course</dt><dd>${escapeHtml(state.courses.find((course) => course.id === t.course_id)?.title || t.course_id)}</dd></div>${t.student_email ? `<div><dt>Email</dt><dd class="portal-break" data-private-email>${escapeHtml(t.student_email)}</dd></div>` : ""}</dl><p class="portal-text" dir="auto">${escapeHtml(t.body)}</p><p class="portal-meta">${date(t.updated_at)} · <span class="portal-ticket-id">#${t.id}</span></p><details class="portal-replies"><summary>${"Open conversation"} · ${t.messages.length} ${"replies"}</summary>${t.messages.map((m) => reply(m)).join("")}${answerForm(t.id, true, t.course_id)}</details>${state.staff ? `<div class="portal-admin-actions"><label class="portal-label">${"Request status"}<select data-ticket-status="${t.id}">${options(["open", "in_progress", "resolved"], statusLabel, t.status)}</select></label></div>` : ""}</article>`;
 }
 function list() {
   const board = state.view === "board";
@@ -241,7 +263,7 @@ function list() {
     const all =
       "title" in item
         ? `${item.title} ${item.body} ${item.answers.map((a) => a.body).join(" ")}`
-        : `${item.subject} ${item.body} ${item.student_name} ${item.messages.map((m) => m.body).join(" ")}`;
+        : `${item.subject} ${item.body} ${item.student_name} ${item.student_email || ""} ${item.messages.map((m) => m.body).join(" ")}`;
     return (
       (state.status === "all" || item.status === state.status) &&
       (state.category === "all" || item.category === state.category) &&
@@ -257,16 +279,20 @@ function workspace() {
     return landing();
   }
   const board = state.view === "board";
-  return `${dashboard()}<div class="portal-section-head" style="margin-top:28px"><div><p class="portal-eyebrow">${state.staff ? "INSTRUCTOR VIEW" : "CLASSROOM"}</p><h2>${escapeHtml(courseTitle(c))}</h2></div><div>${button("Change class", "landing")}${state.staff ? " " + button("Sign out of instructor view", "logout") : ""}</div></div><label><span class="portal-label">${"Your classroom"}</span><select id="portal-course-select">${(state.staff ? state.courses : state.courses.filter((c) => state.members.includes(c.id))).map((c) => `<option value="${escapeHtml(c.id)}" ${state.course === c.id ? "selected" : ""}>${escapeHtml(courseTitle(c))}</option>`).join("")}</select></label><div class="portal-resource-links">${c.id === "linear-algebra-electrical" ? `<a href="/teaching/linear-algebra-electrical/syllabus">English syllabus ↗</a>` : ""}<a href="/reading#for-students">Recommended resources ↗</a><a href="/teaching">${"Practice sheets & recordings"} ↗</a>${c.id.includes("linear-algebra") ? `<a href="/teaching/linear-algebra">${"Linear algebra recordings"} ↗</a>` : ""}</div><div class="portal-toolbar"><div class="portal-tabs" role="tablist" aria-label="${"Conversation type"}">${c.board_enabled ? `<button class="portal-tab" role="tab" data-action="view-board" aria-selected="${board}" aria-controls="portal-list" id="portal-board-tab">${"Anonymous Q&A"}</button>` : ""}<button class="portal-tab" role="tab" data-action="view-tickets" aria-selected="${!board}" aria-controls="portal-list" id="portal-tickets-tab">${state.staff ? "Student requests" : "My private requests"}</button></div><div class="portal-form-actions">${button("Refresh", "refresh")}${button(board ? "+ Ask anonymously" : "+ Private request", "compose", "", "")}</div></div>${compose()}<div class="portal-search"><input type="search" id="portal-search" value="${escapeHtml(state.search)}" aria-label="${"Search this page"}" placeholder="${"Search this page..."}" /><select id="portal-filter-status" aria-label="${"Filter by status"}"><option value="all">${"All statuses"}</option>${options(board ? ["open", "answered", "closed"] : ["open", "in_progress", "resolved"], statusLabel, state.status)}</select><select id="portal-filter-category" aria-label="${"Filter by category"}"><option value="all">${"All topics"}</option>${options(board ? ["concept", "exercise", "logistics", "technical"] : ["logistics", "material", "personal", "other"], categoryLabel, state.category)}</select></div><div id="portal-list" role="tabpanel" aria-labelledby="${board ? "portal-board-tab" : "portal-tickets-tab"}" class="portal-list">${list()}</div><div class="portal-more">${state.offset ? button("Previous", "previous") : ""}${state.more ? button("Next", "next") : ""}</div>${recovery()}`;
+  return `<div class="portal-route-actions">${button("Course logistics", "logistics", "", "secondary small")}${!state.staff ? button("All my private requests", "inbox", "", "secondary small") : ""}</div>${dashboard()}<div class="portal-section-head" style="margin-top:28px"><div><p class="portal-eyebrow">${state.staff ? "INSTRUCTOR VIEW" : "CLASSROOM"}</p><h2>${escapeHtml(courseTitle(c))}</h2></div><div>${button("Change class", "landing")}${state.staff ? " " + button("Sign out of instructor view", "logout") : ""}</div></div><label><span class="portal-label">${"Your classroom"}</span><select id="portal-course-select">${(state.staff ? state.courses : state.courses.filter((c) => state.members.includes(c.id))).map((c) => `<option value="${escapeHtml(c.id)}" ${state.course === c.id ? "selected" : ""}>${escapeHtml(courseTitle(c))}</option>`).join("")}</select></label><div class="portal-resource-links">${c.id === "linear-algebra-electrical" ? `<a href="/teaching/linear-algebra-electrical/syllabus">English syllabus ↗</a>` : ""}<a href="/reading#for-students">Recommended resources ↗</a><a href="/teaching">${"Practice sheets & recordings"} ↗</a>${c.id.includes("linear-algebra") ? `<a href="/teaching/linear-algebra">${"Linear algebra recordings"} ↗</a>` : ""}</div><div class="portal-toolbar"><div class="portal-tabs" role="tablist" aria-label="${"Conversation type"}">${c.board_enabled ? `<button class="portal-tab" role="tab" data-action="view-board" aria-selected="${board}" aria-controls="portal-list" id="portal-board-tab">${"Anonymous Q&A"}</button>` : ""}<button class="portal-tab" role="tab" data-action="view-tickets" aria-selected="${!board}" aria-controls="portal-list" id="portal-tickets-tab">${state.staff ? "Student requests" : "My private requests"}</button></div><div class="portal-form-actions">${button("Refresh", "refresh")}${button(board ? "+ Ask anonymously" : "+ Private request", "compose", "", "")}</div></div>${compose()}<div class="portal-search"><input type="search" id="portal-search" value="${escapeHtml(state.search)}" aria-label="${"Search this page"}" placeholder="${"Search this page..."}" /><select id="portal-filter-status" aria-label="${"Filter by status"}"><option value="all">${"All statuses"}</option>${options(board ? ["open", "answered", "closed"] : ["open", "in_progress", "resolved"], statusLabel, state.status)}</select><select id="portal-filter-category" aria-label="${"Filter by category"}"><option value="all">${"All topics"}</option>${options(board ? ["concept", "exercise", "logistics", "technical"] : ["logistics", "material", "personal", "other"], categoryLabel, state.category)}</select></div><div id="portal-list" role="tabpanel" aria-labelledby="${board ? "portal-board-tab" : "portal-tickets-tab"}" class="portal-list">${list()}</div><div class="portal-more">${state.offset ? button("Previous", "previous") : ""}${state.more ? button("Next", "next") : ""}</div>${recovery()}`;
 }
 function render() {
-  content.setAttribute("aria-busy", "false");
+  content.setAttribute("aria-busy", String(state.loading));
   content.innerHTML =
     state.phase === "login"
       ? login()
-      : state.phase === "workspace"
-        ? workspace()
-        : landing();
+      : state.phase === "logistics"
+        ? logisticsForm()
+        : state.phase === "inbox"
+          ? inbox()
+          : state.phase === "workspace"
+            ? workspace()
+            : landing();
 }
 async function loadView(reset = false) {
   if (reset) {
@@ -282,9 +308,16 @@ async function loadView(reset = false) {
   state.loading = true;
   render();
   try {
-    const data = await api(state.view === "board" ? "board" : "tickets", {
-      offset: state.offset,
-    });
+    const data = await api(
+      state.phase === "inbox"
+        ? "my_tickets"
+        : state.view === "board"
+          ? "board"
+          : "tickets",
+      {
+        offset: state.offset,
+      },
+    );
     if (n !== sequence) return;
     if (state.view === "board") state.questions = data.questions;
     else state.tickets = data.tickets;
@@ -318,6 +351,7 @@ root.addEventListener("submit", async (event) => {
   const form = event.target as HTMLFormElement;
   if (!form.dataset.form) return;
   event.preventDefault();
+  if (form.dataset.form === "logistics" && !form.reportValidity()) return;
   notice.hidden = true;
   const submit = form.querySelector<HTMLButtonElement>(
     "button[type=submit],button:not([type])",
@@ -335,7 +369,18 @@ root.addEventListener("submit", async (event) => {
         await api("join", { course: id, code: values.code });
         state.members.push(id);
       }
+      state.view = "board";
       await openCourse(id);
+    } else if (kind === "logistics") {
+      const result = await api("logistics", values);
+      try {
+        await openInbox();
+      } catch {
+        /* The request has already been saved. */
+      }
+      showNotice(
+        `Logistics request sent. Tracking ID: ${result.id}. Read replies in My private requests. No email is sent.`,
+      );
     } else if (kind === "login") {
       const res = await fetch(`${API_BASE}/auth/v1/token?grant_type=password`, {
         method: "POST",
@@ -369,10 +414,14 @@ root.addEventListener("submit", async (event) => {
       state.phase = "landing";
       render();
       showNotice(
-        "Access restored. Choose a class to return to your conversations.",
+        "Access restored. Open My private requests or choose your class to return to your conversations.",
       );
     } else {
-      const result = await api(kind!, { ...values, id: form.dataset.id });
+      const result = await api(kind!, {
+        ...values,
+        id: form.dataset.id,
+        ...(form.dataset.course ? { course: form.dataset.course } : {}),
+      });
       state.compose = "";
       await loadView();
       showNotice(
@@ -411,6 +460,21 @@ root.addEventListener("click", async (event) => {
       state.compose = "";
       render();
     }
+    if (action === "logistics") {
+      ++sequence;
+      state.loading = false;
+      state.logisticsCourse =
+        state.phase === "workspace" && selected()?.board_enabled
+          ? state.course
+          : "";
+      state.phase = "logistics";
+      state.compose = "";
+      render();
+      content
+        .querySelector<HTMLSelectElement>('select[name="course"]')
+        ?.focus();
+    }
+    if (action === "inbox") await openInbox();
     if (action === "general") {
       await api("join", { course: "general" });
       if (!state.members.includes("general")) state.members.push("general");
@@ -516,6 +580,7 @@ root.addEventListener("change", async (event) => {
       await api("ticket_status", {
         id: el.dataset.ticketStatus,
         status: el.value,
+        ...(el.dataset.course ? { course: el.dataset.course } : {}),
       });
       await loadView();
     }
@@ -546,10 +611,22 @@ async function bootstrap() {
         state.members = (await api("memberships")).courses;
       } else throw error;
     }
-    const queryCourse = new URLSearchParams(location.search).get("course");
+    const query = new URLSearchParams(location.search);
+    const queryCourse = query.get("course");
+    const mode = query.get("mode");
     if (state.staff) {
       state.dashboard = await api("dashboard");
       await openCourse(state.courses.find((c) => c.board_enabled)!.id);
+    } else if (mode === "logistics") {
+      state.logisticsCourse = state.courses.some(
+        (c) => c.id === queryCourse && c.board_enabled,
+      )
+        ? queryCourse!
+        : "";
+      state.phase = "logistics";
+      render();
+    } else if (mode === "requests") {
+      await openInbox();
     } else if (queryCourse === "general") {
       await api("join", { course: "general" });
       if (!state.members.includes("general")) state.members.push("general");

@@ -1,33 +1,67 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
-<Layout title="Contact" description="Contact Chen Gadi through the website. Course questions, private student requests, and general inquiries, with replies in the Student Hub.">
-  <section class="border-b border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
-      <p class="academic-kicker">LET’S KEEP THE CONVERSATION HERE</p>
-      <h1 class="font-display text-4xl md:text-6xl text-slate-900 mb-6">Get in touch.</h1>
-      <p class="text-base text-slate-600 max-w-2xl leading-relaxed">Questions about a course, logistics, personal requests, and other inquiries are handled through this website. Open a conversation, save your recovery code, and return here for my reply.</p>
+
+<Layout
+  title="Contact"
+  description="Contact Chen Gadi through the website. Anonymous class questions, private course logistics with required email and course, and general inquiries."
+>
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">Let’s keep the conversation here</p><h1>
+        Get in touch<span class="cv-title-dot">.</span>
+      </h1><p>
+        Choose the route that fits your question. Replies stay on the website,
+        so you can keep the conversation in one place.
+      </p>
     </div>
   </section>
   <div class="mx-auto max-w-6xl px-6 py-14">
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       <section class="contact-route">
-        <span class="academic-kicker">FOR MY STUDENTS</span>
-        <h2 class="font-display text-3xl mt-4 mb-4">A question for the class?</h2>
-        <p>Ask anonymously, browse existing discussions, and help classmates with anonymous replies. Use the class code shared in your lecture or tutorial.</p>
-        <a href="/students" class="academic-primary mt-6">Anonymous course Q&amp;A ↗</a>
+        <p class="academic-kicker">ANONYMOUS CLASS DISCUSSION</p><h2
+          class="font-display text-2xl mt-4 mb-4"
+        >
+          A question for the class?
+        </h2><p>
+          Ask anonymously, read discussions, and help classmates with anonymous
+          replies. Enter your classroom with the code shared in class.
+        </p><a href="/students" class="academic-primary mt-6"
+          >Anonymous course Q&amp;A ↗</a>
       </section>
       <section class="contact-route">
-        <span class="academic-kicker">JUST BETWEEN US</span>
-        <h2 class="font-display text-3xl mt-4 mb-4">A private conversation.</h2>
-        <p>For course logistics or personal matters, choose your class and open a private request. For research, collaboration, or general inquiries, no class code is needed.</p>
-        <a href="/students?course=general" class="academic-primary mt-6">Open a private conversation ↗</a>
+        <p class="academic-kicker">PRIVATE COURSE LOGISTICS</p><h2
+          class="font-display text-2xl mt-4 mb-4"
+        >
+          Something practical to arrange?
+        </h2><p>
+          Select your course and enter your email address. Both are required.
+          Your details stay within the private request, visible only to you and
+          Chen.
+        </p><a href="/students?mode=logistics" class="academic-primary mt-6"
+          >Write a logistics request ↗</a>
+      </section>
+      <section class="contact-route">
+        <p class="academic-kicker">GENERAL &amp; PERSONAL INQUIRIES</p><h2
+          class="font-display text-2xl mt-4 mb-4"
+        >
+          A private conversation.
+        </h2><p>
+          For research, collaboration, or other general inquiries, start a
+          private conversation. No class code is needed. Personal course
+          requests are also available in your classroom.
+        </p><a href="/students?course=general" class="academic-secondary mt-6"
+          >Open a private conversation ↗</a>
       </section>
     </div>
     <div class="research-focus mt-8">
-      <h2 class="font-display text-2xl mb-3">How to find your reply</h2>
-      <p>Your private conversations stay under “My private requests.” Access is saved in this browser. Keep your private recovery code to return from another device. It is the key to your conversations, so keep it to yourself.</p>
-      <a href="/students" class="academic-secondary">Return to the Student Hub ↗</a>
+      <h2 class="font-display text-2xl mb-3">How to find your reply</h2><p>
+        Keep your private recovery code. It restores your conversations on
+        another device. For logistics requests, email is collected for
+        identification; messages and replies stay on this website. No outgoing
+        email is sent.
+      </p><a href="/students?mode=requests" class="academic-secondary"
+        >My private requests ↗</a>
     </div>
   </div>
 </Layout>

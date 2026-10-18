@@ -1,26 +1,59 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import '../styles/portal.css';
+import Layout from "../layouts/Layout.astro";
+import "../styles/portal.css";
 ---
-<Layout title="Student Hub" description="Chen Gadi's student hub. Anonymous course questions, peer answers, and private requests with replies on the website.">
+
+<Layout
+  title="Student Hub"
+  description="Chen Gadi's student hub. Anonymous course questions, peer answers, and private logistics requests with required email and course. Replies stay on the website."
+>
   <div id="student-portal" class="portal" dir="ltr" lang="en">
     <section class="portal-hero">
       <div class="portal-wrap">
-        <div class="portal-topline"><a href="/teaching">Teaching materials ↗</a></div>
+        <div class="portal-topline">
+          <a href="/teaching">Teaching materials ↗</a><a
+            href="/students?mode=requests">My private requests ↗</a>
+        </div>
         <p class="portal-eyebrow">CHEN GADI · STUDENT HUB</p>
         <h1>A place to ask. A place to understand.</h1>
-        <p class="portal-intro">Course questions, help from classmates, and private requests. Every conversation stays here.</p>
-        <div class="portal-promises"><span>Anonymous questions &amp; replies</span><span>Private requests to Chen</span><span>No email correspondence</span></div>
+        <p class="portal-intro">
+          Course questions, help from classmates, and private requests. Every
+          conversation stays here.
+        </p>
+        <div class="portal-promises">
+          <span>Anonymous questions &amp; replies</span><span
+            >Private course logistics</span
+          ><span>No email correspondence</span>
+        </div>
       </div>
     </section>
     <div class="portal-wrap portal-body">
-      <div id="portal-notice" class="portal-notice" role="status" aria-live="polite" hidden></div>
-      <div id="portal-content" aria-busy="true"><p class="portal-loading">Loading the Student Hub...</p></div>
-      <noscript><p class="portal-notice">Enable JavaScript to use the student hub.</p></noscript>
-      <footer class="portal-footnote"><p>Class discussions show no names or email addresses. Private requests are visible only to you and Chen. Class discussions require a code shared in class.</p><button type="button" id="portal-staff">Instructor sign in</button></footer>
+      <div
+        id="portal-notice"
+        class="portal-notice"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+      </div>
+      <div id="portal-content" aria-busy="true">
+        <p class="portal-loading">Loading the Student Hub...</p>
+      </div>
+      <noscript
+        ><p class="portal-notice">
+          Enable JavaScript to use the student hub.
+        </p></noscript
+      >
+      <footer class="portal-footnote">
+        <p>
+          Class discussions show no names or email addresses. Private requests
+          are visible only to you and Chen. Logistics requests require your
+          email and course. Class discussions require a code shared in class.
+        </p><button type="button" id="portal-staff">Instructor sign in</button>
+      </footer>
     </div>
   </div>
 </Layout>
 <script>
-  import '../scripts/student-portal';
+  import "../scripts/student-portal";
 </script>

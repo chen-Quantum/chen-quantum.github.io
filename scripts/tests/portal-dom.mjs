@@ -101,6 +101,8 @@ window.fetch = async (url, opts = {}) => {
         ),
         has_more: false,
       });
+    case "my_tickets":
+      return response({ tickets, has_more: false });
     case "tickets":
       return response({
         tickets: tickets.filter((t) => t.course_id === p.course),
@@ -122,6 +124,26 @@ window.fetch = async (url, opts = {}) => {
       };
       questions.push(q);
       return response({ id: q.id }, 201);
+    }
+    case "logistics": {
+      if (!p.course || p.course === "general")
+        return response({ error: "course_required" }, 400);
+      if (!p.student_email || !p.student_email.includes("@"))
+        return response({ error: "invalid_email" }, 400);
+      const ticket = {
+        ...p,
+        id: "55555555-5555-4555-8555-555555555555",
+        course_id: p.course,
+        student_email: p.student_email,
+        request_kind: "logistics",
+        category: "logistics",
+        status: "open",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        messages: [],
+      };
+      tickets.push(ticket);
+      return response({ id: ticket.id }, 201);
     }
     case "ticket": {
       const t = {
@@ -280,9 +302,15 @@ check(
   "correct code opens the requested classroom",
 );
 check(
-  !!$('.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]') &&
-    !!$('.portal-resource-links a[href="/reading#for-students"]'),
+  !!$(
+    '.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]',
+  ) && !!$('.portal-resource-links a[href="/reading#for-students"]'),
   "electrical classroom provides its English syllabus and recommended resources",
+);
+check(
+  !$('.portal-course input[type="email"]') &&
+    !$(".portal-question-head [data-private-email]"),
+  "anonymous classroom access does not ask for an email",
 );
 click('[data-action="compose"]');
 check(
@@ -397,7 +425,9 @@ check(
   "failed classroom change does not show stale content from another class",
 );
 check(
-  !$('.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]'),
+  !$(
+    '.portal-resource-links a[href="/teaching/linear-algebra-electrical/syllabus"]',
+  ),
   "electrical syllabus is not presented as the biomedical syllabus",
 );
 click('[data-action="logout"]');
@@ -418,6 +448,99 @@ check(
 check(
   !calls.some((c) => c.p.action === "question" && c.p.official),
   "student UI never asks for an official reply flag",
+);
+click('[data-action="logistics"]');
+await until(() => $('[data-form="logistics"]'));
+check(
+  $('[data-form="logistics"] select[name="course"]').required &&
+    $('[data-form="logistics"] input[name="student_email"]').required &&
+    $('[data-form="logistics"] input[name="student_email"]').type === "email",
+  "logistics form requires both an email and a course selection",
+);
+check(
+  $$('[data-form="logistics"] select[name="course"] option').length === 4 &&
+    !$('[data-form="logistics"] option[value="general"]'),
+  "logistics dropdown lists the three courses and a blank prompt",
+);
+const callCount = calls.length;
+submit('[data-form="logistics"]');
+check(calls.length === callCount, "empty logistics fields prevent submission");
+set(
+  '[data-form="logistics"] select[name="course"]',
+  "linear-algebra-electrical",
+);
+set('[data-form="logistics"] input[name="student_email"]', "invalid-address");
+set('[data-form="logistics"] input[name="subject"]', "Room change question");
+set('[data-form="logistics"] textarea', "Which room should I use next week?");
+submit('[data-form="logistics"]');
+check(
+  calls.length === callCount && !$('[data-form="logistics"]').checkValidity(),
+  "invalid email cannot submit the logistics form",
+);
+set(
+  '[data-form="logistics"] input[name="student_email"]',
+  "learner+tag@example.invalid",
+);
+$('[data-form="logistics"] input[type="checkbox"]').checked = true;
+submit('[data-form="logistics"]');
+await until(() => $("[data-private-email]"));
+check(
+  $("#portal-content").textContent.includes("Room change question") &&
+    $("[data-private-email]").textContent === "learner+tag@example.invalid",
+  "logistics submission opens the sender’s private inbox with contact details",
+);
+check(
+  $(".portal-private-contact").textContent.includes("Electrical Engineering"),
+  "private request shows the selected course",
+);
+check(
+  calls.findLast((call) => call.p.action === "logistics").p.course ===
+    "linear-algebra-electrical",
+  "logistics submission sends the selected course to the API",
+);
+const logisticsReply = $(
+  '[data-form="ticket_message"][data-id="55555555-5555-4555-8555-555555555555"]',
+);
+check(
+  logisticsReply.dataset.course === "linear-algebra-electrical",
+  "inbox reply carries its own course independently of the last classroom",
+);
+logisticsReply.querySelector("textarea").value =
+  "A follow-up from the private inbox.";
+logisticsReply.dispatchEvent(
+  new window.Event("submit", { bubbles: true, cancelable: true }),
+);
+await until(() =>
+  $("#portal-content").textContent.includes(
+    "A follow-up from the private inbox.",
+  ),
+);
+check(
+  calls.findLast((call) => call.p.action === "ticket_message").p.course ===
+    "linear-algebra-electrical",
+  "private inbox follow-up reaches the correct course",
+);
+click('[data-action="landing"]');
+await until(() => $$('[data-form="join"]').length === 3);
+click('[data-form="join"][data-course="linear-algebra-electrical"] button');
+await until(() => $("#portal-board-tab"));
+check(
+  !$("[data-private-email]") &&
+    !$("#portal-list").textContent.includes("learner+tag@example.invalid"),
+  "logistics email never appears on the anonymous discussion board",
+);
+window.history.replaceState({}, "", "/students?mode=logistics");
+await window.bootstrap();
+check(
+  !!$('[data-form="logistics"]'),
+  "direct logistics link opens the required-contact form",
+);
+window.history.replaceState({}, "", "/students?mode=requests");
+await window.bootstrap();
+check(
+  $("#portal-content").textContent.includes("Room change question") &&
+    !!$("[data-private-email]"),
+  "direct private-inbox link restores course requests",
 );
 const ids = $$("[id]").map((el) => el.id);
 check(

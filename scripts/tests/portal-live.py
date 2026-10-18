@@ -88,7 +88,7 @@ try:
     check(voted['votes']==1,'votes are idempotent per visitor')
     call('moderate_question',key=key_b,id=question,hidden=True,expected=403)
     call('dashboard',expected=403)
-    ticket=call('ticket',expected=201,subject='[PORTAL QA] Private logistics',body='[PORTAL QA] This private content belongs only to A.',student_name='[PORTAL QA]',category='logistics')['id']
+    ticket=call('ticket',expected=201,subject='[PORTAL QA] Private request',body='[PORTAL QA] This private content belongs only to A.',student_name='[PORTAL QA]',category='material')['id']
     own_tickets=call('tickets')['tickets']
     check(any(t['id']==ticket for t in own_tickets),'sender can retrieve a private ticket')
     check(all(t['id']!=ticket for t in call('tickets',key=key_b)['tickets']),'another student cannot list a private ticket')

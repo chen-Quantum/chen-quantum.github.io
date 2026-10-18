@@ -1,5 +1,6 @@
 // Public student API with capability-based student access and verified staff auth.
-// No email is collected or sent. All database tables deny direct browser access.
+// Anonymous discussions collect no email. Logistics requests store a private contact email.
+// No email is sent. All database tables deny direct browser access.
 const base = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const allowedOrigins = new Set([
@@ -28,7 +29,7 @@ const columns = {
     "id,course_id,actor_hash,title,body,category,status,hidden,pinned,created_at",
   answer: "id,question_id,actor_hash,body,official,hidden,created_at",
   ticket:
-    "id,course_id,subject,body,student_name,category,status,created_at,updated_at",
+    "id,course_id,subject,body,student_name,student_email,request_kind,category,status,created_at,updated_at",
 };
 async function db(
   table: string,
@@ -83,6 +84,38 @@ async function limit(bucket: string, max = 12, seconds = 60) {
     p_seconds: seconds,
   });
   if (!ok) throw new PortalError(429, "rate_limit");
+}
+async function readTickets(filters: Record<string, string>) {
+  const tickets = await db("student_portal_tickets", filters);
+  const messages = tickets.length
+    ? await db("student_portal_ticket_messages", {
+        select: "id,ticket_id,body,official,created_at",
+        ticket_id: `in.(${tickets.map((t: { id: string }) => t.id).join(",")})`,
+        order: "created_at.asc",
+        limit: "1000",
+      })
+    : [];
+  return {
+    tickets: tickets.map((ticket: { id: string }) => ({
+      ...ticket,
+      messages: messages.filter(
+        (message: { ticket_id: string }) => message.ticket_id === ticket.id,
+      ),
+    })),
+    has_more: tickets.length === 30,
+  };
+}
+function contactEmail(value: unknown) {
+  if (typeof value !== "string") throw new PortalError(400, "email_required");
+  const email = value.trim();
+  if (
+    email.length > 254 ||
+    !/^[^\s\u0000-\u001f\u007f@<>]+@[^\s\u0000-\u001f\u007f@<>]+\.[^\s\u0000-\u001f\u007f@<>]{2,}$/.test(
+      email,
+    )
+  )
+    throw new PortalError(400, "invalid_email");
+  return email;
 }
 function text(value: unknown, min: number, max: number) {
   if (typeof value !== "string") throw new PortalError(400, "invalid_input");
@@ -202,6 +235,25 @@ Deno.serve(async (req: Request) => {
         open_tickets: tickets,
       });
     }
+    if (action === "my_tickets") {
+      // Actor-scoped private inbox. It never grants classroom membership.
+      return respond(
+        await readTickets({
+          select: columns.ticket,
+          actor_hash: `eq.${actor}`,
+          order: "updated_at.desc",
+          limit: "30",
+          offset: String(Math.min(Math.max(Number(p.offset) || 0, 0), 10000)),
+        }),
+      );
+    }
+    if (
+      action === "logistics" &&
+      (typeof p.course !== "string" ||
+        !p.course.trim() ||
+        p.course === "general")
+    )
+      throw new PortalError(400, "course_required");
     const courseId = text(p.course, 2, 80);
     const courses = await db("student_portal_courses", {
       id: `eq.${courseId}`,
@@ -210,6 +262,26 @@ Deno.serve(async (req: Request) => {
     });
     const course = courses[0];
     if (!course) throw new PortalError(404, "course_not_found");
+    if (action === "logistics") {
+      if (!course.board_enabled) throw new PortalError(400, "course_required");
+      const email = contactEmail(p.student_email);
+      const subject = text(p.subject, 4, 180);
+      const body = text(p.body, 5, 8000);
+      const studentName = text(p.student_name || "", 0, 120);
+      await limit(`write:${actor}`, 20, 600);
+      await limit(`ticket:${ip}`, 20, 600);
+      const rows = await db("student_portal_tickets", {}, "POST", {
+        course_id: courseId,
+        actor_hash: actor,
+        subject,
+        body,
+        student_name: studentName,
+        student_email: email,
+        request_kind: "logistics",
+        category: "logistics",
+      });
+      return respond({ id: rows[0].id }, 201);
+    }
     if (action === "join") {
       await limit(`join:${ip}`, 12, 60);
       if (
@@ -228,7 +300,8 @@ Deno.serve(async (req: Request) => {
       );
       return respond({ joined: true });
     }
-    if (!staff) {
+    // Private follow-ups use ticket ownership below, independently of class membership.
+    if (!staff && action !== "ticket_message") {
       const memberships = await db("student_portal_memberships", {
         select: "course_id",
         actor_hash: `eq.${actor}`,
@@ -399,26 +472,11 @@ Deno.serve(async (req: Request) => {
         offset: String(Math.min(Math.max(Number(p.offset) || 0, 0), 10000)),
       };
       if (!staff) filters.actor_hash = `eq.${actor}`;
-      const tickets = await db("student_portal_tickets", filters);
-      let messages = [];
-      if (tickets.length)
-        messages = await db("student_portal_ticket_messages", {
-          select: "id,ticket_id,body,official,created_at",
-          ticket_id: `in.(${tickets.map((t: { id: string }) => t.id).join(",")})`,
-          order: "created_at.asc",
-          limit: "1000",
-        });
-      return respond({
-        tickets: tickets.map((t: { id: string }) => ({
-          ...t,
-          messages: messages.filter(
-            (m: { ticket_id: string }) => m.ticket_id === t.id,
-          ),
-        })),
-        has_more: tickets.length === 30,
-      });
+      return respond(await readTickets(filters));
     }
     if (action === "ticket") {
+      if (p.category === "logistics")
+        throw new PortalError(400, "logistics_form_required");
       await limit(`write:${actor}`, 20, 600);
       await limit(`ticket:${ip}`, 20, 600);
       const rows = await db("student_portal_tickets", {}, "POST", {
