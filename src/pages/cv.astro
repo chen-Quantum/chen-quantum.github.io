@@ -1,32 +1,135 @@
 ---
 import Layout from "../layouts/Layout.astro";
+const teaching = [
+  {
+    role: "Lecturer",
+    title: "International Engineering Program",
+    detail: "Teaching in English at Tel Aviv University.",
+    period: "Current",
+  },
+  {
+    role: "Teaching Assistant",
+    title: "Linear Algebra for Electrical & Electronics Engineering",
+    detail: "Tutorials, practice materials, and student support.",
+    period: "Current",
+  },
+  {
+    role: "Teaching Assistant",
+    title: "Linear Algebra for Biomedical Engineering",
+    detail: "Tutorials, recordings, and student support.",
+    period: "Current",
+  },
+  {
+    role: "Teaching Assistant",
+    title: "Calculus",
+    detail:
+      "Previous calculus tutorials for engineering students. Practice sheets and recordings remain available on the teaching page.",
+    period: "Previous teaching",
+  },
+];
+const skills = [
+  "Python",
+  "Qiskit",
+  "NumPy",
+  "LaTeX",
+  "Mathematica",
+  "Linear Algebra",
+  "Quantum Circuits",
+  "Mathematical Writing",
+  "Pedagogical Design",
+];
 ---
 
 <Layout
-  title="CV Unavailable"
-  description="The curriculum vitae is currently unavailable."
-  robots="noindex, nofollow"
+  title="CV"
+  description="Chen Gadi’s curriculum vitae: M.Sc. student in Physics under Prof. Yaron Oz, lecturer, and teaching assistant at Tel Aviv University."
 >
-  <section class="mx-auto max-w-6xl px-6 py-24 md:py-32">
-    <div class="max-w-xl">
-      <span class="cv-lock" aria-hidden="true"
-        ><svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          ><rect x="5" y="10" width="14" height="11" rx="2"></rect><path
-            d="M8 10V7a4 4 0 018 0v3"></path><path d="M12 14v3"></path></svg
-        ></span
-      ><p class="edition-label">Academic profile</p><h1
-        class="font-display text-4xl md:text-5xl mb-5"
-      >
-        CV currently unavailable.
-      </h1><p class="text-slate-500 leading-relaxed mb-8">
-        Viewing and downloading the CV are currently disabled.
-      </p><a href="/about" class="academic-primary">View academic profile ↗</a>
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">Academic profile</p><h1>
+        Curriculum Vitae<span class="cv-title-dot">.</span>
+      </h1><p>
+        Chen Gadi · Tel Aviv University<br />M.Sc. student in Physics,
+        completing a thesis under Prof. Yaron Oz.
+      </p>
     </div>
   </section>
+  <div class="mx-auto max-w-6xl px-6 py-16 md:py-20 cv-layout">
+    <div class="cv-main">
+      <section aria-labelledby="cv-education">
+        <p class="edition-label">01 / Academic background</p><h2
+          id="cv-education"
+        >
+          Education
+        </h2><div class="education-row">
+          <span>2024–present</span><div>
+            <h3>M.Sc. in Physics</h3><p>
+              Tel Aviv University<br />Thesis supervisor: Prof. Yaron Oz<br
+              />Member of Prof. Oz’s research group.
+            </p>
+          </div><span class="status-pill">In progress</span>
+        </div><div class="education-row">
+          <span>2020–2024</span><div>
+            <h3>B.Sc. in Mathematics and Physics</h3><p>
+              Tel Aviv University<br />Magna Cum Laude · Dean’s List 2024
+            </p>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="cv-teaching">
+        <p class="edition-label">02 / Teaching at TAU</p><h2 id="cv-teaching">
+          Teaching experience
+        </h2><div class="cv-teaching">
+          {
+            teaching.map((item) => (
+              <article>
+                <>
+                  <p class="edition-label">
+                    {item.role} · {item.period}
+                  </p>
+                  <h3>{item.title}</h3>
+                  <p>{item.detail}</p>
+                </>
+              </article>
+            ))
+          }
+        </div><a href="/teaching" class="text-link"
+          >Course resources &amp; recordings ↗</a>
+      </section>
+      <section aria-labelledby="cv-community">
+        <p class="edition-label">03 / Community</p><h2 id="cv-community">
+          TAU Quantum Community
+        </h2><p>
+          Community organising and events connecting students and researchers
+          around quantum science and technology, in collaboration with QuanTAU.
+        </p><a href="/quantum-community/events" class="text-link"
+          >Community events ↗</a>
+      </section>
+      <section aria-labelledby="cv-skills">
+        <p class="edition-label">04 / Tools &amp; practice</p><h2
+          id="cv-skills"
+        >
+          Technical skills
+        </h2><ul class="cv-skill-list" role="list">
+          {skills.map((skill) => <li>{skill}</li>)}
+        </ul>
+      </section>
+    </div>
+    <aside class="cv-sidebar">
+      <div class="contact-route">
+        <p class="edition-label">At a glance</p><dl>
+          <div><dt>Current degree</dt><dd>M.Sc. in Physics</dd></div><div>
+            <dt>Supervisor</dt><dd>Prof. Yaron Oz</dd>
+          </div><div><dt>Institution</dt><dd>Tel Aviv University</dd></div>
+        </dl>
+      </div><div class="contact-route">
+        <p class="edition-label">Explore</p><a
+          href="/research"
+          class="text-link">Research affiliation ↗</a
+        ><a href="/projects" class="text-link">Public projects ↗</a><a
+          href="/students"
+          class="text-link">Questions &amp; private requests ↗</a>
+      </div>
+    </aside>
+  </div>
 </Layout>

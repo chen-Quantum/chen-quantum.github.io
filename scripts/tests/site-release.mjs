@@ -42,9 +42,9 @@ for (const file of pages) {
   );
   check(
     !document.querySelector(
-      'a[href="/cv"], a[href*="/files/cv/"], iframe[src*="/files/cv/"], object[data*="/files/cv/"]',
+      'a[href*="/files/cv/"], iframe[src*="/files/cv/"], object[data*="/files/cv/"]',
     ),
-    path.relative(dist, file) + ": no CV links or embeds",
+    path.relative(dist, file) + ": no CV PDF links or embeds",
   );
   for (const link of document.querySelectorAll("a[href]")) {
     const href = link.getAttribute("href");
@@ -76,11 +76,17 @@ check(
 );
 const cv = doc("cv");
 check(
-  cv.querySelector('meta[name="robots"]').content === "noindex, nofollow" &&
-    cv.querySelector("h1").textContent.includes("unavailable"),
-  "CV route shows only an unavailable notice and discourages indexing",
+  cv.querySelector("h1").textContent.includes("Curriculum Vitae") &&
+    !!cv.getElementById("cv-education") &&
+    cv.querySelector(".education-row").textContent.includes("Yaron Oz") &&
+    !cv.querySelector("main a[download]"),
+  "CV is readable as a web page and does not offer a PDF download",
 );
 const home = doc("");
+check(
+  !!home.querySelector('header a[href="/cv"]'),
+  "CV is restored to the navigation",
+);
 check(
   home
     .querySelector(".academic-appointment")
@@ -129,20 +135,91 @@ const articleDates = [...reading.querySelectorAll(".reading-card time")].map(
   (time) => time.dateTime,
 );
 check(
-  articleDates.length === 4 &&
+  articleDates.length === 10 &&
     articleDates.every((date) => date >= "2026-09-18" && date <= "2026-10-18"),
-  "all four recommended articles fall within the requested month",
+  "all ten recommended articles fall within the requested month",
 );
 check(
-  reading.querySelectorAll(
-    ".reading-card h3 a[href^='https://physics.aps.org/']",
-  ).length === 4,
-  "every physics article links directly to its publisher",
+  [...reading.querySelectorAll(".reading-card h3 a")].every((link) =>
+    [
+      "www.quantamagazine.org",
+      "spectrum.ieee.org",
+      "www.nature.com",
+      "www.sciencenews.org",
+      "physics.aps.org",
+    ].includes(new URL(link.href).hostname),
+  ),
+  "every recommended article links directly to its publisher",
 );
 check(
   reading.querySelectorAll(".resource-card").length === 4 &&
     reading.body.textContent.replace(/\s+/g, " ").includes("second course"),
   "student resources distinguish enrichment from introductory material",
+);
+const publishers = new Set(
+  [...reading.querySelectorAll("[data-reading-publisher]")].map(
+    (card) => card.dataset.readingPublisher,
+  ),
+);
+check(
+  publishers.size === 5 &&
+    [...publishers].includes("IEEE Spectrum") &&
+    [...publishers].includes("Nature"),
+  "selection covers five publishers across magazines, news, and commentary",
+);
+const homeCards = [...home.querySelectorAll(".reading-card")];
+check(
+  homeCards.length === 2 &&
+    new Set(homeCards.map((card) => card.dataset.readingPublisher)).size ===
+      2 &&
+    new Set(homeCards.map((card) => card.dataset.readingTopic)).size === 2,
+  "homepage highlights two different publishers and both topic groups",
+);
+const filtered = new JSDOM(fs.readFileSync("dist/reading/index.html", "utf8"), {
+  runScripts: "outside-only",
+});
+filtered.window.eval(
+  stripTypeScriptTypes(
+    fs.readFileSync("src/scripts/reading-filter.ts", "utf8"),
+    { mode: "transform" },
+  ),
+);
+const select = (topic) =>
+  filtered.window.document
+    .querySelector(`[data-reading-filter="${topic}"]`)
+    .click();
+const shown = () =>
+  [...filtered.window.document.querySelectorAll(".reading-card")].filter(
+    (card) => !card.hidden,
+  );
+select("ml");
+check(
+  shown().length === 4 &&
+    shown().every((card) => card.dataset.readingTopic === "ml"),
+  "ML filter shows all four AI and machine learning recommendations",
+);
+check(
+  filtered.window.document
+    .getElementById("reading-results")
+    .textContent.includes("Showing 4 articles") &&
+    filtered.window.document
+      .querySelector('[data-reading-filter="ml"]')
+      .getAttribute("aria-pressed") === "true",
+  "filter updates the accessible count and selected state",
+);
+select("physics");
+check(
+  shown().length === 6 &&
+    shown().every((card) => card.dataset.readingTopic === "physics"),
+  "physics filter shows all six quantum and physics recommendations",
+);
+select("all");
+check(
+  shown().length === 10 &&
+    filtered.window.document.querySelectorAll(
+      '[data-reading-filter][aria-pressed="true"]',
+    ).length === 1,
+  "All reading restores the full selection with one active filter",
 );
 const syllabus = doc("teaching/linear-algebra-electrical/syllabus");
 check(

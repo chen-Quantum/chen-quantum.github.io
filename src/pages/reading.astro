@@ -2,23 +2,28 @@
 import Layout from "../layouts/Layout.astro";
 import ReadingCard from "../components/ReadingCard.astro";
 import { readingPicks, readingEdition, studentReading } from "../data/reading";
+const articles = [...readingPicks].sort((a, b) => b.date.localeCompare(a.date));
+const publisherCount = new Set(articles.map((article) => article.publisher))
+  .size;
 ---
 
 <Layout
   title="Recommended Reading"
-  description="Chen Gadi’s October 2026 physics reading selection and recommended linear algebra resources for students."
+  description="Chen Gadi’s reading selection across quantum physics, machine learning, and science magazines, with recommended linear algebra resources for students."
 >
   <section class="page-intro">
     <div class="mx-auto max-w-6xl px-6">
       <p class="edition-label">The reading room · {readingEdition}</p><h1>
         Ideas worth<br /><em>spending time with.</em>
       </h1><p>
-        A short selection from quantum science and physics, alongside resources
-        I recommend for learning linear algebra.
+        Ideas from quantum physics, machine learning, and the wider world of
+        science. Magazine stories, interviews, and explainers, alongside
+        resources for learning linear algebra.
       </p><div class="academic-actions">
-        <a href="#physics" class="academic-primary">Physics this month ↓</a><a
-          href="#for-students"
-          class="academic-secondary">For my students ↓</a>
+        <a href="#physics" class="academic-primary"
+          >Explore the reading selection ↓</a
+        ><a href="#for-students" class="academic-secondary">For my students ↓</a
+        >
       </div>
     </div>
   </section>
@@ -29,20 +34,45 @@ import { readingPicks, readingEdition, studentReading } from "../data/reading";
     <div class="editorial-heading">
       <div>
         <p class="edition-label">October 2026 selection</p><h2>
-          From the world of physics.
+          Quantum, physics &amp; machine learning.
         </h2>
       </div><p>
-        Four articles published this month. Sources and publication dates
-        checked on 18 October 2026. My notes explain what to look for while
-        reading.
+        {articles.length} reads from {publisherCount} publications, published between
+        18 September and 18 October 2026. Each recommendation includes a source,
+        date, and a short note on why I suggest it.
       </p>
     </div>
-    <div class="reading-grid">
-      {readingPicks.map((article) => <ReadingCard article={article} />)}
+    <div id="reading-selection">
+      <div
+        class="reading-filters"
+        role="group"
+        aria-label="Filter recommended reading"
+      >
+        <button
+          type="button"
+          data-reading-filter="all"
+          aria-pressed="true"
+          aria-controls="reading-grid">All reading</button
+        ><button
+          type="button"
+          data-reading-filter="physics"
+          aria-pressed="false"
+          aria-controls="reading-grid">Quantum &amp; physics</button
+        ><button
+          type="button"
+          data-reading-filter="ml"
+          aria-pressed="false"
+          aria-controls="reading-grid">Machine learning &amp; AI</button>
+      </div><p id="reading-results" class="reading-results" aria-live="polite">
+        Showing all {articles.length} articles
+      </p><div class="reading-grid" id="reading-grid">
+        {articles.map((article) => <ReadingCard article={article} />)}
+      </div>
     </div>
     <p class="source-note">
-      These links open the publisher’s articles. This is a dated selection,
-      updated by hand.
+      Sources and publication dates checked on 18 October 2026. Links open the
+      original publisher; some publishers may require a subscription. This is a
+      dated selection, updated by hand.
     </p>
   </section>
   <section id="for-students" class="reading-students scroll-mt-24">
@@ -99,8 +129,13 @@ import { readingPicks, readingEdition, studentReading } from "../data/reading";
           </p>
         </div><a
           href="/teaching/linear-algebra-electrical/syllabus"
-          class="academic-primary">Read the syllabus ↗</a>
+          class="academic-primary">Read the syllabus ↗</a
+        >
       </div>
     </div>
   </section>
 </Layout>
+
+<script>
+  import "../scripts/reading-filter";
+</script>

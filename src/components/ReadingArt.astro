@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: "light" | "probability" | "atoms" | "clock";
+  kind: "light" | "probability" | "atoms" | "clock" | "network" | "geometry";
 }
 const { kind } = Astro.props;
 ---
@@ -91,6 +91,62 @@ const { kind } = Astro.props;
             stroke-dasharray="4 6"
             opacity="0.45"
           />
+        </g>
+      )
+    }
+    {
+      kind === "network" && (
+        <g stroke="currentColor">
+          <path
+            d="M95 53L197 40L305 67M95 53L192 102L305 67M92 135L192 102L296 143M197 40L192 102L296 143M92 135L197 40M95 53L92 135"
+            opacity=".5"
+          />
+          {[
+            [95, 53],
+            [197, 40],
+            [305, 67],
+            [92, 135],
+            [192, 102],
+            [296, 143],
+          ].map(([x, y], i) => (
+            <g>
+              <circle
+                cx={x}
+                cy={y}
+                r={i === 4 ? 12 : 8}
+                fill="currentColor"
+                opacity=".85"
+              />
+              <circle cx={x} cy={y} r={i === 4 ? 23 : 17} opacity=".2" />
+            </g>
+          ))}
+        </g>
+      )
+    }
+    {
+      kind === "geometry" && (
+        <g stroke="currentColor">
+          <>
+            <path
+              d="M130 65L210 30L282 74V132L202 169L130 125V65L202 107L282 74M202 107V169"
+              stroke-width="1.5"
+            />
+            <path
+              d="M130 125L210 87L282 132M210 30V87L202 107"
+              stroke-dasharray="3 5"
+              opacity=".35"
+            />
+            <ellipse
+              cx="201"
+              cy="110"
+              rx="139"
+              ry="43"
+              transform="rotate(-20 201 110)"
+              opacity=".3"
+            />
+            <circle cx="130" cy="65" r="4" fill="currentColor" />
+            <circle cx="202" cy="169" r="4" fill="currentColor" />
+          </>
         </g>
       )
     }

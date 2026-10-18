@@ -7,18 +7,28 @@ interface Props {
 const { article } = Astro.props;
 ---
 
-<article class="reading-card">
+<article
+  class="reading-card"
+  data-reading-topic={article.topic}
+  data-reading-publisher={article.publisher}
+>
   <ReadingArt kind={article.art} />
   <div class="reading-card-body">
-    <p class="edition-label">{article.category}</p>
+    <div class="reading-card-meta">
+      <p class="edition-label">{article.category}</p><span
+        class="reading-format">{article.format}</span>
+    </div>
     <h3>
       <a href={article.url} target="_blank" rel="noopener noreferrer"
-        >{article.title}<span class="sr-only"> (opens in a new tab)</span></a>
+        >{article.title}<span class="sr-only"> (opens in a new tab)</span></a
+      >
     </h3>
     <p class="reading-summary">{article.summary}</p>
     <p class="reading-reason"><span>Why I recommend it</span>{article.why}</p>
+    {article.accessNote && <p class="reading-access">{article.accessNote}</p>}
     <p class="reading-source">
-      APS Physics <span aria-hidden="true">·</span>
+      {article.publisher}
+      <span aria-hidden="true">·</span>
       <time datetime={article.date}>{formatReadingDate(article.date)}</time
       ><span aria-hidden="true">↗</span>
     </p>
