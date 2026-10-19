@@ -979,3 +979,39 @@
 .la-lab [lang="he"] {
   font-family: "Heebo", Arial, sans-serif;
 }
+
+/* Language navigation shares records and preserves the current activity. */
+.la-language-switch {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  padding: 4px;
+  margin: 0 0 22px;
+  border: 1px solid var(--la-border);
+  border-radius: 9px;
+  background: #fff;
+  font-size: 14px;
+}
+.la-language-switch a {
+  padding: 6px 15px;
+  border-radius: 6px;
+  color: var(--la-green);
+  text-decoration: none;
+}
+.la-language-switch [aria-current="page"] {
+  color: #fff;
+  background: var(--la-green);
+}
+.la-lab[data-locale="en"] {
+  font-family: "Inter", "Arial", sans-serif;
+  text-align: left;
+}
+.la-lab[data-locale="en"] .la-activity,
+.la-lab[data-locale="en"] .la-choices label {
+  text-align: left;
+}
+@media print {
+  .la-language-switch {
+    display: none;
+  }
+}

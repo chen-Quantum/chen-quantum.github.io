@@ -1,0 +1,469 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { linearActivities as hebrewActivities } from "../../data/linearActivities";
+import { linearActivitiesEn } from "../../data/linearActivitiesEn";
+import CourseLanguageSwitch from "./CourseLanguageSwitch.astro";
+import { renderActivity } from "../../lib/linearLabPlot.mjs";
+import "../../styles/linear-lab.css";
+const { locale = "he" } = Astro.props as { locale?: "he" | "en" };
+const linearActivities =
+  locale === "en" ? linearActivitiesEn : hebrewActivities;
+const t = (he: string, en: string) => (locale === "en" ? en : he);
+const direction = locale === "en" ? "ltr" : "rtl";
+const llmPath = `/teaching/linear-algebra/llm/${locale === "en" ? "en/" : ""}`;
+const first = linearActivities[0];
+const firstPlot = renderActivity(
+  first.id,
+  Object.fromEntries(first.controls.map((c) => [c.id, c.value])),
+  locale,
+);
+---
+
+<Layout
+  title="Linear Algebra Interactive Lab"
+  description="13 interactive Linear Algebra activities by Chen Gadi, available in Hebrew and English."
+>
+  <div class="la-lab" dir="ltr" lang="en" id="linear-lab" data-locale={locale}>
+    <header class="la-hero">
+      <div class="la-container la-hero-grid">
+        <div>
+          <a class="la-back" href="/teaching/2026-2027#linear-algebra">
+            ← Back to the course
+          </a>
+          <CourseLanguageSwitch locale={locale} page="lab" />
+          <p class="la-eyebrow">Chen Gadi · Linear Algebra for Engineering</p>
+          <h1>
+            Linear Algebra
+            <br />
+            <span>Interactive activities</span>
+          </h1>
+          <p class="la-lead">
+            13 activities, one per tutorial. Predict the result, vary the
+            parameters, and explain your findings. Choose Hebrew or English
+            above.
+          </p>
+          <div class="la-actions">
+            <a href="#workspace" class="la-button">
+              Enter the lab ↓
+            </a>
+            <a href={llmPath} class="la-button la-secondary">
+              Guided LLM activities ↗
+            </a>
+          </div>
+          <p class="la-subtle">Progress and notes are saved in this browser.</p>
+        </div>
+        <figure
+          class="la-hero-figure"
+          aria-label="A linear combination of two vectors"
+        >
+          <svg
+            viewBox="0 0 460 350"
+            role="img"
+            aria-labelledby="hero-plot-title"
+            direction="ltr"
+          >
+            <title id="hero-plot-title">
+              Two vectors and their sum. The parallelogram represents coefficients between 0 and 1.
+            </title>
+            <defs>
+              <pattern
+                id="hero-grid"
+                width="30"
+                height="30"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 30 0 H 0 V 30"
+                  fill="none"
+                  stroke="#dbe4d8"
+                  stroke-width="1"
+                ></path>
+              </pattern>
+            </defs>
+            <rect width="460" height="350" rx="20" fill="#f5f8ef"></rect>
+            <rect
+              x="20"
+              y="20"
+              width="420"
+              height="310"
+              fill="url(#hero-grid)"
+            ></rect>
+            <path
+              d="M 55 265 H 420 M 95 310 V 40"
+              stroke="#9cae9b"
+              stroke-width="1.5"
+            ></path>
+            <path
+              d="M 95 265 L 275 205 L 365 85 L 185 145 Z"
+              fill="#c7d9b6"
+              fill-opacity=".7"
+              stroke="#8ba77d"
+            ></path>
+            <path
+              d="M 95 265 L 275 205 M 261 204 L 275 205 L 267 217"
+              fill="none"
+              stroke="#3165a2"
+              stroke-width="3"
+            ></path>
+            <path
+              d="M 95 265 L 185 145 M 173 151 L 185 145 L 183 160"
+              fill="none"
+              stroke="#b55c22"
+              stroke-width="3"
+            ></path>
+            <path
+              d="M 95 265 L 365 85 M 348 89 L 365 85 L 356 102"
+              fill="none"
+              stroke="#1b6655"
+              stroke-width="4"
+            ></path>
+            <path
+              d="M 275 205 L 365 85 M 185 145 L 365 85"
+              fill="none"
+              stroke="#839388"
+              stroke-dasharray="6 6"
+            ></path>
+            <circle
+              cx="365"
+              cy="85"
+              r="7"
+              fill="#1b6655"
+              stroke="white"
+              stroke-width="3"
+            ></circle>
+            <g font-size="19" font-family="Georgia,serif">
+              <text x="257" y="238" fill="#3165a2">
+                u
+              </text>
+              <text x="151" y="144" fill="#b55c22">
+                v
+              </text>
+              <text x="337" y="58" fill="#1b6655">
+                u + v
+              </text>
+            </g>
+          </svg>
+          <figcaption>A linear combination of two vectors.</figcaption>
+        </figure>
+      </div>
+    </header>
+    <section
+      class="la-container la-workspace"
+      id="workspace"
+      aria-label="Interactive activities"
+    >
+      <aside class="la-sidebar">
+        <p class="la-eyebrow">Tutorials</p>
+        <h2>Select a tutorial</h2>
+        <div class="la-progress">
+          <span id="la-progress-text">0 of 13 completed</span>
+          <progress
+            id="la-progress"
+            value="0"
+            max="13"
+            aria-label="Activity progress"
+          ></progress>
+        </div>
+        <label class="la-mobile-select">
+          Select a tutorial
+          <select id="la-select" aria-controls="la-activity">
+            {linearActivities.map((a) => (
+              <option value={a.id}>
+                Tutorial {a.number} · {a.navTitle}
+              </option>
+            ))}
+          </select>
+        </label>
+        <nav class="la-nav" aria-label="Select a tutorial">
+          {linearActivities.map((a) => (
+            <a
+              id={`tutorial-${a.number}`}
+              href={`#tutorial-${a.number}`}
+              data-lab-id={a.id}
+              class:list={["la-nav-item", { "is-active": a.number === 1 }]}
+              aria-current={a.number === 1 ? "true" : undefined}
+            >
+              <>
+                <span class="la-nav-number">
+                  {String(a.number).padStart(2, "0")}
+                </span>
+                <span>{a.navTitle}</span>
+                <span
+                  data-completion={a.id}
+                  class="la-completion"
+                  aria-label="Not completed"
+                >
+                  ○
+                </span>
+              </>
+            </a>
+          ))}
+        </nav>
+        <a href={llmPath} class="la-sidebar-link">
+          Working critically with an LLM ↗
+        </a>
+        <a href="/students" class="la-sidebar-link">
+          Questions for Chen? Student Hub ↗
+        </a>
+      </aside>
+      <div class="la-main-column">
+        <noscript>
+          <p class="la-notice">
+            Enable JavaScript to use the controls and switch labs. The LLM
+            activities and their explanations can be read without JavaScript.
+          </p>
+        </noscript>
+        <article
+          class="la-activity"
+          id="la-activity"
+          lang={locale}
+          dir={direction}
+          aria-labelledby="la-title"
+        >
+          <div class="la-activity-heading">
+            <p class="la-eyebrow" id="la-kicker" lang="en" dir="ltr">
+              Tutorial 1 · About 8 minutes
+            </p>
+            <h2 id="la-title" tabindex="-1">
+              {first.title}
+            </h2>
+            <p id="la-intro">{first.intro}</p>
+            <div class="la-formula" id="la-formula" dir="ltr">
+              {first.formula}
+            </div>
+          </div>
+          <nav class="la-steps" lang="en" dir="ltr" aria-label="Activity steps">
+            <button type="button" data-step="0" aria-current="step">
+              <span>01</span> Predict
+            </button>
+            <button type="button" data-step="1">
+              <span>02</span> Explore
+            </button>
+            <button type="button" data-step="2">
+              <span>03</span> Explain
+            </button>
+          </nav>
+          <section
+            class="la-stage"
+            data-stage="0"
+            aria-labelledby="la-predict-heading"
+          >
+            <p class="la-step-label">
+              {t("לפני שנוגעים בבקרים", "Prediction")}
+            </p>
+            <h3 id="la-predict-heading">
+              {t("מה לדעתכם יקרה?", "Predict the result")}
+            </h3>
+            <form id="la-prediction-form">
+              <fieldset>
+                <legend id="la-question">{first.question}</legend>
+                <div id="la-choices" class="la-choices">
+                  {first.choices.map((c, i) => (
+                    <label>
+                      <>
+                        <input type="radio" name="prediction" value={i} />
+                        <span>{c}</span>
+                      </>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <button type="submit" class="la-button" lang="en" dir="ltr">
+                Check prediction
+              </button>
+            </form>
+            <p
+              id="la-prediction-feedback"
+              class="la-feedback"
+              role="status"
+              hidden
+            ></p>
+            <button
+              type="button"
+              data-next="1"
+              class="la-text-button"
+              lang="en"
+              dir="ltr"
+            >
+              Explore the model →
+            </button>
+          </section>
+          <section
+            class="la-stage"
+            data-stage="1"
+            aria-labelledby="la-experiment-heading"
+          >
+            <p class="la-step-label">{t("בודקים את הניבוי", "Experiment")}</p>
+            <h3 id="la-experiment-heading">
+              {t("עכשיו משנים משהו.", "Vary the parameters")}
+            </h3>
+            <p id="la-experiment">{first.experiment}</p>
+            <div class="la-experiment-grid">
+              <div class="la-controls" id="la-controls">
+                {first.controls.map((c) => (
+                  <div class="la-control">
+                    <>
+                      <label for={`control-${c.id}`}>
+                        {c.label}
+                        <output id={`value-${c.id}`} dir="ltr">
+                          {c.value}
+                        </output>
+                      </label>
+                      <input
+                        id={`control-${c.id}`}
+                        data-control={c.id}
+                        type="range"
+                        min={c.min}
+                        max={c.max}
+                        step={c.step}
+                        value={c.value}
+                      />
+                    </>
+                  </div>
+                ))}
+              </div>
+              <figure class="la-plot">
+                <div id="la-plot" set:html={firstPlot.svg} />
+                <figcaption id="la-caption">{firstPlot.caption}</figcaption>
+                <button
+                  type="button"
+                  id="la-download-plot"
+                  class="la-text-button"
+                  lang="en"
+                  dir="ltr"
+                >
+                  Download this diagram (SVG) ↓
+                </button>
+              </figure>
+            </div>
+            <dl class="la-readouts" id="la-readouts">
+              {firstPlot.readouts.map((r) => (
+                <div>
+                  <>
+                    <dt>{r.label}</dt>
+                    <dd dir="auto">{r.value}</dd>
+                  </>
+                </div>
+              ))}
+            </dl>
+            <div class="la-observe">
+              <h4>{t("שתי עצירות למחשבה", "Questions to consider")}</h4>
+              <ol id="la-observations">
+                {first.observations.map((o) => (
+                  <li>{o}</li>
+                ))}
+              </ol>
+            </div>
+            <div class="la-actions">
+              <button
+                type="button"
+                data-next="2"
+                class="la-button"
+                lang="en"
+                dir="ltr"
+              >
+                Explain what you found →
+              </button>
+              <button
+                type="button"
+                id="la-reset"
+                class="la-text-button"
+                lang="en"
+                dir="ltr"
+              >
+                Reset controls
+              </button>
+            </div>
+          </section>
+          <section
+            class="la-stage"
+            data-stage="2"
+            aria-labelledby="la-explain-heading"
+          >
+            <p class="la-step-label">{t("התמונה היא התחלה", "Explanation")}</p>
+            <h3 id="la-explain-heading">
+              {t("כותבים למה זה נכון.", "Explain your result")}
+            </h3>
+            <details class="la-proof">
+              <summary lang="en" dir="ltr">
+                Read the mathematical explanation
+              </summary>
+              <p id="la-explanation">{first.explanation}</p>
+            </details>
+            <form id="la-finish-form">
+              <fieldset>
+                <legend id="la-extension">{first.extension}</legend>
+                <div class="la-choices" id="la-extension-choices">
+                  {first.extensionChoices.map((c, i) => (
+                    <label>
+                      <>
+                        <input type="radio" name="extension" value={i} />
+                        <span>{c}</span>
+                      </>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <label
+                class="la-reflection-label"
+                for="la-reflection"
+                id="la-reflection-label"
+              >
+                {first.reflection}
+              </label>
+              <textarea
+                id="la-reflection"
+                rows="4"
+                maxlength="5000"
+                placeholder={t(
+                  "ההסבר שלכם, במילים ובסימנים. לפחות 20 תווים.",
+                  "Write your explanation using words and notation. At least 20 characters.",
+                )}
+                aria-describedby="la-reflection-help"
+              ></textarea>
+              <p class="la-subtle" id="la-reflection-help">
+                {t(
+                  "הטקסט נשמר רק בדפדפן. שמירתו אינה בדיקה אוטומטית של ההוכחה ואינה הגשה בקורס.",
+                  "Your text is saved only in this browser. Saving does not automatically check the proof or submit coursework.",
+                )}
+              </p>
+              <button type="submit" class="la-button" lang="en" dir="ltr">
+                Check and save your summary ✓
+              </button>
+            </form>
+            <p
+              id="la-finish-feedback"
+              class="la-feedback"
+              role="status"
+              hidden
+            ></p>
+            <button
+              type="button"
+              id="la-next-lab"
+              class="la-text-button"
+              lang="en"
+              dir="ltr"
+            >
+              Next tutorial →
+            </button>
+          </section>
+        </article>
+        <div class="la-bottom-bar">
+          <p>Use an exact calculation or proof to check the plot.</p>
+          <button id="la-export" type="button" class="la-text-button">
+            Download my lab notebook ↓
+          </button>
+        </div>
+        <p id="la-storage-status" class="la-subtle" role="status"></p>
+      </div>
+    </section>
+  </div>
+  <script
+    id="la-data"
+    type="application/json"
+    set:html={JSON.stringify(linearActivities).replace(/</g, "\\u003c")}
+  />
+  <script>
+    import "../../scripts/linear-lab.js";
+  </script>
+</Layout>

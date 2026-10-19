@@ -46,7 +46,7 @@ const formattedDate = date.toLocaleDateString("en-GB", {
   month: "long",
   year: "numeric",
 });
-// When the poster did not print a year, show its exact printed date — never a guessed year.
+// When the poster did not print a year, show its exact printed date: never a guessed year.
 const shownDate = dateConfirmed
   ? formattedDate
   : (dateDisplay ?? formattedDate);

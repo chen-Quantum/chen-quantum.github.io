@@ -1,0 +1,43 @@
+---
+interface Props {
+  locale: "he" | "en";
+  page: "lab" | "llm";
+}
+const { locale, page } = Astro.props;
+const base = `/teaching/linear-algebra/${page}/`;
+---
+
+<nav class="la-language-switch print-controls" aria-label="Activity language">
+  <a
+    href={base}
+    lang="he"
+    dir="rtl"
+    hreflang="he"
+    aria-current={locale === "he" ? "page" : undefined}
+    data-language-switch
+  >
+    עברית
+  </a>
+  <a
+    href={`${base}en/`}
+    lang="en"
+    dir="ltr"
+    hreflang="en"
+    aria-current={locale === "en" ? "page" : undefined}
+    data-language-switch
+  >
+    English
+  </a>
+</nav>
+<script>
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(
+    "[data-language-switch]",
+  )) {
+    const sync = () => {
+      link.hash = window.location.hash;
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    link.addEventListener("click", sync);
+  }
+</script>

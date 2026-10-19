@@ -1,0 +1,257 @@
+{
+  "version": 1,
+  "language": "en",
+  "author": "Chen Gadi",
+  "website": "https://chengadi.science",
+  "protocol": [
+    "Before asking a model, write a prediction and make a short independent attempt.",
+    "Copy the prompt into your chosen model. Record the model name and version as displayed, the date, the actual prompt, and the original response. If no version is displayed, record that.",
+    "Check the response using a definition, substitution, an exact calculation, or a counterexample. Another response from the same model is not an independent check.",
+    "After checking, write a more precise prompt, compare the responses, and explain what you learned. A correct first response still requires a reasoned independent check.",
+    "Label the axes and legend of each plot and choose suitable scales. Include the code if you use code.",
+    "Use a model and plotting tool of your choice; no paid subscription is required. Do not enter personal details or another student's work. If you cannot access a model, analyse the explicitly labelled incorrect teaching example instead."
+  ],
+  "activities": [
+    {
+      "id": "roots-audit",
+      "homework": 1,
+      "tutorial": 1,
+      "title": "Checking every complex root",
+      "purpose": "Use a model to produce a plot and check whether the solution set is complete.",
+      "prediction": "Find at least one solution of w⁴ = −4 by hand. Predict how many distinct solutions the plot should contain.",
+      "prompt": "Solve w^4 = -4 over the complex numbers. Write Python code that plots every solution in the complex plane with point labels, labelled axes, and equal scales on both axes. Explain how the code checks that no solution is missing.",
+      "repairedPrompt": "Find all four roots of w^4 = -4 using polar form. Check each root's fourth power, the number of distinct roots, and their sum in both the code and solution. Do not use only the principal branch of a complex power.",
+      "tasks": [
+        "Find every solution in the form a+bi and verify that each satisfies the equation.",
+        "Use a model to create or improve a plot of the solutions. Check that it shows four distinct points, each at distance √2 from the origin.",
+        "Check that the roots sum to zero. Explain why this check alone does not establish that the list is correct.",
+        "Change the equation to w⁴ = 4. Find the resulting points and explain the change in the plot."
+      ],
+      "flawedExample": "Incorrect teaching example, written for this activity rather than obtained from a tested model: The only solution is 1+i because a complex power always returns the principal branch.",
+      "solution": [
+        "The roots are 1+i, −1+i, −1−i, and 1−i. For example, (1+i)²=2i and (1+i)⁴=−4. Polar form gives exactly four distinct roots.",
+        "Every root has modulus √2, their sum is zero, and consecutive arguments differ by 90°. A zero sum alone is insufficient: a list of four zeros also sums to zero but contains no solutions.",
+        "For w⁴=4 the roots are √2, i√2, −√2, and −i√2. They lie on the coordinate axes, at the same distance from the origin as before."
+      ],
+      "deliverables": [
+        "All roots and verification",
+        "A labelled plot",
+        "Completeness check",
+        "Comparison with w⁴ = 4"
+      ]
+    },
+    {
+      "id": "field-assumptions",
+      "homework": 2,
+      "tutorial": 2,
+      "title": "A missing field assumption",
+      "purpose": "Identify an omitted assumption and check how it affects rank and the kernel.",
+      "prediction": "For A=[[1,1],[1,−1]], compute the determinant. Decide whether that calculation answers the invertibility question without specifying a field.",
+      "prompt": "For A = [[1,1],[1,-1]], find its rank, kernel, and every solution of Ax=0. Is your answer valid without any further assumptions?",
+      "repairedPrompt": "Compute separately for the same coefficient matrix over R and over F_2. State how -1 is interpreted in each field, and check the rank and solutions of Ax=0 in each case.",
+      "tasks": [
+        "Identify the missing field assumption. Record whether the model noticed it or silently chose a field.",
+        "Compute the determinant, rank, and solution space over ℝ.",
+        "Over F₂, row reduce or directly check all four possible vectors. Give a table of all pairs and their images.",
+        "Compare with F₃. Explain why it would be wrong to conclude that rank drops over every finite field."
+      ],
+      "flawedExample": "Incorrect teaching example: The determinant is −2, so A is invertible over every field and the zero vector is the only solution.",
+      "solution": [
+        "Over ℝ, det A=−2≠0, so the rank is 2 and the kernel is {0}.",
+        "Over F₂, −1=1, the rows coincide, and the rank is 1. The solutions are (0,0) and (1,1). Both (0,1) and (1,0) map to (1,1); both (0,0) and (1,1) map to zero.",
+        "Over F₃ the determinant is 1, so the rank is 2. A difference between two fields does not imply that all finite fields behave alike."
+      ],
+      "deliverables": [
+        "The missing assumption",
+        "Calculations over at least two fields",
+        "A check table over F₂",
+        "Analysis of the model's response"
+      ]
+    },
+    {
+      "id": "parameter-zero",
+      "homework": 3,
+      "tutorial": 3,
+      "title": "Division by a parameter",
+      "purpose": "Use a model and plots while retaining every parameter case.",
+      "prediction": "First solve x+y=3, 2x+(2+t)y=6 for t=0 and for t=1.",
+      "prompt": "Solve x+y=3, 2x+(2+t)y=6. Subtract twice the first equation to obtain ty=0, divide by t, and continue. Plot the lines for t=-1,0,1. Is my instruction to divide always valid?",
+      "repairedPrompt": "Solve x+y=3, 2x+(2+t)y=6 for every real t. Separate t=0 explicitly before dividing. Then replace the right-hand side of the second equation by 5 and classify all cases again. Verify by row reduction and substitution.",
+      "tasks": [
+        "Explain why the quoted instruction to divide by t must be checked. Record whether the model corrected it.",
+        "Solve for every real t. Plot both lines for t=−1,0,1 and describe the case when they coincide.",
+        "Replace 6 by 5 in the second equation. Solve again for every t, including t=0.",
+        "Give one solution lost by dividing by a parameter without checking it, and substitute it into the original equations."
+      ],
+      "flawedExample": "Incorrect teaching example: Divide ty=0 by t to get y=0. Thus (3,0) is the unique solution for every t.",
+      "solution": [
+        "In the first system, t≠0 gives y=0 and x=3. For t=0 the equations are dependent and all solutions are (3−s,s), for real s.",
+        "After changing the right-hand side to 5, row reduction gives ty=−1. For t≠0 the solution is (3+1/t,−1/t). For t=0 the system is inconsistent.",
+        "For example, t=0 and (x,y)=(2,1) satisfy the first system but are missed by the incorrect conclusion. A plot of coincident lines does not establish uniqueness."
+      ],
+      "deliverables": [
+        "All parameter cases",
+        "Three plots or one labelled comparison",
+        "Substitution check",
+        "Analysis of the division instruction"
+      ]
+    },
+    {
+      "id": "false-basis",
+      "homework": 6,
+      "tutorial": 6,
+      "title": "Checking a proposed basis",
+      "purpose": "Check the data before asking for coordinates or an inverse matrix.",
+      "prediction": "Check whether B=((1,2),(2,4)) is a basis of ℝ² and whether x=(3,6) has a unique coefficient list relative to this ordered list.",
+      "prompt": "In the basis B=((1,2),(2,4)) of R^2, find the unique coordinates of x=(3,6) and invert the basis matrix. First check whether the data are consistent.",
+      "repairedPrompt": "Check whether B=((1,2),(2,4)) is a basis. Find all a,b such that a(1,2)+b(2,4)=(3,6). Then replace the second vector by (0,1) to obtain a basis B'. Find the B'-coordinates of (3,6) and (1,0).",
+      "tasks": [
+        "Disprove the basis assumption in two ways: linear dependence and a determinant calculation.",
+        "Find every coefficient pair giving (3,6). Explain why these do not give a unique coordinate vector relative to a basis.",
+        "Explain why (1,0) is outside the span of the original list. Plot the line and the point.",
+        "Use B'=((1,2),(0,1)), find the inverse basis matrix, and verify both coordinate lists by multiplication."
+      ],
+      "flawedExample": "Incorrect teaching example: B is a basis because it contains two distinct vectors. The unique coordinates of (3,6) are (3,0).",
+      "solution": [
+        "The second vector is twice the first, and det[[1,2],[2,4]]=0. The list is not a basis and its column matrix has no inverse.",
+        "Every pair (a,b)=(3−2s,s) gives (3,6). The vector (1,0) is outside the span because every vector in the span has second component twice its first.",
+        "For the corrected basis, P=[[1,0],[2,1]] and P⁻¹=[[1,0],[−2,1]]. Hence [(3,6)]B'=(3,0) and [(1,0)]B'=(1,−2)."
+      ],
+      "deliverables": [
+        "Two dependence checks",
+        "All coefficient pairs",
+        "A plot of the line and point",
+        "Corrected basis and coordinate checks"
+      ]
+    },
+    {
+      "id": "basis-order",
+      "homework": 9,
+      "tutorial": 9,
+      "title": "Order in a change of basis",
+      "purpose": "Use a model to draw a change-of-basis diagram and detect an incorrect multiplication order.",
+      "prediction": "Let A=[[2,1],[0,3]] and P=[[1,1],[0,1]]. The columns of P are the basis vectors of B. Describe the route from [x]B to [Ax]B.",
+      "prompt": "Let A=[[2,1],[0,3]] and P=[[1,1],[0,1]], with the columns of P forming the new basis. Explain why the new representation is PAP^{-1} and draw a diagram that verifies it. If my formula is wrong, correct it and give a numerical check.",
+      "repairedPrompt": "State explicitly that x=P[x]_B. Derive the formula for the representation of A in B from this definition. Compute both P^{-1}AP and PAP^{-1} and compare the routes for [x]_B=(1,2).",
+      "tasks": [
+        "Derive the correct multiplication order from the definition of coordinates.",
+        "Compute and compare P⁻¹AP and PAP⁻¹ explicitly.",
+        "Take [x]B=(1,2). Compute x, Ax, and [Ax]B, and check that both correct routes agree.",
+        "Use the model to produce a labelled diagram or vector plot, correcting any arrow with a wrong direction or label."
+      ],
+      "flawedExample": "Incorrect teaching example: Since the new basis appears on the left, the formula is PAP⁻¹. There is no need to test a vector.",
+      "solution": [
+        "Since x=Pc, Ax=APc and [Ax]B=P⁻¹APc. Direct calculation gives P⁻¹AP=diag(2,3), whereas PAP⁻¹=[[2,2],[0,3]].",
+        "For c=(1,2), x=(3,2), Ax=(8,6), and [Ax]B=(2,6). Also diag(2,3)c=(2,6). The wrong expression gives (6,6), so the vector check detects the mistake.",
+        "The formula depends on the precise definition of P. Defining P in the opposite conversion direction changes the order accordingly; specify the convention before assessing a formula."
+      ],
+      "deliverables": [
+        "Derivation from the definition",
+        "Both explicit products",
+        "A vector check",
+        "A diagram with conversion directions"
+      ]
+    },
+    {
+      "id": "diagonalization-audit",
+      "homework": 11,
+      "tutorial": 11,
+      "title": "Powers of a matrix that is not diagonalizable",
+      "purpose": "Plot a sequence of vectors with a model and check whether diagonalization is available.",
+      "prediction": "For J=[[2,1],[0,2]], compute the eigenspace for 2 and J² by hand. Is J diagonalizable?",
+      "prompt": "The only eigenvalue of J=[[2,1],[0,2]] is 2. Use diagonalization to show that J^n=2^n I. If J cannot be diagonalized, explain why and give a correct formula. Plot 2^{-n}J^n(0,1) for n=0,...,6.",
+      "repairedPrompt": "First find dim ker(J-2I). Write J=2I+N, compute N², and derive a power formula by induction. Check n=1,2,3 before writing code to plot the rescaled vectors.",
+      "tasks": [
+        "Find the algebraic multiplicity and eigenspace dimension, and decide whether J is diagonalizable.",
+        "Write J=2I+N and prove, without diagonalization, that Jⁿ=2ⁿI+n2ⁿ⁻¹N for every n≥1.",
+        "Plot qₙ=2⁻ⁿJⁿ(0,1) for n=0,…,6. Give the exact coordinates of every point.",
+        "Test the formula proposed in the original prompt for n=1 and n=3. Explain why knowing the eigenvalues alone is insufficient."
+      ],
+      "flawedExample": "Incorrect teaching example: The characteristic polynomial is (t−2)², so J is similar to 2I. Hence Jⁿ=2ⁿI.",
+      "solution": [
+        "The eigenspace is span{(1,0)}, of dimension 1, while the algebraic multiplicity is 2. Thus J is not diagonalizable.",
+        "For N=[[0,1],[0,0]], N²=0. Multiplying the induction formula by 2I+N gives 2ⁿ⁺¹I+(n+1)2ⁿN. In particular, J³=[[8,12],[0,8]].",
+        "For n≥0, qₙ=(n/2,1), with q₀=(0,1). The points lie on y=1; the wrong formula predicts a fixed point. Eigenvalues alone do not determine the entire action of a matrix."
+      ],
+      "deliverables": [
+        "Diagonalizability check",
+        "Proof of the power formula",
+        "A plot of seven points",
+        "Explicit counterexample to the wrong formula"
+      ]
+    },
+    {
+      "id": "weighted-projection",
+      "homework": 11,
+      "tutorial": 12,
+      "title": "Projection for a weighted inner product",
+      "purpose": "Compare projections for different inner products and interpret the plot correctly.",
+      "prediction": "On ℝ² use ⟨x,y⟩=3x₁y₁+x₂y₂. For u=(1,1) and v=(3,1), find the orthogonal projection of v onto span{u}.",
+      "prompt": "Find the orthogonal projection of v=(3,1) onto the line spanned by u=(1,1), using <x,y>=3*x1*y1+x2*y2. Plot v, its projection, and the residual. Must the residual look perpendicular to the line in standard coordinates?",
+      "repairedPrompt": "Compute c=<v,u>/<u,u> using the given inner product, not the standard dot product. Check separately that cu belongs to span{u} and that <v-cu,u>=0. Also plot 3x²+y²=1 and explain what the Euclidean plot does not prove.",
+      "tasks": [
+        "Find the coefficient and projection for the given inner product. Check membership in the line and orthogonality of the residual.",
+        "Compute the standard Euclidean projection separately and compare the two vectors.",
+        "Use equal scales on the axes. Plot the line, v, both projections, and the ellipse 3x²+y²=1.",
+        "Explain why a Euclidean right-angle marker could misrepresent orthogonality for the weighted inner product."
+      ],
+      "flawedExample": "Incorrect teaching example: The projection is (2,2), by the usual projection formula. Changing the inner product does not change the projection onto a fixed line.",
+      "solution": [
+        "The coefficient is (3·3+1)/(3+1)=5/2. Thus p=(5/2,5/2), r=(1/2,−3/2), and ⟨r,u⟩=3/2−3/2=0.",
+        "The standard Euclidean projection is p₀=(2,2). The weighted residual has Euclidean dot product −1 with u, so it is not Euclidean-perpendicular to the line.",
+        "Projection is determined by the ambient space, subspace, and inner product. Membership and orthogonality checks verify the result; the plot illustrates the data."
+      ],
+      "deliverables": [
+        "Two projection calculations",
+        "Residual check",
+        "A labelled plot including the ellipse",
+        "Explanation of orthogonality"
+      ]
+    },
+    {
+      "id": "complex-convention",
+      "homework": 11,
+      "tutorial": 13,
+      "title": "The complex inner product convention",
+      "purpose": "Detect a projection formula using a different inner product convention and correct the calculation.",
+      "prediction": "On ℂ² let ⟨x,y⟩=x₁·conj(y₁)+x₂·conj(y₂), linear in the first argument. For u=(1,i) and v=(0,2), is the projection coefficient ⟨v,u⟩/⟨u,u⟩ or ⟨u,v⟩/⟨u,u⟩?",
+      "prompt": "On C^2 use <x,y>=x1*conj(y1)+x2*conj(y2), linear in the first argument. For u=(1,i) and v=(0,2), use <u,v>/<u,u> to compute the projection of v onto span_C{u}. Check whether my proposed coefficient matches the stated convention.",
+      "repairedPrompt": "Derive c from <v-cu,u>=0 using linearity in the first argument. Compute p=cu and the residual, verify orthogonality, and check the Pythagorean identity for the induced norm.",
+      "tasks": [
+        "Derive the coefficient from orthogonality using the stated convention. Explain why a formula from another convention must be adapted.",
+        "Compute both ⟨v,u⟩ and ⟨u,v⟩ and find the correct projection.",
+        "Compute the residual for the reversed coefficient and its inner product with u.",
+        "Check the Pythagorean identity for the correct projection. Explain why plotting two real coordinates does not represent a general vector in ℂ²."
+      ],
+      "flawedExample": "Incorrect teaching example: The coefficient is always ⟨u,v⟩/⟨u,u⟩, so p=(i,−1), and the residual is orthogonal to u.",
+      "solution": [
+        "From ⟨v−cu,u⟩=0 and linearity in the first argument, c=⟨v,u⟩/⟨u,u⟩. Here ⟨v,u⟩=−2i, ⟨u,v⟩=2i, and ⟨u,u⟩=2.",
+        "Thus c=−i, p=(−i,1), and r=(i,1), with ⟨r,u⟩=i−i=0. The wrong coefficient gives p'=(i,−1), r'=(−i,3), and ⟨r',u⟩=−4i≠0.",
+        "The squared norms are ‖v‖²=4, ‖p‖²=2, and ‖r‖²=2, satisfying the Pythagorean identity. The real dimension of ℂ² is 4. An ordinary ℝ² plot needs an explicitly specified slice or partial representation."
+      ],
+      "deliverables": [
+        "Derivation from orthogonality",
+        "Calculation using the course convention",
+        "Check of the wrong coefficient",
+        "Pythagorean identity and dimension explanation"
+      ]
+    }
+  ],
+  "teacherNotes": {
+    "grading": "Suggested rubric for an individual activity: independent understanding and solution 40%, exact verification and critique 30%, plot or check table 15%, documentation and prompt comparison 15%. This does not change the homework weight in the course grade.",
+    "success": "Do not award marks just for finding a model error. Assess verification, identification of assumptions, and independent explanation whether the model is right or wrong.",
+    "evidence": "The incorrect examples were written for teaching. No comparative model experiment was run, and no claim is made that a particular model failed or that every model will fail.",
+    "research": [
+      {
+        "title": "GSM-Symbolic (2024; revised 2025)",
+        "url": "https://arxiv.org/abs/2410.05229",
+        "note": "A study of sensitivity to numerical changes and added information on specific tasks. It does not prove that every current model fails these questions."
+      },
+      {
+        "title": "GSM-Plus (ACL 2024)",
+        "url": "https://arxiv.org/abs/2402.19255",
+        "note": "A study of robustness to changes in wording and assumptions in mathematics problems. These activities are a teaching adaptation to linear algebra, not a reproduction of its experiment."
+      }
+    ]
+  }
+}

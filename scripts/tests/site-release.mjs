@@ -45,9 +45,17 @@ for (const file of pages) {
   );
   const visible = document.body.cloneNode(true);
   visible.querySelectorAll("script,style").forEach((node) => node.remove());
+  // The language switch labels its Hebrew option in Hebrew.
+  visible
+    .querySelectorAll(".la-language-switch")
+    .forEach((node) => node.remove());
   // Course material may be Hebrew, while the site's surrounding UI stays English.
   // The dedicated activity pages explicitly mark Hebrew teaching regions.
-  if (/teaching\/linear-algebra\/(lab|llm)\/index\.html$/.test(path.relative(dist, file))) {
+  if (
+    /teaching\/linear-algebra\/(lab|llm)\/index\.html$/.test(
+      path.relative(dist, file),
+    )
+  ) {
     visible.querySelectorAll('[lang="he"]').forEach((node) => node.remove());
   }
   check(
@@ -242,15 +250,21 @@ check(
   "English syllabus contains all 12 topic blocks and 65 listed hours",
 );
 check(
-  [
-    "best 8",
-    "best 10",
-    "at least 50",
-    "80%–100%",
-    "WeBWorK",
-    "No calculator",
-  ].every((text) => syllabus.querySelector("main").textContent.includes(text)),
-  "syllabus preserves homework, exam, and eligibility rules",
+  ["best 8", "at least 50", "85%–100%", "WeBWorK", "No calculator"].every(
+    (text) => syllabus.querySelector("main").textContent.includes(text),
+  ),
+  "English-course syllabus preserves written-homework and exam eligibility rules",
+);
+check(
+  syllabus.querySelector("#assessment").textContent.includes("practice only") &&
+    syllabus
+      .querySelector("#assessment")
+      .textContent.includes("WeBWorK scores do not count") &&
+    !syllabus.querySelector("#assessment").textContent.includes("best 10") &&
+    !/(^|[^0-9])5%\s*protective/.test(
+      syllabus.querySelector("#assessment").textContent,
+    ),
+  "WeBWorK is practice only in the English course, without a protective grade",
 );
 const { isUpcomingEvent } = await import(
   "data:text/javascript," +

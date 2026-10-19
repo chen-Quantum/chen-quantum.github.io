@@ -1,5 +1,5 @@
 ---
-title: "Single-Qubit Gates — Practice Problems"
+title: "Single-Qubit Gates: Practice Problems"
 description: "A structured set of practice problems on single-qubit quantum gates, the Bloch sphere, and gate composition. Includes worked solutions for the first half."
 subject: "Quantum Computing"
 tags: ["Quantum Computing", "Gates", "Circuits", "Practice"]
@@ -15,7 +15,7 @@ Practice problems on single-qubit operations. These problems are designed to bui
 
 ## Problem Set Contents
 
-1. Pauli gates (X, Y, Z) — matrix form and geometric interpretation
+1. Pauli gates (X, Y, Z): matrix form and geometric interpretation
 2. The Hadamard gate and superposition
 3. Phase gates (S, T) and their effect on the Bloch sphere
 4. Gate composition and matrix multiplication

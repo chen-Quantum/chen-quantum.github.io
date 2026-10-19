@@ -1,21 +1,21 @@
 ---
 title: "Linear Algebra"
 shortDescription: "Vectors, matrices, linear transformations, and eigenvalues for engineering students. Full tutorial recordings are on the teaching page."
-semester: "2025 — Present"
+semester: "2025: Present"
 tags: ["Mathematics", "Linear Algebra", "Matrices"]
 featured: false
 resources:
-  - title: "Gilbert Strang — Linear Algebra (MIT OpenCourseWare)"
+  - title: "Gilbert Strang: Linear Algebra (MIT OpenCourseWare)"
     url: "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/"
-  - title: "3Blue1Brown — Essence of Linear Algebra (YouTube)"
+  - title: "3Blue1Brown: Essence of Linear Algebra (YouTube)"
     url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab"
-  - title: "Paul's Online Math Notes — Linear Algebra"
+  - title: "Paul's Online Math Notes: Linear Algebra"
     url: "https://tutorial.math.lamar.edu/"
 ---
 
 An overview of the linear algebra I teach for engineering students (electrical and
-biomedical tracks). The full tutorial recordings — tutorials 8–13 plus a worked
-exam question — are on the [teaching page](/teaching#linear-algebra).
+biomedical tracks). The full tutorial recordings: tutorials 8–13 plus a worked
+exam question: are on the [teaching page](/teaching#linear-algebra).
 
 ## Topics
 
