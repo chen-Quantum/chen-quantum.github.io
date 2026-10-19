@@ -1,5 +1,5 @@
 ---
-title: "Eigenvalues, Eigenvectors, and Diagonalization — Worksheet"
+title: "Eigenvalues, Eigenvectors, and Diagonalization: Worksheet"
 description: "A comprehensive worksheet on eigenvalue decomposition, including characteristic polynomials, geometric multiplicity, and diagonalization. Suitable for Linear Algebra students."
 subject: "Linear Algebra"
 tags: ["Linear Algebra", "Eigenvalues", "Matrices", "Decomposition"]
@@ -25,6 +25,7 @@ This worksheet covers eigenvalue theory in depth. It is designed to accompany Tu
 ## Before You Begin
 
 Make sure you are comfortable with:
+
 - Determinants (covered in Tutorial 2)
 - Matrix multiplication and inverse
 - The concept of linear independence

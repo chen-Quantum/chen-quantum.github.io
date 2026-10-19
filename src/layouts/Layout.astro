@@ -23,8 +23,19 @@ const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/brand/chen-favicon-v2.svg" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="64x64"
+      href="/brand/chen-favicon-v2.png"
+    />
+    <link rel="shortcut icon" href="/favicon.ico?v=chen-v2" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/brand/chen-apple-touch-v2.png"
+    />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
@@ -37,10 +48,10 @@ const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
       rel="stylesheet"
     />
   </head>
-  <body
-    class="bg-white text-slate-900 antialiased font-sans min-h-screen flex flex-col"
-  >
-    <a href="#main-content" class="skip-link">Skip to content</a>
+  <body class="bg-white text-slate-900 antialiased font-sans min-h-screen flex flex-col">
+    <a href="#main-content" class="skip-link">
+      Skip to content
+    </a>
     <Navbar />
     <main id="main-content" class="flex-1">
       <slot />

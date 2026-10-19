@@ -1,9 +1,10 @@
 # Linear Algebra interactive activities
 
 The 2026–2027 course page and the earlier Linear Algebra archive now link to
-`/teaching/linear-algebra/lab` and `/teaching/linear-algebra/llm`. Site navigation
-remains English. Hebrew teaching content is explicitly marked with `lang="he"`
-and right-to-left direction. Existing recordings, notes, classroom workflows,
+`/teaching/linear-algebra/lab` and `/teaching/linear-algebra/llm`. Site navigation remains English. Both activity pages now include a Hebrew/English
+language switch, with matching language and text direction for teaching content.
+English versions are at `/teaching/linear-algebra/lab/en/` and
+`/teaching/linear-algebra/llm/en/`. Existing recordings, notes, classroom workflows,
 course policies, and deployment settings are preserved.
 
 ## Thirteen tutorial labs
@@ -17,27 +18,28 @@ does not mark Euclidean right angles. Gram–Schmidt handles a zero residual bef
 normalization. Inner products follow the course's convention: linear in the
 first argument.
 
-| Tutorial | Activity |
-| --- | --- |
-| 1 | All roots of a nonzero complex number on the unit circle |
-| 2 | Rank and kernel over R, F2, F3, F5 |
-| 3 | Consistent, inconsistent, and underdetermined parameter cases |
-| 4 | Span, dependence, and the limits of a bounded plot |
-| 5 | Order of matrix multiplication |
-| 6 | Basis coordinates and the inverse conversion |
-| 7 | Rank, image, and rank-nullity |
-| 8 | Linear versus affine maps; necessary versus sufficient conditions |
-| 9 | Similarity and a commuting coordinate diagram |
-| 10 | Signed determinant and unsigned area |
-| 11 | Repeated eigenvalues and failure of diagonalizability |
-| 12 | Orthogonal projection with a weighted inner product |
-| 13 | Gram–Schmidt with dependent input and a symmetric example |
+| Tutorial | Activity                                                          |
+| -------- | ----------------------------------------------------------------- |
+| 1        | All roots of a nonzero complex number on the unit circle          |
+| 2        | Rank and kernel over R, F2, F3, F5                                |
+| 3        | Consistent, inconsistent, and underdetermined parameter cases     |
+| 4        | Span, dependence, and the limits of a bounded plot                |
+| 5        | Order of matrix multiplication                                    |
+| 6        | Basis coordinates and the inverse conversion                      |
+| 7        | Rank, image, and rank-nullity                                     |
+| 8        | Linear versus affine maps; necessary versus sufficient conditions |
+| 9        | Similarity and a commuting coordinate diagram                     |
+| 10       | Signed determinant and unsigned area                              |
+| 11       | Repeated eigenvalues and failure of diagonalizability             |
+| 12       | Orthogonal projection with a weighted inner product               |
+| 13       | Gram–Schmidt with dependent input and a symmetric example         |
 
 No QR, least squares, best-approximation topic, or ring theory is introduced.
 
 ## Eight guided LLM tasks
 
-The canonical web pack is `public/files/linear-algebra-lab/llm-activities.json`.
+The Hebrew pack is `public/files/linear-algebra-lab/llm-activities.json`; the matching
+English pack is `public/files/linear-algebra-lab/llm-activities-en.json`.
 It includes original and improved prompts, an independent verification task,
 deliverables, and reference solutions. Corresponding LaTeX activities are added
 to homework 1, 2, 3, 6, 9, and 11 in the separately maintained course project.
@@ -79,6 +81,7 @@ presented as evidence that every current model fails these course questions.
 ```sh
 npm run build
 node --test scripts/tests/linear-lab-math.mjs
+PORTAL_QA_ROOT=/path/to/jsdom-qa node --test scripts/tests/linear-language.mjs
 python3 public/files/linear-algebra-lab/verify_examples.py
 PORTAL_QA_ROOT=/path/to/jsdom-qa node --test scripts/tests/linear-lab-dom.mjs
 PORTAL_QA_ROOT=/path/to/jsdom-qa node scripts/tests/site-release.mjs
@@ -91,3 +94,8 @@ invalid saved data, the eight LLM activities, journal switching, copy, and print
 The site checks retain canonical URLs, existing content, and internal links.
 Only explicitly marked Hebrew teaching regions on the two new course pages are
 excluded from the general English-interface check.
+
+The language switch preserves the tutorial URL fragment and uses the same local
+student records in both languages. Existing student prose is not translated or
+overwritten. LLM journal exports use labels in the selected language and retain
+the selected activity. The switch is hidden in printed copies.

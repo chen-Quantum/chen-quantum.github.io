@@ -1,4 +1,5 @@
 import * as M from "./linearLabMath.mjs";
+import { translatePlotText } from "./linearLabPlotEn.mjs";
 export const escapeHtml = (s) =>
   String(s).replace(
     /[&<>"']/g,
@@ -15,7 +16,7 @@ const colors = {
   muted: "#839388",
 };
 const num = (x) => Number(Math.abs(x) < 1e-10 ? 0 : x.toFixed(3));
-export function renderActivity(id, p) {
+export function renderActivity(id, p, locale = "he") {
   let extent =
     {
       complex: 1.45,
@@ -346,6 +347,13 @@ export function renderActivity(id, p) {
     if (x && Number.isInteger(x)) {
       grid += `<text x="${X(x) + 3}" y="${cy + 16}" fill="#718076" font-size="10">${x}</text><text x="${cx - 20}" y="${Y(x) - 3}" fill="#718076" font-size="10">${x}</text>`;
     }
+  }
+  if (locale === "en") {
+    caption = translatePlotText(caption);
+    readouts = readouts.map(({ label, value }) => ({
+      label: translatePlotText(label),
+      value: translatePlotText(value),
+    }));
   }
   const description = readouts.map((r) => `${r.label}: ${r.value}`).join(". ");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 410" role="img" aria-labelledby="plot-title plot-desc" direction="ltr"><title id="plot-title">${escapeHtml(caption)}</title><desc id="plot-desc">${escapeHtml(description)}</desc><defs><clipPath id="plot-clip"><rect x="24" y="20" width="512" height="370"/></clipPath></defs><rect width="560" height="410" rx="16" fill="#fcfdf9"/>${grid}<path d="M 40 ${cy} H 520 M ${cx} 24 V 386" stroke="#a2aea2" stroke-width="1.2"/><text x="522" y="${cy + 17}" font-size="12" fill="#617365">${id === "complex" ? "Re" : "x"}</text><text x="${cx + 8}" y="28" font-size="12" fill="#617365">${id === "complex" ? "Im" : "y"}</text><g clip-path="url(#plot-clip)">${shapes}</g></svg>`;

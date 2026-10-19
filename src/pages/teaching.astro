@@ -61,7 +61,7 @@ const filterCourses = teachingCourses.filter(
 
 // Soft download code for full open / download of teaching PDFs. The inline
 // preview stays visible without a code; only opening / downloading the full
-// PDF requires it. This is classroom UX, not security — the code is in the
+// PDF requires it. This is classroom UX, not security: the code is in the
 // page source and the PDF URL is public.
 const DOWNLOAD_CODE = "juanBalagan";
 
@@ -77,7 +77,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
 
 <Layout
   title="Teaching"
-  description="Teaching by Chen Gadi at Tel Aviv University — linear algebra and calculus 2 (Hedva 2) for engineering students. Practice sheets and tutorial recordings."
+  description="Teaching by Chen Gadi at Tel Aviv University: linear algebra and calculus 2 (Hedva 2) for engineering students. Practice sheets and tutorial recordings."
 >
   <!-- Page header -->
   <section class="border-b border-slate-100">
@@ -110,7 +110,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         Recordings are <strong class="font-semibold text-slate-500"
           >unlisted YouTube videos</strong
         >, available through this page and the course links. Unlisted videos are
-        not private — anyone with a link can view them.
+        not private: anyone with a link can view them.
       </p>
     </div>
   </section>
@@ -207,7 +207,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
       <div>
         <p class="edition-label">
           Linear Algebra · Electrical &amp; Electronics Engineering
-        </p><h3>A clear course guide, in English.</h3><p>
+        </p><h3>Linear Algebra: English syllabus</h3><p>
           Course 05091724: topics, assessment, exam rules, and bibliography for
           Semester A, 2026–2027.
         </p>
@@ -259,7 +259,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
     >
       <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
         <h2 class="font-display text-2xl md:text-3xl text-slate-900">
-          Calculus 2 · Hedva 2 — practice sessions
+          Calculus 2 · Hedva 2: practice sessions
         </h2>
       </div>
       <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
@@ -339,7 +339,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
     >
       <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
         <h2 class="font-display text-2xl md:text-3xl text-slate-900">
-          Linear Algebra — tutorial recordings
+          Linear Algebra: tutorial recordings
         </h2>
       </div>
       <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-4">
@@ -447,7 +447,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         >
           <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
             <h2 class="font-display text-2xl md:text-3xl text-slate-900">
-              Group Theory — worked solutions
+              Group Theory: worked solutions
             </h2>
           </div>
           <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-8">
@@ -484,7 +484,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
               {unknownVideos.length} playlist recording
               {unknownVideos.length === 1 ? "" : "s"} could not be confidently
               matched to a course from the title alone. Listed here for manual
-              review — not shown anywhere else on the site.
+              review: not shown anywhere else on the site.
             </p>
             <ul class="space-y-1.5">
               {unknownVideos.map((v) => (
@@ -529,7 +529,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
   </div>
 
   {
-    /* Video classification note (developer-facing): 44 videos are classified —
+    /* Video classification note (developer-facing): 44 videos are classified.
      17 Hedva 2, 26 Linear Algebra (1 of them the 2022 exam, plus 2 newer exam
      solutions), 1 Group Theory, 0 unknown. The "Needs classification" section
      above renders only when unknownVideos is non-empty. Course tags/filters
@@ -540,7 +540,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
 
   <script>
     // Course filter: show only the section(s) for the selected course.
-    // Vanilla JS, no framework — mirrors the LiteYouTube delegated pattern.
+    // Vanilla JS, no framework: mirrors the LiteYouTube delegated pattern.
     (() => {
       const bar = document.querySelector("[data-course-filter]");
       if (!bar) return;

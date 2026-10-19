@@ -3,7 +3,7 @@
 // static GitHub Pages site.
 //
 // This is NOT security. The code lives in the page source and the PDF URL is
-// public — anyone with devtools or the URL can still fetch it. This is a
+// public: anyone with devtools or the URL can still fetch it. This is a
 // classroom-style download code that keeps the practice sheet from being
 // casually opened by site visitors who arrive at the teaching page without
 // taking the course. The inline PDF preview (PdfPreview.astro) stays visible
@@ -88,7 +88,7 @@ const summaryClass =
 
 <script is:inline>
   // One delegated handler for every .pdf-gate on the page. Soft / classroom
-  // gate — the code is in the page source, so this is not security. It only
+  // gate: the code is in the page source, so this is not security. It only
   // prevents casual one-click downloads.
   (function () {
     if (window.__pdfGateBound) return;

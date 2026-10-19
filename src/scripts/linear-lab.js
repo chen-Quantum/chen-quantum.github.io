@@ -88,7 +88,11 @@ if (root) {
     save();
   }
   function updatePlot() {
-    plot = renderActivity(active.id, state[active.id].values);
+    plot = renderActivity(
+      active.id,
+      state[active.id].values,
+      root.dataset.locale,
+    );
     $("la-plot").innerHTML = plot.svg;
     $("la-caption").textContent = plot.caption;
     $("la-readouts").innerHTML = plot.readouts
@@ -275,7 +279,11 @@ if (root) {
       JSON.stringify(
         {
           version: 1,
-          course: "אלגברה לינארית — חן גדי",
+          language: root.dataset.locale,
+          course:
+            root.dataset.locale === "en"
+              ? "Linear Algebra: Chen Gadi"
+              : "אלגברה לינארית: חן גדי",
           website: "https://chengadi.science/teaching/linear-algebra/lab",
           exportedAt: new Date().toISOString(),
           activities: activities.map((a) => ({

@@ -2,7 +2,7 @@
 // Internal Linear Algebra teaching subpage.
 //
 // Linked from /teaching ("View full Linear Algebra page →"). Not in the top
-// navbar. Modest wording — this is a teaching archive, not a course site.
+// navbar. Modest wording: this is a teaching archive, not a course site.
 //
 // Sections (each renders only when it has content):
 //   1. Tutorial recordings (existing LA playlist, grouped by tutorial number)
@@ -18,16 +18,16 @@ import {
 } from "../../data/youtubeVideos";
 import { teachingPlaylists } from "../../data/playlists";
 
-// Tutorial recordings — grouped by tutorial number (newest first).
+// Tutorial recordings: grouped by tutorial number (newest first).
 const laTutorialNumbers = [13, 12, 11, 10, 9, 8];
 const laGroups = laTutorialNumbers
   .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n) }))
   .filter((g) => g.videos.length > 0);
 
-// Worked exam questions — any LA video marked isExamQuestion.
+// Worked exam questions: any LA video marked isExamQuestion.
 const examVideos = linearAlgebraVideos.filter((v) => v.isExamQuestion);
 
-// Worked solutions (non-exam), songs, memory-aids — LA only.
+// Worked solutions (non-exam), songs, memory-aids: LA only.
 const laSolutions = videosByContentType("worked-solution").filter(
   (v) => v.category === "linear_algebra" && !v.isExamQuestion
 );
@@ -55,7 +55,7 @@ const memoryAidPlaylist = teachingPlaylists.find(
 
 <Layout
   title="Linear Algebra"
-  description="Linear Algebra teaching archive — tutorial recordings, worked exam questions, and supporting playlists for engineering students at Tel Aviv University."
+  description="Linear Algebra teaching archive: tutorial recordings, worked exam questions, and supporting playlists for engineering students at Tel Aviv University."
 >
   <!-- Page header -->
   <section class="border-b border-slate-100">
@@ -82,8 +82,9 @@ const memoryAidPlaylist = teachingPlaylists.find(
         </a>
       </p>
       <div class="academic-actions mt-6">
-        <a class="academic-primary" href="/teaching/linear-algebra/lab">Interactive tutorial lab (Hebrew) ↗</a>
+        <a class="academic-primary" href="/teaching/linear-algebra/lab">Interactive tutorial lab (Hebrew / English) ↗</a>
         <a class="academic-secondary" href="/teaching/linear-algebra/llm">Guided LLM activities ↗</a>
+          <a class="text-link" href="/teaching/linear-algebra/llm/en/">LLM activities in English ↗</a>
       </div>
     </div>
   </section>

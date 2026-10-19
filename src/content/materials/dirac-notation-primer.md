@@ -1,5 +1,5 @@
 ---
-title: "Dirac Notation and Hilbert Spaces — A Primer"
+title: "Dirac Notation and Hilbert Spaces: A Primer"
 description: "A self-contained introduction to Dirac (bra-ket) notation, inner products, and the structure of Hilbert spaces. Designed for students beginning quantum computing."
 subject: "Quantum Computing"
 tags: ["Quantum Computing", "Linear Algebra", "Notation"]
@@ -11,7 +11,7 @@ passwordProtected: false
 date: 2025-09-15
 ---
 
-This tutorial introduces the mathematical language at the heart of quantum mechanics and quantum computing — Dirac (bra-ket) notation.
+This tutorial introduces the mathematical language at the heart of quantum mechanics and quantum computing: Dirac (bra-ket) notation.
 
 ## What You Will Learn
 
@@ -28,4 +28,4 @@ Familiarity with vectors and matrices from a first linear algebra course. No pri
 
 ## How to Use This Tutorial
 
-Work through the notes first, then attempt the exercises at the end. Solutions are available in office hours. If you are stuck, pay close attention to the notation — most errors come from confusing kets with their corresponding bras.
+Work through the notes first, then attempt the exercises at the end. Solutions are available in office hours. If you are stuck, pay close attention to the notation: most errors come from confusing kets with their corresponding bras.

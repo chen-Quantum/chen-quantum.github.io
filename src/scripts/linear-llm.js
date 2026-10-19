@@ -33,13 +33,20 @@ if (root) {
     }),
   );
   let current = data.activities[0].id;
+  try {
+    const selected = JSON.parse(localStorage.getItem(key) || "{}").selected;
+    if (data.activities.some((a) => a.id === selected)) current = selected;
+  } catch {}
   function collect() {
     for (const f of fields) records[current][f] = $(`llm-${f}`).value;
   }
   function save() {
     collect();
     try {
-      localStorage.setItem(key, JSON.stringify({ version: 1, records }));
+      localStorage.setItem(
+        key,
+        JSON.stringify({ version: 1, selected: current, records }),
+      );
       return true;
     } catch {
       $("llm-journal-status").textContent =
@@ -68,6 +75,7 @@ if (root) {
   $("llm-activity").addEventListener("change", (e) => {
     save();
     select(e.target.value);
+    save();
   });
   $("llm-journal-form").addEventListener("input", () => {
     save();
@@ -107,6 +115,7 @@ if (root) {
     if (button) {
       save();
       select(button.dataset.journal);
+      save();
       $("journal").scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? "auto"
@@ -127,25 +136,39 @@ if (root) {
         "Add a prediction or a note first, then download your records.";
       return;
     }
-    const labels = {
-      model: "שם המודל והגרסה",
-      date: "תאריך",
-      prediction: "ניבוי וניסיון עצמאי",
-      prompt: "ההנחיה המקורית",
-      response: "התשובה המקורית",
-      check: "האימות העצמאי",
-      revision: "הנחיה מתוקנת והשוואה",
-      conclusion: "מסקנה ומה נותר לבדוק",
-    };
+    const isEnglish = root.dataset.locale === "en";
+    const labels = isEnglish
+      ? {
+          model: "Model and version",
+          date: "Date",
+          prediction: "Prediction and independent attempt",
+          prompt: "Original prompt",
+          response: "Original response",
+          check: "Independent verification",
+          revision: "Revised prompt and comparison",
+          conclusion: "Conclusion and remaining checks",
+        }
+      : {
+          model: "שם המודל והגרסה",
+          date: "תאריך",
+          prediction: "ניבוי וניסיון עצמאי",
+          prompt: "ההנחיה המקורית",
+          response: "התשובה המקורית",
+          check: "האימות העצמאי",
+          revision: "הנחיה מתוקנת והשוואה",
+          conclusion: "מסקנה ומה נותר לבדוק",
+        };
     const text = [
-      "מחברת LLM — אלגברה לינארית — חן גדי",
+      isEnglish
+        ? "LLM notebook: Linear Algebra, Chen Gadi"
+        : "מחברת LLM: אלגברה לינארית, חן גדי",
       "https://chengadi.science/teaching/linear-algebra/llm",
       "",
       ...used.flatMap((a) => [
-        `פעילות: ${a.title} | מטלה ${a.homework}`,
+        `${isEnglish ? "Activity" : "פעילות"}: ${a.title} | ${isEnglish ? "Homework" : "מטלה"} ${a.homework}`,
         ...fields.flatMap((f) => [
           `${labels[f]}:`,
-          records[a.id][f] || "(לא תועד)",
+          records[a.id][f] || (isEnglish ? "(not recorded)" : "(לא תועד)"),
           "",
         ]),
         "--------------------------------",

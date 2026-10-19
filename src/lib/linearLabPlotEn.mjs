@@ -1,0 +1,128 @@
+// Exact translations of plot captions, accessible descriptions and numerical labels.
+const entries = [
+  ["מספר השורשים השונים", "Number of distinct roots"],
+  ["הפרש הזוויות", "Angular separation"],
+  ["הזווית של השורש הראשון", "Argument of the first root"],
+  [
+    "מישור מרוכב. הקואורדינטות הן החלק הממשי והחלק המדומה; שני הצירים באותו קנה מידה.",
+    "Complex plane. Coordinates are real and imaginary parts; both axes have equal scales.",
+  ],
+  ["השדה", "Field"],
+  ["הדטרמיננטה בשדה", "Determinant in the field"],
+  ["דרגה וממד גרעין", "Rank and nullity"],
+  ["מספר הפתרונות", "Number of solutions"],
+  [
+    "הנקודות הירוקות הן כל הפתרונות בשדה הנבחר. המרחקים בתרשים הם אמצעי תצוגה בלבד.",
+    "Green points show every solution over the chosen field. Distances are used only to arrange the discrete points.",
+  ],
+  [
+    "מעל הממשיים שני הישרים נחתכים רק בראשית.",
+    "Over the real numbers, the two lines intersect only at the origin.",
+  ],
+  ["סוג המערכת", "System classification"],
+  ["פתרון יחיד", "Unique solution"],
+  ["אינסוף פתרונות", "Infinitely many solutions"],
+  ["אין פתרונות", "No solutions"],
+  ["לאחר פעולת שורה", "After row reduction"],
+  ["דרגות", "Ranks"],
+  ["הפתרון המדויק", "Exact solution"],
+  [
+    "כחול: x+y=3. כתום: המשוואה השנייה. במקרה של ישרים חופפים, אחד מכסה את האחר. המשוואות והדרגות מכריעות גם כשקשה להבחין בציור.",
+    "Blue: x+y=3. Orange: the second equation. Coincident lines cover each other. Equations and ranks distinguish cases that may be hard to see.",
+  ],
+  ["הצירוף שנבחר", "Selected combination"],
+  ["ממד הפרישה", "Dimension of the span"],
+  ["מבחן הדטרמיננטה", "Determinant test"],
+  [
+    "המקבילית מציגה רק מקדמים בין 0 ל־1. כאשר הדרגה 2, הפרישה היא כל המישור.",
+    "The parallelogram shows only coefficients between 0 and 1. When the rank is 2, the span is the whole plane.",
+  ],
+  ["תחילה B ואחריה A", "B first, then A"],
+  ["תחילה A ואחריה B", "A first, then B"],
+  ["האם AB=BA במשפחה הזאת?", "Does AB=BA in this family?"],
+  ["כן", "Yes"],
+  ["לא", "No"],
+  ["דטרמיננטות המכפלות", "Determinants of the products"],
+  [
+    "שני האזורים הם תמונות ריבוע היחידה בשני סדרי ההרכבה. הצבע והסימון על החצים מבחינים בין המסלולים.",
+    "The regions are the images of the unit square under the two composition orders. Arrow colours and labels distinguish the routes.",
+  ],
+  ["הקואורדינטות בבסיס B", "Coordinates in B"],
+  ["הווקטור בקואורדינטות רגילות", "Vector in standard coordinates"],
+  ["מטריצת הבסיס", "Basis matrix"],
+  ["ההמרה בחזרה", "Inverse conversion"],
+  [
+    "החצים b1,b2 הם וקטורי הבסיס. הסכום המקווקו מראה כיצד הקואורדינטות יוצרות את x.",
+    "The arrows b1,b2 are the basis vectors. The dashed sum shows how the coordinates produce x.",
+  ],
+  ["ממד התחום", "Dimension of the domain"],
+  ["בסיס לגרעין", "Basis of the kernel"],
+  ["האם b בתמונה?", "Is b in the image?"],
+  [
+    "זהו מרחב היעד ℝ²: החצים הם עמודות המטריצה. בסיס הגרעין המוצג בחישוב שייך לתחום ℝ³.",
+    "This is the codomain ℝ²: the arrows are matrix columns. The displayed kernel basis belongs to the domain ℝ³.",
+  ],
+  ["תמונת האפס", "Image of zero"],
+  ["תמונת הסכום", "Image of the sum"],
+  ["סכום התמונות", "Sum of the images"],
+  ["לינאריות של T במשפחה הזאת", "Linearity of T in this family"],
+  ["לינארית", "Linear"],
+  ["אינה לינארית", "Not linear"],
+  [
+    "u=(1,0), v=(0,1). חפיפה במקרה אחד אינה הוכחה כללית; במקרה c=0 הייצוג המטריציוני מוכיח לינאריות.",
+    "u=(1,0), v=(0,1). Agreement in one case is not a general proof. For c=0, the matrix representation proves linearity.",
+  ],
+  ["המטריצה בקואורדינטות רגילות", "Matrix in standard coordinates"],
+  ["מסלול 1: הפעלת A", "Route 1: apply A"],
+  ["מסלול 2: חישוב בקואורדינטות", "Route 2: compute in basis coordinates"],
+  ["נתונים שאינם משתנים", "Invariants"],
+  [
+    "c=(1,1). שני מסלולי החישוב מגיעים לאותו וקטור. החצים p1,p2 הם עמודות P.",
+    "c=(1,1). Both routes give the same vector. The arrows p1,p2 are the columns of P.",
+  ],
+  ["דטרמיננטה עם סימן", "Signed determinant"],
+  ["שטח המקבילית", "Area of the parallelogram"],
+  ["הפיכות", "Invertibility"],
+  ["המטריצה אינה הפיכה", "Not invertible"],
+  ["המטריצה הפיכה", "Invertible"],
+  [
+    "הצירים באותו קנה מידה. כאשר הדטרמיננטה אפס, המקבילית קורסת לישר.",
+    "Both axes have equal scales. A zero determinant collapses the parallelogram to a line.",
+  ],
+  ["ריבוי אלגברי של λ=2", "Algebraic multiplicity of λ=2"],
+  ["ממד המרחב העצמי", "Eigenspace dimension"],
+  ["לכסינות", "Diagonalizability"],
+  ["לכסינה: A=2I", "Diagonalizable: A=2I"],
+  ["אינה לכסינה", "Not diagonalizable"],
+  ["בדיקת כיוון", "Direction check"],
+  ["v ו־Av על אותו ישר", "v and Av are collinear"],
+  ["v ו־Av אינם על אותו ישר", "v and Av are not collinear"],
+  [
+    "המעגל המקווקו הוא הקלט, והעקומה הכחולה היא תמונתו. עבור s≠0 הישר הסגול הוא המרחב העצמי היחיד.",
+    "The dashed circle is the input and the blue curve its image. For s≠0, the purple line is the only eigenspace.",
+  ],
+  ["המקדם המדויק", "Exact coefficient"],
+  ["ההיטל על W", "Projection onto W"],
+  ["בדיקה במכפלה הנתונה", "Check using the given inner product"],
+  ["לשם השוואה: מכפלה אוקלידית", "Comparison: Euclidean dot product"],
+  [
+    "הציור משתמש בצירים אוקלידיים. האורתוגונליות נבדקת במכפלה המשוקללת, ולכן לא מסמנים כאן זווית ישרה לפי מראה.",
+    "The plot uses Euclidean coordinates. Orthogonality is checked in the weighted inner product; no Euclidean right-angle marker is used.",
+  ],
+  ["השארית האורתוגונלית", "Orthogonal residual"],
+  ["מכפלה עם v1", "Inner product with v1"],
+  ["האם מותר לנרמל את w2?", "Can w2 be normalized?"],
+  ["כן, הנורמה חיובית", "Yes, its norm is positive"],
+  ["לא, w2 = 0", "No, w2 = 0"],
+  [
+    "הכיוונים הסגולים מנורמלים. כאשר השארית אפסית אין וקטור e2; לפרישה נדרש אז וקטור אחד בלבד.",
+    "The purple vectors are normalized. A zero residual gives no e2; only one vector is then needed for a basis of the span.",
+  ],
+];
+const dictionary = new Map(entries);
+export function translatePlotText(text) {
+  if (!/[\u0590-\u05ff]/.test(text)) return text;
+  if (!dictionary.has(text))
+    throw new Error(`Missing plot translation: ${text}`);
+  return dictionary.get(text);
+}
