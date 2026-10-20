@@ -20,7 +20,11 @@ import {
 const allTeaching = await getCollection("teaching", ({ data }) => !data.draft);
 const activeCourses = allTeaching
   .filter((c) => c.data.status === "active")
-  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+  .sort((a, b) =>
+    (a.data.role === "Lecturer" ? 0 : 1) -
+      (b.data.role === "Lecturer" ? 0 : 1) ||
+    a.data.title.localeCompare(b.data.title),
+  );
 
 function countFor(courseId: string) {
   if (courseId === "calculus-2")
@@ -80,69 +84,65 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
   description="Teaching by Chen Gadi at Tel Aviv University: linear algebra and calculus 2 (Hedva 2) for engineering students. Practice sheets and tutorial recordings."
 >
   <!-- Page header -->
-  <section class="border-b border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
-      <p
-        class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4"
-      >
-        Teaching
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">Tel Aviv University</p>
+      <h1>Teaching &amp; course materials</h1>
+      <p>
+        Course classrooms, tutorial notes, recordings, and interactive
+        activities for engineering students.
       </p>
-      <h1
-        class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight mb-5"
-      >
-        Teaching at Tel Aviv University
-      </h1>
-      <p class="text-base text-slate-500 max-w-2xl leading-relaxed">
-        I lecture in the International Engineering Program and serve as a
-        teaching assistant in Linear Algebra for Electrical Engineering and
-        Biomedical Engineering at Tel Aviv University. Practice sheets and
-        recordings, including the Calculus 2 archive, are available below.
-      </p>
-      <div class="mt-6">
-        <a href="/students" class="academic-primary"
-          >Student Hub: questions &amp; private requests ↗</a
-        ><p class="mt-3 text-sm text-slate-500">
-          For course questions and logistics, use the Student Hub. Replies stay
-          on the website.
-        </p>
+      <div class="academic-actions mt-6">
+        <a href="/teaching/2026-2027" class="academic-primary">Courses 2026–2027 ↗</a>
+        <a href="/students" class="academic-secondary">Student Hub ↗</a>
+        <a href="#recording-archive" class="text-link">Earlier materials ↓</a>
       </div>
-      <p class="mt-4 text-xs text-slate-400 max-w-2xl leading-relaxed">
-        Recordings are <strong class="font-semibold text-slate-500"
-          >unlisted YouTube videos</strong
-        >, available through this page and the course links. Unlisted videos are
-        not private: anyone with a link can view them.
-      </p>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 pt-12" id="academic-year-2026-2027">
-    <div class="syllabus-callout">
+  <section class="mx-auto max-w-6xl px-6 pt-10" id="academic-year-2026-2027" aria-label="Student resources">
+    <nav class="teaching-shortcuts" aria-label="Study shortcuts">
       <div>
-        <p class="edition-label">Academic year 5787 · 2026–2027</p><h2
-          class="font-display text-3xl"
-        >
-          This year's courses &amp; tutorial notes.
-        </h2><p>
-          Find your classroom and the new Linear Algebra handbook: 13 tutorials
-          with explanations and worked solutions. Notes are in Hebrew.
-        </p>
-      </div><a class="academic-primary" href="/teaching/2026-2027"
-        >Explore 2026–2027 courses ↗</a>
-    </div>
+        <p class="shortcut-meta">2026–2027 · Hebrew PDF</p>
+        <h2>Tutorial notes</h2>
+        <p>{engineeringTutorials.length} Linear Algebra tutorials, with explanations and solutions.</p>
+        <a href="/teaching/2026-2027#linear-algebra">Find your topic ↗</a>
+      </div>
+      <div>
+        <p class="shortcut-meta">Interactive activities</p>
+        <h2>Tutorial lab</h2>
+        <p>Explore the concepts in each tutorial.</p>
+        <div class="shortcut-links">
+          <a href="/teaching/linear-algebra/lab/en/">English ↗</a>
+          <a href="/teaching/linear-algebra/lab">Hebrew ↗</a>
+        </div>
+      </div>
+      <div>
+        <p class="shortcut-meta">Exercises &amp; notebook</p>
+        <h2>Guided LLM activities</h2>
+        <p>Work through the activities and record your answers.</p>
+        <div class="shortcut-links">
+          <a href="/teaching/linear-algebra/llm/en/">English ↗</a>
+          <a href="/teaching/linear-algebra/llm">Hebrew ↗</a>
+        </div>
+      </div>
+    </nav>
   </section>
   <!-- Current courses -->
-  <div class="mx-auto max-w-6xl px-6 py-14 md:py-16">
-    <p
-      class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8"
-    >
-      Current Courses
-    </p>
+  <div class="mx-auto max-w-6xl px-6 py-12 md:py-14" data-teaching-archive>
+    <div class="course-heading">
+      <div>
+        <p class="edition-label">Academic year 5787 · 2026–2027</p>
+        <h2 class="font-display text-3xl">Find your classroom</h2>
+      </div>
+      <p>Questions and private requests are answered in the Student Hub.</p>
+    </div>
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {
         activeCourses.map((c) => {
           const { materials, videos } = countFor(c.data.courseId);
           return (
-            <div class="flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+            <article class="flex flex-col p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all" data-course-id={c.data.courseId}>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[0.65rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-200">
                   {c.data.role === "Lecturer"
@@ -186,7 +186,10 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
                   2026–2027 tutorial notes (Hebrew) ↗
                 </a>
               )}
-              <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-4 text-xs text-slate-400">
+              <a class="academic-primary self-start mb-5" href={`/students?course=${c.data.courseId}`}>
+                Enter classroom ↗
+              </a>
+              {(materials > 0 || videos > 0) && <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-4 text-xs text-slate-500">
                 <span>
                   {c.data.courseId.startsWith("linear-algebra-")
                     ? `${materials} tutorials in notes`
@@ -196,8 +199,8 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
                 <span>
                   {videos} recording{videos === 1 ? "" : "s"}
                 </span>
-              </div>
-            </div>
+              </div>}
+            </article>
           );
         })
       }
@@ -222,31 +225,38 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
       </div>
     </div>
 
+    <div class="archive-heading" id="recording-archive">
+      <p class="edition-label">Earlier teaching</p>
+      <h2 class="font-display text-3xl">Practice sheets &amp; recordings</h2>
+      <p>Browse the archive by course. Current tutorial notes are on the <a class="text-link" href="/teaching/2026-2027#linear-algebra">2026–2027 page</a>.</p>
+      <p class="archive-access-note">Recordings are unlisted YouTube videos. Anyone with a recording link can view it.</p>
+    </div>
     <!-- ─── Course filter ───────────────────────────────────────── -->
     {
       filterCourses.length > 1 && (
-        <div class="mt-16 md:mt-20" data-course-filter>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
+        <div class="archive-filter" data-course-filter hidden>
+          <p class="text-xs font-semibold text-slate-600 uppercase tracking-widest mb-3" id="archive-filter-label">
             Browse by course
           </p>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2" role="group" aria-labelledby="archive-filter-label">
             <button
               type="button"
               data-course="all"
-              class="text-sm font-semibold px-4 py-2 rounded-full border bg-slate-900 text-white border-slate-900 transition-colors"
+              aria-pressed="true"
             >
-              All
+              All courses
             </button>
             {filterCourses.map((c) => (
               <button
                 type="button"
                 data-course={c.id}
-                class="text-sm font-semibold px-4 py-2 rounded-full border bg-white text-slate-600 border-slate-200 hover:border-slate-300 transition-colors"
+                aria-pressed="false"
               >
                 {c.tag}
               </button>
             ))}
           </div>
+          <p data-course-results role="status" aria-live="polite" aria-atomic="true">Showing all courses</p>
         </div>
       )
     }
@@ -274,7 +284,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
           tirgulimNewestFirst.map((t) => {
             const vids = videosForPractice(t.id);
             return (
-              <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 scroll-mt-24" id={t.id}>
                 <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
                   <div>
                     <p class="text-xs font-semibold text-slate-500 mb-1">
@@ -288,7 +298,7 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
                     <PdfDownloadGate
                       pdfPath={t.pdfPath}
                       code={DOWNLOAD_CODE}
-                      label="Practice sheet (PDF)"
+                      label="Practice sheet · Hebrew PDF"
                     />
                   </div>
                 </div>
@@ -539,44 +549,38 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
   }
 
   <script>
-    // Course filter: show only the section(s) for the selected course.
-    // Vanilla JS, no framework: mirrors the LiteYouTube delegated pattern.
-    (() => {
-      const bar = document.querySelector("[data-course-filter]");
-      if (!bar) return;
-      const buttons = Array.from(
-        bar.querySelectorAll("button[data-course]"),
-      ) as HTMLButtonElement[];
-      const sections = Array.from(
-        document.querySelectorAll("[data-course-section]"),
-      ) as HTMLElement[];
-      const ON = ["bg-slate-900", "text-white", "border-slate-900"];
-      const OFF = [
-        "bg-white",
-        "text-slate-600",
-        "border-slate-200",
-        "hover:border-slate-300",
-      ];
-
-      function apply(course: string) {
-        sections.forEach((s) => {
-          const show = course === "all" || s.dataset.courseSection === course;
-          s.classList.toggle("hidden", !show);
-        });
-        buttons.forEach((b) => {
-          const on = (b.dataset.course || "") === course;
-          ON.forEach((c) => b.classList.toggle(c, on));
-          OFF.forEach((c) => b.classList.toggle(c, !on));
-        });
-      }
-
-      bar.addEventListener("click", (e) => {
-        const btn = (e.target as HTMLElement).closest(
-          "button[data-course]",
-        ) as HTMLButtonElement | null;
-        if (!btn) return;
-        apply(btn.dataset.course || "all");
-      });
-    })();
+    import "../scripts/teaching-discovery";
   </script>
 </Layout>
+
+<style>
+  .teaching-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #dce4d6; border-radius: 12px; background: #fafbf7; overflow: hidden; }
+  .teaching-shortcuts > div { display: flex; flex-direction: column; align-items: start; padding: 1.5rem; }
+  .teaching-shortcuts > div + div { border-left: 1px solid #dce4d6; }
+  .teaching-shortcuts .shortcut-meta { margin: 0 0 0.65rem; color: #607459; font-size: 0.6875rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.045em; }
+  .teaching-shortcuts h2 { font-family: var(--font-family-display); font-size: 1.375rem; color: #294437; line-height: 1.25; }
+  .teaching-shortcuts p:not(.shortcut-meta) { flex: 1; margin: 0.625rem 0 0.75rem; color: #5e6d61; font-size: 0.8125rem; line-height: 1.75; }
+  .teaching-shortcuts a { display: inline-flex; align-items: center; min-height: 36px; color: #1b4e3f; font-size: 0.8125rem; font-weight: 650; text-decoration: underline; text-decoration-color: #c5d3c7; text-underline-offset: 4px; }
+  .teaching-shortcuts a:hover { text-decoration-color: currentColor; }
+  .shortcut-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .course-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 1.75rem; }
+  .course-heading > p { max-width: 20rem; color: #647067; font-size: 0.8125rem; line-height: 1.75; }
+  .archive-heading { margin-top: 4rem; padding-top: 2.5rem; border-top: 1px solid #e2e8dd; scroll-margin-top: 7rem; }
+  .archive-heading h2 { margin-bottom: 0.75rem; }
+  .archive-heading p:not(.edition-label) { color: #5e6d61; font-size: 0.875rem; line-height: 1.75; }
+  .archive-heading p.archive-access-note { margin-top: 0.625rem; font-size: 0.75rem; }
+  .archive-filter { margin-top: 1.75rem; }
+  .archive-filter button { border: 1px solid #c6d2c4; border-radius: 999px; padding: 0.625rem 1rem; background: white; color: #43624f; font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+  .archive-filter button[aria-pressed="true"] { background: #244f3e; color: white; border-color: #244f3e; }
+  .archive-filter button:hover { border-color: #244f3e; }
+  .archive-filter button:focus-visible { outline: 3px solid #8cb7a1; outline-offset: 3px; }
+  [data-course-results] { margin-top: 0.75rem; color: #647067; font-size: 0.8125rem; }
+  [data-teaching-archive] [hidden] { display: none !important; }
+  @media (max-width: 767px) {
+    .teaching-shortcuts { grid-template-columns: 1fr; }
+    .teaching-shortcuts > div { padding: 1.25rem; }
+    .teaching-shortcuts > div + div { border-left: 0; border-top: 1px solid #dce4d6; }
+    .course-heading { align-items: start; flex-direction: column; gap: 0.75rem; }
+    .course-heading > p { max-width: none; }
+  }
+</style>

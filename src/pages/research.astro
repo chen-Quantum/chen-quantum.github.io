@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import AppDevelopment from "../components/AppDevelopment.astro";
 import { getCollection } from "astro:content";
+
 const papers = await getCollection("research", ({ data }) => !data.draft);
 papers.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
@@ -12,68 +13,103 @@ papers.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 >
   <section class="page-intro">
     <div class="mx-auto max-w-6xl px-6">
-      <p class="edition-label">Research · Tel Aviv University</p><h1>
-        Research
-      </h1><p>
+      <p class="edition-label">Research · Tel Aviv University</p>
+      <h1>Research</h1>
+      <p>
         I am completing my master’s thesis under the supervision of Prof. Yaron
         Oz, as a member of his research group at Tel Aviv University.
       </p>
     </div>
   </section>
-  <div class="mx-auto max-w-6xl px-6 py-16">
-    <section class="research-focus" aria-label="Academic affiliation">
-      <p class="academic-kicker">CURRENT ACADEMIC AFFILIATION</p><h2
-        class="font-display text-3xl"
-      >
-        Prof. Yaron Oz’s research group
-      </h2><div class="research-focus-grid">
-        <div><span>DEGREE</span><strong>M.Sc. in Physics</strong></div><div>
-          <span>SUPERVISOR</span><strong>Prof. Yaron Oz</strong>
-        </div><div>
-          <span>INSTITUTION</span><strong>Tel Aviv University</strong>
-        </div>
-      </div><a class="academic-secondary" href="/about">Academic profile ↗</a>
+
+  <div class="mx-auto max-w-6xl px-6 py-14 md:py-16">
+    <section class="research-affiliation" aria-labelledby="affiliation-heading">
+      <div class="affiliation-intro">
+        <p class="edition-label">Academic affiliation</p>
+        <h2 id="affiliation-heading" class="font-display">M.Sc. in Physics</h2>
+        <p>Prof. Yaron Oz’s research group</p>
+      </div>
+      <dl class="affiliation-details">
+        <div><dt>Institution</dt><dd>Tel Aviv University</dd></div>
+        <div><dt>Supervisor</dt><dd>Prof. Yaron Oz</dd></div>
+        <div><dt>Degree</dt><dd>M.Sc. in Physics</dd></div>
+      </dl>
+      <nav class="affiliation-links" aria-label="Academic profile links">
+        <a href="/about" class="academic-secondary">Academic profile <span aria-hidden="true">→</span></a>
+        <a href="/cv" class="text-link">Curriculum vitae <span aria-hidden="true">→</span></a>
+        <a href="/contact#general" class="text-link">Research enquiries <span aria-hidden="true">→</span></a>
+      </nav>
     </section>
+
     {
       papers.length > 0 && (
-        <section>
-          <>
-            <h2 class="font-display text-3xl mb-6">
-              Publications &amp; research notes
-            </h2>
-            <div class="space-y-4">
-              {papers.map((paper) => (
-                <article class="contact-route">
-                  <h3 class="text-lg font-semibold mb-2">{paper.data.title}</h3>
-                  <p>{paper.data.description}</p>
-                  {paper.data.arxiv && (
-                    <a
-                      href={paper.data.arxiv}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-link mt-4"
-                    >
-                      Read on arXiv ↗
-                    </a>
-                  )}
-                </article>
-              ))}
-            </div>
-          </>
+        <section class="research-publications" aria-labelledby="publications-heading">
+          <p class="edition-label">Writing</p>
+          <h2 id="publications-heading" class="font-display">Publications &amp; research notes</h2>
+          <div class="research-paper-list">
+            {papers.map((paper) => (
+              <article class="research-paper">
+                <div class="paper-meta">
+                  <time datetime={paper.data.date.toISOString()}>
+                    {paper.data.date.toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" })}
+                  </time>
+                  {paper.data.venue && <span>{paper.data.venue}</span>}
+                </div>
+                <h3>{paper.data.title}</h3>
+                {paper.data.coauthors.length > 0 && <p class="paper-authors">With {paper.data.coauthors.join(", ")}</p>}
+                <p>{paper.data.description}</p>
+                {paper.data.arxiv && (
+                  <a href={paper.data.arxiv} target="_blank" rel="noopener noreferrer" class="text-link"
+                    aria-label={`Read on arXiv: ${paper.data.title} (opens in a new tab)`}>
+                    Read on arXiv <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
         </section>
       )
     }
-    <div class="syllabus-callout">
+
+    <section class="research-projects" aria-labelledby="public-work-heading">
       <div>
-        <p class="edition-label">Public projects</p><h3>
-          Code and teaching tools
-        </h3><p>
-          Explore the standalone projects and educational work shared on this
-          site.
+        <p class="edition-label">Public projects</p>
+        <h2 id="public-work-heading" class="font-display">Code, previews &amp; teaching tools</h2>
+        <p>
+          Browse the standalone projects shared on this site. Each entry includes
+          its release status and links to the code, preview, or educational
+          material currently available.
         </p>
-      </div><a href="/projects" class="academic-secondary"
-        >Browse projects ↗</a>
-    </div>
+      </div>
+      <a href="/projects" class="academic-primary">Explore projects <span aria-hidden="true">→</span></a>
+    </section>
   </div>
   <AppDevelopment />
 </Layout>
+
+<style>
+  .research-affiliation { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 3rem; padding: clamp(1.5rem, 4vw, 2.5rem); background: #fffefb; border: 1px solid var(--color-indigo-100); border-radius: 12px; }
+  .affiliation-intro h2, .research-projects h2, .research-publications > h2 { font-size: clamp(1.8rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.025em; color: var(--color-indigo-800); }
+  .affiliation-intro > p:last-child { margin-top: 0.8rem; color: var(--color-slate-600); line-height: 1.75; }
+  .affiliation-details { display: grid; gap: 1.2rem; padding-left: 2rem; border-left: 1px solid var(--color-indigo-100); }
+  .affiliation-details dt { font-size: 0.75rem; color: var(--color-slate-500); margin-bottom: 0.25rem; }
+  .affiliation-details dd { font-size: 0.95rem; line-height: 1.5; font-weight: 600; color: var(--color-slate-800); }
+  .affiliation-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; border-top: 1px solid var(--color-indigo-100); padding-top: 1.5rem; }
+  .affiliation-links a, .research-projects > a { gap: 0.75rem; }
+  .research-projects { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 3rem; padding: 2.5rem 0 0; border-top: 1px solid var(--color-indigo-100); }
+  .research-projects p:last-child { max-width: 40rem; margin-top: 1rem; font-size: 0.95rem; line-height: 1.85; color: var(--color-slate-600); }
+  .research-projects > a { flex: none; }
+  .research-publications { margin-top: 3.5rem; }
+  .research-paper-list { margin-top: 1.5rem; }
+  .research-paper { padding: 1.75rem 0; border-top: 1px solid var(--color-indigo-100); }
+  .paper-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; color: var(--color-slate-500); }
+  .research-paper h3 { margin: 0.7rem 0; font-size: 1.2rem; font-weight: 600; color: var(--color-slate-800); }
+  .research-paper > p { max-width: 48rem; font-size: 0.95rem; line-height: 1.8; color: var(--color-slate-600); }
+  .research-paper .paper-authors { margin-bottom: 0.75rem; font-size: 0.85rem; }
+  .research-paper > a { margin-top: 1rem; }
+  @media (max-width: 700px) {
+    .research-affiliation { grid-template-columns: 1fr; gap: 1.5rem; }
+    .affiliation-details { border-left: 0; border-top: 1px solid var(--color-indigo-100); padding: 1.5rem 0 0; }
+    .research-projects { flex-direction: column; align-items: flex-start; }
+  }
+</style>

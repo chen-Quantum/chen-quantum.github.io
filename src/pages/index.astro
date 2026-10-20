@@ -17,20 +17,23 @@ const upcoming = allEvents
   .filter((e) => isUpcomingEvent(e.data))
   .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
   .slice(0, 3);
+const selectedProjects = (await getCollection("projects", ({ data }) => !data.draft))
+  .filter((project) => ["qbrl", "qegk-vision"].includes(project.id))
+  .sort((a, b) => a.id.localeCompare(b.id));
 const teaching = [
   {
     role: "Lecturer",
     title: "International Engineering",
     detail: "International Engineering Program at Tel Aviv University.",
-    href: "/students",
-    action: "Enter your classroom",
+    href: "/teaching/2026-2027",
+    action: "2026–2027 courses & tutorials",
   },
   {
     role: "Teaching Assistant",
     title: "Linear Algebra",
     detail: "Electrical & Electronics Engineering and Biomedical Engineering.",
-    href: "/teaching/linear-algebra",
-    action: "Recordings & tutorials",
+    href: "/teaching/linear-algebra/lab/en/",
+    action: "Explore the interactive lab",
   },
 ];
 ---
@@ -56,8 +59,8 @@ const teaching = [
         <div class="academic-actions">
           <a href="/about" class="academic-primary"
             >Academic profile <span aria-hidden="true">↗</span></a
-          ><a href="/teaching" class="academic-secondary"
-            >Teaching &amp; materials</a
+          ><a href="/teaching/2026-2027" class="academic-secondary"
+            >Courses · 2026–2027</a
           >
         </div>
         <p class="academic-signature">Physics · Teaching · Quantum Community</p>
@@ -65,7 +68,7 @@ const teaching = [
       <aside class="academic-appointments" aria-label="Current academic roles">
         <div class="academic-panel-top">
           <span>CURRENTLY AT TAU</span><img
-            src="/brand/logo.png"
+            src="/brand/chen-favicon-v2.png"
             alt="Chen Gadi logo"
             width="48"
             height="48"
@@ -109,6 +112,13 @@ const teaching = [
       >
     </div>
   </section>
+  <nav class="home-discovery" aria-label="Explore the website">
+    <div class="home-wayfinding">
+      <a href="/teaching/2026-2027"><span>For students</span><strong>Learn &amp; practise</strong><span>Current courses, tutorials, and activities ↗</span></a>
+      <a href="/projects"><span>Public work</span><strong>Explore the projects</strong><span>Research previews and available code ↗</span></a>
+      <a href="/quantum-community/events"><span>Meet &amp; connect</span><strong>Join the conversation</strong><span>Quantum community events and meetings ↗</span></a>
+    </div>
+  </nav>
   <section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
     <div class="editorial-heading">
       <div>
@@ -145,6 +155,27 @@ const teaching = [
       ><a href="/reading#for-students">Recommended books &amp; resources ↗</a>
     </div>
   </section>
+  {selectedProjects.length > 0 && (
+    <section class="home-projects" aria-labelledby="home-projects-title">
+      <div class="editorial-heading">
+        <div><p class="edition-label">Selected public work</p><h2 id="home-projects-title">From ideas to experiments</h2></div>
+        <a class="text-link" href="/projects">All projects &amp; code ↗</a>
+      </div>
+      <div class="home-project-grid">
+        {selectedProjects.map(({ id, data }) => (
+          <article class="home-project-card">
+            {data.thumbnail && <img src={data.thumbnail} alt={data.title + " project figure"} width="800" height="400" loading="lazy" decoding="async" />}
+            <div class="home-project-content">
+              <p class="edition-label">{data.status || "Public project"}</p>
+              <h3>{data.title}</h3>
+              <p>{data.description}</p>
+              <a class="text-link" href={"/projects#project-" + id}>View project &amp; available resources ↗</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
   {
     upcoming.length > 0 && (
       <section class="events-edition">
@@ -155,7 +186,7 @@ const teaching = [
                 <div>
                   <>
                     <p class="edition-label">On the calendar</p>
-                    <h2>Upcoming event</h2>
+                    <h2>Upcoming events</h2>
                   </>
                 </div>
                 <a class="text-link" href="/quantum-community/events">

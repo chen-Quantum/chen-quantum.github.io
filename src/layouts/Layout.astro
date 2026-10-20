@@ -1,7 +1,9 @@
 ---
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import SiteSearch from "../components/SiteSearch.astro";
 import "../styles/global.css";
+import "../styles/site-shell.css";
 
 interface Props {
   title?: string;
@@ -12,14 +14,20 @@ interface Props {
 const {
   title = "Chen Gadi",
   description = "Chen Gadi, M.Sc. student in Physics under Prof. Yaron Oz at Tel Aviv University. Teaching, student resources, and quantum community.",
-  robots,
+  robots: requestedRobots,
 } = Astro.props;
 
+const pathname = Astro.url.pathname;
+const canonicalPath = /^\/404(?:\/|\.html)?$/.test(pathname) ? "/404.html" : pathname;
+const canonical = new URL(canonicalPath, Astro.site);
+const unlistedPage = ["/search", "/404", "/404.html", "/library", "/materials", "/digital-courses"].includes(pathname.replace(/\/$/, ""));
+const robots = requestedRobots ?? (unlistedPage ? "noindex, follow" : undefined);
+const shareImage = new URL("/brand/logo.png", Astro.site);
 const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-appearance="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,8 +46,27 @@ const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
     />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="canonical" href={canonical} />
     {robots && <meta name="robots" content={robots} />}
+    <meta name="theme-color" content="#244f3e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Chen Gadi" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:alt" content="Chen Gadi" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <script is:inline>
+      try {
+        if (localStorage.getItem("cg-site-appearance") === "paper") {
+          document.documentElement.dataset.appearance = "paper";
+        }
+      } catch {}
+    </script>
     <title>{fullTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
@@ -57,5 +84,6 @@ const fullTitle = title === "Chen Gadi" ? title : `${title} · Chen Gadi`;
       <slot />
     </main>
     <Footer />
+    <SiteSearch />
   </body>
 </html>

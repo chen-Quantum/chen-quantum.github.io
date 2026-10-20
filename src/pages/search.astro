@@ -1,0 +1,36 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getSiteSearchEntries } from "../data/siteDiscovery";
+const entries = await getSiteSearchEntries();
+const categories = [...new Set(entries.map((entry) => entry.category))];
+---
+<Layout title="Search" description="Find courses, tutorials, public projects, and quantum community events on Chen Gadi's website." robots="noindex, follow">
+  <section class="site-directory">
+    <div class="site-directory-heading">
+      <p class="edition-label">A place to start</p>
+      <h1>Find what you came for.</h1>
+      <p>Search by topic, course, project, or event. English and Hebrew search terms are welcome.</p>
+    </div>
+    <form id="search-page-form" class="site-directory-form" action="/search" method="get" role="search">
+      <div><label for="search-page-input">Search the website</label><input type="search" name="q" id="search-page-input" placeholder="For example: eigenvalues or quantum" autocomplete="off" aria-controls="search-page-results" /></div>
+      <div><label for="search-page-category">Section</label><select name="category" id="search-page-category"><option value="">All sections</option>{categories.map((category) => <option value={category}>{category}</option>)}</select></div>
+      <button class="academic-primary" type="submit">Search</button>
+      <button class="site-reset-button" type="button" id="search-page-reset">Clear</button>
+    </form>
+    <noscript><p class="site-search-status">The complete directory is available below. Use your browser's Find command to look for a topic.</p></noscript>
+    <p class="site-search-status" id="search-page-status" role="status" aria-live="polite" aria-atomic="true">{entries.length} resources across the website.</p>
+    <div class="site-directory-results" id="search-page-results">
+      {entries.map((entry) => (
+        <article data-search-entry data-search-category={entry.category} data-search-text={[entry.title, entry.description, entry.category, entry.keywords || ""].join(" ").normalize("NFKC").toLowerCase()}>
+          <span class="site-result-category">{entry.category}</span>
+          <h2><a href={entry.url}>{entry.title}<span aria-hidden="true">↗</span></a></h2>
+          <p>{entry.description}</p>
+        </article>
+      ))}
+    </div>
+    <div class="site-directory-empty" id="search-page-empty" hidden>
+      <h2>No matching resources yet.</h2>
+      <p>Try a shorter topic or choose a different section. You can also clear the search to browse every resource.</p>
+    </div>
+  </section>
+</Layout>

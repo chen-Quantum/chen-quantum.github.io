@@ -1,117 +1,248 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 const projects = await getCollection("projects", ({ data }) => !data.draft);
 projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const availability = (project: CollectionEntry<"projects">) => {
+  if (!project.data.github) return "pending";
+  return /preview/i.test(`${project.data.status ?? ""} ${project.data.repoLabel ?? ""}`) ? "preview" : "code";
+};
+const filters = [
+  { id: "all", label: "All projects", count: projects.length },
+  { id: "code", label: "Public code", count: projects.filter((p) => availability(p) === "code").length },
+  { id: "preview", label: "Public previews", count: projects.filter((p) => availability(p) === "preview").length },
+  { id: "pending", label: "Code pending", count: projects.filter((p) => availability(p) === "pending").length },
+];
 ---
 
-<Layout title="Projects" description="Tools and projects by Chen Gadi.">
-  <!-- Page header -->
-  <section class="border-b border-slate-100">
-    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-20 md:pb-16">
-      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">
-        Work
-      </p>
-      <h1
-        class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-[1.05] tracking-tight mb-5"
-      >
-        Projects
-      </h1>
-      <p class="text-base text-slate-500 max-w-xl leading-relaxed">
-        Tools, experiments, and side projects built alongside research and
-        teaching.
+<Layout title="Projects" description="Explore Chen Gadi’s standalone projects, research prototypes, public previews, code, and educational tools.">
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="edition-label">Selected work</p>
+      <h1>Projects</h1>
+      <p>
+        Tools, experiments, and educational projects built alongside research
+        and teaching. Explore the ideas and the work available to try or read.
       </p>
     </div>
   </section>
 
-  <div class="mx-auto max-w-6xl px-6 py-16">
+  <section class="project-browser mx-auto max-w-6xl px-6 py-12 md:py-14" aria-label="Project index" data-project-browser>
     {
-      projects.length === 0 ? (
-        <div class="py-24 max-w-sm">
-          <p class="font-display text-3xl text-slate-200 mb-4">
-            Coming soon.
-          </p>
-          <p class="text-sm text-slate-400 leading-relaxed">
-            Projects will be listed here as they are ready to share.
-          </p>
-        </div>
-      ) : (
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <div class="group flex flex-col bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 ease-out overflow-hidden">
-              {project.data.thumbnail && (
-                <div class="aspect-[16/9] bg-gradient-to-br from-slate-50 to-slate-100 border-b border-slate-100 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={project.data.thumbnail}
-                    alt={`${project.data.title} preview`}
-                    loading="lazy"
-                    class="w-full h-full object-contain p-2 group-hover:scale-[1.02] transition-transform duration-200 ease-out"
-                  />
-                </div>
-              )}
-              <div class="flex flex-col flex-1 p-6">
-                {project.data.status && (
-                  <span class="self-start text-[0.6rem] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full mb-3">
-                    {project.data.status}
-                  </span>
-                )}
-                <h3 class="text-base font-semibold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                  {project.data.title}
-                </h3>
-                <p class="text-sm text-slate-500 mb-5 flex-1 leading-relaxed">
-                  {project.data.description}
-                </p>
-                {project.data.tech.length > 0 && (
-                  <div class="flex flex-wrap gap-1.5 mb-5">
-                    {project.data.tech.map((t) => (
-                      <span class="text-[0.65rem] font-semibold text-slate-500 bg-slate-100 uppercase tracking-wide px-2 py-0.5 rounded-full">
-                        {t}
-                      </span>
-                    ))}
+      projects.length > 0 ? (
+        <>
+          <div class="project-controls" data-project-controls hidden>
+            <div class="project-search-row">
+              <div class="project-search">
+                <label for="project-search">Find a project</label>
+                <input id="project-search" type="search" placeholder="Search by title, topic, or tool"
+                  autocomplete="off" spellcheck="false" aria-controls="project-list" />
+              </div>
+              <button type="button" class="project-reset" data-project-clear hidden>Reset filters</button>
+            </div>
+            <div class="project-filters" role="group" aria-label="Filter projects by availability">
+              {filters.map((filter) => (
+                <button type="button" data-project-filter={filter.id}
+                  aria-pressed={filter.id === "all" ? "true" : "false"} aria-controls="project-list">
+                  {filter.label} <span>{filter.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div class="project-index-heading">
+            <p data-project-count role="status" aria-live="polite" aria-atomic="true">{projects.length} projects</p>
+            <p>Release status is shown for each project.</p>
+          </div>
+          <div id="project-list" class="project-list">
+            {projects.map((project, index) => (
+              <article id={`project-${project.id}`}
+                class:list={["project-entry", { "project-entry-text": !project.data.thumbnail }]}
+                data-project-entry data-project-availability={availability(project)}
+                data-project-search={[project.data.title, project.data.description, ...project.data.tech].join(" ").toLocaleLowerCase("en")}
+                aria-labelledby={`project-title-${project.id}`}>
+                {project.data.thumbnail && (
+                  <div class="project-media">
+                    <img src={project.data.thumbnail} alt={`Visual overview of ${project.data.title}`}
+                      loading="lazy" decoding="async" />
                   </div>
                 )}
-                <div class="flex items-center gap-4 mt-auto">
-                  {project.data.github ? (
-                    <a
-                      href={project.data.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
-                    >
-                      {project.data.repoLabel ?? "GitHub"} ↗
-                    </a>
-                  ) : project.data.repoNote ? (
-                    <span class="text-xs font-medium text-slate-400 italic">
-                      {project.data.repoNote}
-                    </span>
-                  ) : null}
-                  {project.data.live && (
-                    <a
-                      href={project.data.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
-                    >
-                      Live ↗
-                    </a>
+                <div class="project-copy">
+                  <div class="project-heading-meta">
+                    <span class="project-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    {project.data.status && <span class="project-status">{project.data.status}</span>}
+                  </div>
+                  <h2 id={`project-title-${project.id}`}><a href={`#project-${project.id}`}>{project.data.title}</a></h2>
+                  <p class="project-description">{project.data.description}</p>
+                  {project.data.tech.length > 0 && (
+                    <ul class="project-topics" aria-label="Project topics and tools">
+                      {project.data.tech.map((topic) => <li>{topic}</li>)}
+                    </ul>
                   )}
-                  {project.data.docs.map((d) => (
-                    <a
-                      href={d.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs font-semibold text-teal-700 hover:text-teal-800 transition-colors"
-                    >
-                      {d.label} ↗
-                    </a>
-                  ))}
+                  <div class="project-resources">
+                    {project.data.github ? (
+                      <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="project-resource"
+                        aria-label={`${project.data.repoLabel ?? "View on GitHub"}: ${project.data.title} (opens in a new tab)`}>
+                        {project.data.repoLabel ?? "View on GitHub"} <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : project.data.repoNote ? <p class="project-availability-note">{project.data.repoNote}</p> : null}
+                    {project.data.live && (
+                      <a href={project.data.live} target="_blank" rel="noopener noreferrer" class="project-resource"
+                        aria-label={`Open project: ${project.data.title} (opens in a new tab)`}>
+                        Open project <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
+                    {project.data.docs.map((document) => (
+                      <a href={document.url} target="_blank" rel="noopener noreferrer" class="project-resource"
+                        aria-label={`${document.label}: ${project.data.title} (opens in a new tab)`}>
+                        {document.label} <span aria-hidden="true">↗</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </article>
+            ))}
+          </div>
+          <div class="project-empty" data-project-empty hidden>
+            <h2 class="font-display">No matching projects</h2>
+            <p>Try another topic or reset the filters to see all projects.</p>
+            <button type="button" class="academic-secondary" data-project-reset>Show all projects</button>
+          </div>
+        </>
+      ) : (
+        <div class="project-empty">
+          <h2 class="font-display">Projects will appear here as they are ready to share.</h2>
+          <a href="/research" class="academic-secondary">Research profile <span aria-hidden="true">→</span></a>
         </div>
       )
     }
-  </div>
+    <div class="project-contact">
+      <div>
+        <h2 class="font-display">Have a question about a project?</h2>
+        <p>Start a private conversation through the site.</p>
+      </div>
+      <a href="/contact#general" class="academic-secondary">Get in touch <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
 </Layout>
+
+<script>
+  const browser = document.querySelector<HTMLElement>("[data-project-browser]");
+  if (browser) {
+    const controls = browser.querySelector<HTMLElement>("[data-project-controls]");
+    const search = browser.querySelector<HTMLInputElement>("#project-search");
+    const count = browser.querySelector<HTMLElement>("[data-project-count]");
+    const empty = browser.querySelector<HTMLElement>("[data-project-empty]");
+    const clear = browser.querySelector<HTMLButtonElement>("[data-project-clear]");
+    const entries = [...browser.querySelectorAll<HTMLElement>("[data-project-entry]")];
+    const filters = [...browser.querySelectorAll<HTMLButtonElement>("[data-project-filter]")];
+    let selected = "all";
+
+    const update = () => {
+      const words = (search?.value ?? "").trim().toLocaleLowerCase("en").split(/\s+/).filter(Boolean);
+      let visible = 0;
+      for (const entry of entries) {
+        const matchesAvailability = selected === "all" || entry.dataset.projectAvailability === selected;
+        const matchesSearch = words.every((word) => entry.dataset.projectSearch?.includes(word));
+        entry.hidden = !matchesAvailability || !matchesSearch;
+        if (!entry.hidden) visible++;
+      }
+      for (const filter of filters) filter.setAttribute("aria-pressed", String(filter.dataset.projectFilter === selected));
+      if (count) count.textContent = `Showing ${visible} of ${entries.length} projects`;
+      if (empty) empty.hidden = visible > 0;
+      if (clear) clear.hidden = selected === "all" && words.length === 0;
+    };
+    const reset = () => {
+      selected = "all";
+      if (search) search.value = "";
+      update();
+      search?.focus();
+    };
+    const revealLinkedProject = (hash = window.location.hash) => {
+      let id = "";
+      try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+      const entry = entries.find((project) => project.id === id);
+      if (!entry?.hidden) return;
+      selected = "all";
+      if (search) search.value = "";
+      update();
+      entry.scrollIntoView?.({ block: "start" });
+    };
+    if (controls && search && count && empty && clear) {
+      controls.hidden = false;
+      search.addEventListener("input", update);
+      filters.forEach((filter) => filter.addEventListener("click", () => {
+        selected = filter.dataset.projectFilter ?? "all";
+        update();
+      }));
+      clear.addEventListener("click", reset);
+      browser.querySelector<HTMLButtonElement>("[data-project-reset]")?.addEventListener("click", reset);
+      window.addEventListener("hashchange", () => revealLinkedProject());
+      document.addEventListener("click", (event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+        if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
+        const destination = new URL(link.href, window.location.href);
+        const samePage = destination.origin === window.location.origin &&
+          destination.pathname.replace(/\/$/, "") === window.location.pathname.replace(/\/$/, "");
+        if (samePage && destination.hash) revealLinkedProject(destination.hash);
+      });
+      update();
+      revealLinkedProject();
+    }
+  }
+</script>
+
+<style>
+  .project-controls { padding: 1.5rem; border: 1px solid var(--color-indigo-100); border-radius: 12px; background: #fffefb; }
+  .project-search-row { display: flex; align-items: end; flex-wrap: wrap; gap: 1rem; }
+  .project-search { flex: 1 1 18rem; }
+  .project-search label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-slate-700); margin-bottom: 0.5rem; }
+  .project-search input { width: 100%; min-height: 46px; padding: 0.7rem 0.9rem; font-size: 0.95rem; line-height: 1.5; border: 1px solid var(--color-indigo-200); border-radius: 7px; background: #fff; color: var(--color-slate-800); }
+  .project-search input::placeholder { color: var(--color-slate-500); }
+  .project-reset { min-height: 46px; padding: 0.7rem; font-size: 0.85rem; color: var(--color-indigo-700); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .project-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.1rem; }
+  .project-filters button { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.5rem 0.8rem; border: 1px solid var(--color-indigo-100); border-radius: 6px; font-size: 0.8rem; font-weight: 500; color: var(--color-slate-600); background: transparent; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+  .project-filters button span { font-size: 0.7rem; font-variant-numeric: tabular-nums; }
+  .project-filters button:hover { border-color: var(--color-indigo-400); }
+  .project-filters button[aria-pressed="true"] { background: var(--color-indigo-700); border-color: var(--color-indigo-700); color: #fff; }
+  .project-search input:focus-visible, .project-filters button:focus-visible, .project-reset:focus-visible { outline: 2px solid var(--color-indigo-600); outline-offset: 3px; }
+  .project-index-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; margin: 1.75rem 0 1rem; color: var(--color-slate-600); font-size: 0.8rem; line-height: 1.7; }
+  .project-index-heading > p:first-child { font-weight: 600; }
+  .project-list { border-top: 1px solid var(--color-indigo-100); }
+  .project-entry { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); align-items: start; gap: 2rem; padding: 2.25rem 0; border-bottom: 1px solid var(--color-indigo-100); scroll-margin-top: 7rem; }
+  .project-entry:target { background: var(--color-indigo-50); box-shadow: 0 0 0 1rem var(--color-indigo-50); border-radius: 2px; }
+  .project-entry-text { grid-template-columns: 1fr; }
+  .project-media { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3; background: #fff; border: 1px solid var(--color-indigo-100); border-radius: 8px; overflow: hidden; }
+  .project-media img { width: 100%; height: 100%; object-fit: contain; padding: 0.5rem; }
+  .project-copy { min-width: 0; }
+  .project-heading-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+  .project-number { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--color-slate-500); }
+  .project-status { display: inline-block; padding: 0.25rem 0.55rem; background: var(--color-indigo-50); border: 1px solid var(--color-indigo-100); border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: var(--color-indigo-700); }
+  .project-copy h2 { font-size: clamp(1.12rem, 2vw, 1.35rem); line-height: 1.4; font-weight: 600; letter-spacing: -0.02em; color: var(--color-slate-800); }
+  .project-copy h2 a:hover { color: var(--color-indigo-600); text-decoration: underline; text-underline-offset: 4px; }
+  .project-description { margin-top: 0.7rem; font-size: 0.9rem; line-height: 1.8; color: var(--color-slate-600); }
+  .project-topics { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; margin-top: 1rem; list-style: none; padding: 0; }
+  .project-topics li { font-size: 0.73rem; line-height: 1.6; color: var(--color-slate-500); }
+  .project-resources { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem; margin-top: 1rem; }
+  .project-resource { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 40px; font-size: 0.82rem; font-weight: 600; color: var(--color-indigo-700); text-decoration: underline; text-decoration-color: var(--color-indigo-200); text-underline-offset: 4px; }
+  .project-resource:hover { text-decoration-color: currentColor; }
+  .project-availability-note { font-size: 0.8rem; line-height: 1.75; color: var(--color-slate-600); }
+  .project-empty { padding: 3rem 1.5rem; text-align: center; border-bottom: 1px solid var(--color-indigo-100); }
+  .project-empty h2 { font-size: 1.75rem; line-height: 1.3; color: var(--color-indigo-800); }
+  .project-empty p { margin: 0.8rem 0 1.3rem; font-size: 0.9rem; line-height: 1.7; color: var(--color-slate-600); }
+  .project-empty > a { margin-top: 1.5rem; }
+  .project-contact { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 2.5rem; padding: 2rem; background: var(--color-indigo-50); border: 1px solid var(--color-indigo-100); border-radius: 10px; }
+  .project-contact h2 { font-size: 1.5rem; line-height: 1.3; color: var(--color-indigo-800); }
+  .project-contact p { margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.7; color: var(--color-slate-600); }
+  .project-contact > a { gap: 0.75rem; }
+  .project-entry[hidden], .project-controls[hidden], .project-empty[hidden], .project-reset[hidden] { display: none; }
+  @media (max-width: 700px) {
+    .project-entry { grid-template-columns: 1fr; gap: 1.25rem; padding: 1.75rem 0; }
+    .project-media { aspect-ratio: 16 / 9; }
+    .project-controls { padding: 1rem; }
+    .project-contact { padding: 1.5rem; }
+  }
+</style>

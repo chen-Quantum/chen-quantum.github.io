@@ -1,0 +1,17 @@
+<dialog id="site-search-dialog" class="site-search-dialog" aria-labelledby="site-search-title">
+  <div class="site-search-heading">
+    <div><p class="edition-label">Find your next step</p><h2 id="site-search-title">Search the website</h2></div>
+    <button type="button" class="site-search-close" data-search-close aria-label="Close search">✕</button>
+  </div>
+  <label for="site-search-input" class="site-search-label">Topic, course, project, or event</label>
+  <input id="site-search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Try eigenvalues, QBRL, or quantum..." aria-controls="site-search-results" />
+  <p id="site-search-status" class="site-search-status" role="status" aria-live="polite" aria-atomic="true">Search the public pages of this website.</p>
+  <ul id="site-search-results" class="site-search-results" role="list"></ul>
+  <div class="site-search-bottom">
+    <span><kbd>Esc</kbd> to close · <kbd>Ctrl / ⌘ K</kbd> to search</span>
+    <a href="/search" id="site-search-all">Browse all resources ↗</a>
+  </div>
+</dialog>
+<script>
+  import "../scripts/site-discovery";
+</script>

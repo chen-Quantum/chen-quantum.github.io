@@ -4,64 +4,118 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
   title="Contact"
-  description="Contact Chen Gadi through the website. Anonymous class questions, private course logistics with required email and course, and general inquiries."
+  description="Contact Chen Gadi for research and collaboration, anonymous course discussions, or private course requests through the Student Hub."
 >
   <section class="page-intro">
     <div class="mx-auto max-w-6xl px-6">
-      <p class="edition-label">Let’s keep the conversation here</p><h1>
-        Get in touch<span class="cv-title-dot">.</span>
-      </h1><p>
-        Choose the route that fits your question. Replies stay on the website,
-        so you can keep the conversation in one place.
+      <p class="edition-label">Get in touch</p>
+      <h1>Contact</h1>
+      <p>
+        For research enquiries, collaboration, or a question about your course.
+        Choose a route below; conversations and replies stay on this website.
       </p>
     </div>
   </section>
-  <div class="mx-auto max-w-6xl px-6 py-14">
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <section class="contact-route">
-        <p class="academic-kicker">ANONYMOUS CLASS DISCUSSION</p><h2
-          class="font-display text-2xl mt-4 mb-4"
-        >
-          A question for the class?
-        </h2><p>
-          Ask anonymously, read discussions, and help classmates with anonymous
-          replies. Enter your classroom with the code shared in class.
-        </p><a href="/students" class="academic-primary mt-6"
-          >Anonymous course Q&amp;A ↗</a>
-      </section>
-      <section class="contact-route">
-        <p class="academic-kicker">PRIVATE COURSE LOGISTICS</p><h2
-          class="font-display text-2xl mt-4 mb-4"
-        >
-          Something practical to arrange?
-        </h2><p>
-          Select your course and enter your email address. Both are required.
-          Your details stay within the private request, visible only to you and
-          Chen.
-        </p><a href="/students?mode=logistics" class="academic-primary mt-6"
-          >Write a logistics request ↗</a>
-      </section>
-      <section class="contact-route">
-        <p class="academic-kicker">GENERAL &amp; PERSONAL INQUIRIES</p><h2
-          class="font-display text-2xl mt-4 mb-4"
-        >
-          A private conversation.
-        </h2><p>
-          For research, collaboration, or other general inquiries, start a
-          private conversation. No class code is needed. Personal course
-          requests are also available in your classroom.
-        </p><a href="/students?course=general" class="academic-secondary mt-6"
-          >Open a private conversation ↗</a>
-      </section>
-    </div>
-    <div class="research-focus mt-8">
-      <h2 class="font-display text-2xl mb-3">How to find your reply</h2><p>
-        Keep your private recovery code. It restores your conversations on
-        another device. For logistics requests, email is collected for
-        identification; messages and replies stay on this website. No outgoing
-        email is sent.
-      </p><a href="/students?mode=requests" class="academic-secondary"
-        >My private requests ↗</a>
-    </div>
+
+  <div class="contact-content mx-auto max-w-6xl px-6 py-14 md:py-16">
+    <section id="general" class="contact-general" aria-labelledby="general-heading">
+      <div>
+        <p class="edition-label">Research, collaboration &amp; general enquiries</p>
+        <h2 id="general-heading" class="font-display">Start a private conversation</h2>
+        <p class="contact-description">
+          To discuss a project, ask about working together, or get in touch
+          about something outside your course, send a private message through
+          the Student Hub. No class code is needed.
+        </p>
+        <a href="/students?course=general" class="academic-primary">
+          Write a general enquiry <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <dl class="contact-facts">
+        <div><dt>Where to write</dt><dd>Student Hub</dd></div>
+        <div><dt>Class code</dt><dd>Not required for general enquiries</dd></div>
+        <div><dt>Where to find a reply</dt><dd>Your private requests on this site</dd></div>
+      </dl>
+    </section>
+
+    <section class="contact-courses" aria-labelledby="course-contact-heading">
+      <div class="contact-section-heading">
+        <p class="edition-label">For students</p>
+        <h2 id="course-contact-heading" class="font-display">Questions about your course</h2>
+      </div>
+      <div class="contact-course-grid">
+        <section class="contact-route" aria-labelledby="discussion-heading">
+          <p class="academic-kicker">ANONYMOUS CLASS DISCUSSION</p>
+          <h3 id="discussion-heading" class="font-display">Discuss the course material</h3>
+          <p>
+            Ask anonymously, read the class discussions, and join in with your
+            own replies. Enter your classroom with the code shared in class.
+          </p>
+          <a href="/students" class="academic-secondary">
+            Open course Q&amp;A <span aria-hidden="true">→</span>
+          </a>
+        </section>
+        <section class="contact-route" aria-labelledby="logistics-heading">
+          <p class="academic-kicker">PRIVATE COURSE REQUESTS</p>
+          <h3 id="logistics-heading" class="font-display">Arrange something practical</h3>
+          <p>
+            For deadlines, absences, or other course arrangements, send a
+            private logistics request. Select your course and enter your email
+            address; both are required. The request is visible only to you and Chen.
+          </p>
+          <a href="/students?mode=logistics" class="academic-secondary">
+            Write a course request <span aria-hidden="true">→</span>
+          </a>
+        </section>
+      </div>
+    </section>
+
+    <section id="replies" class="contact-replies" aria-labelledby="reply-heading">
+      <div>
+        <p class="edition-label">Returning to a conversation</p>
+        <h2 id="reply-heading" class="font-display">How to find your reply</h2>
+        <p>
+          Keep your private recovery code after submitting a request. It restores
+          your conversations on another device. Open your private requests to
+          read a reply or continue the conversation.
+        </p>
+        <p class="contact-delivery-note">
+          For course logistics, your email address is used for identification.
+          Messages and replies stay on this website; no outgoing email is sent.
+        </p>
+      </div>
+      <a href="/students?mode=requests" class="academic-secondary">
+        My private requests <span aria-hidden="true">→</span>
+      </a>
+    </section>
   </div>
 </Layout>
+
+<style>
+  .contact-general { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 3rem; padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--color-indigo-100); border-radius: 12px; background: #fffefb; scroll-margin-top: 7rem; }
+  .contact-general h2, .contact-section-heading h2, .contact-replies h2 { font-size: clamp(1.75rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -0.02em; color: var(--color-indigo-800); }
+  .contact-description { margin: 1rem 0 1.5rem; font-size: 0.95rem; line-height: 1.85; color: var(--color-slate-600); }
+  .contact-general a, .contact-route a, .contact-replies a { gap: 0.75rem; }
+  .contact-facts { display: grid; align-content: center; gap: 1.5rem; padding-left: 2rem; border-left: 1px solid var(--color-indigo-100); }
+  .contact-facts dt { font-size: 0.75rem; margin-bottom: 0.4rem; color: var(--color-slate-500); }
+  .contact-facts dd { font-size: 0.9rem; line-height: 1.65; color: var(--color-slate-700); font-weight: 500; }
+  .contact-courses { margin-top: 3.5rem; }
+  .contact-section-heading { margin-bottom: 1.5rem; }
+  .contact-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+  .contact-route { display: flex; flex-direction: column; align-items: flex-start; padding: 2rem; }
+  .contact-route h3 { margin-bottom: 0.85rem; font-size: 1.6rem; line-height: 1.3; color: var(--color-indigo-800); }
+  .contact-route > p:not(.academic-kicker) { flex: 1; color: var(--color-slate-600); }
+  .contact-route a { margin-top: 1.5rem; }
+  .contact-replies { display: flex; justify-content: space-between; align-items: center; gap: 2.5rem; margin-top: 2rem; padding: 2rem; border: 1px solid var(--color-indigo-100); border-radius: 12px; background: var(--color-indigo-50); scroll-margin-top: 7rem; }
+  .contact-replies > div { max-width: 42rem; }
+  .contact-replies > a { flex: none; }
+  .contact-replies p:not(.edition-label) { margin-top: 1rem; font-size: 0.9rem; line-height: 1.85; color: var(--color-slate-600); }
+  .contact-replies .contact-delivery-note { padding-top: 1rem; border-top: 1px solid var(--color-indigo-100); font-size: 0.8rem; }
+  @media (max-width: 750px) {
+    .contact-general { grid-template-columns: 1fr; gap: 1.5rem; }
+    .contact-facts { border-left: 0; border-top: 1px solid var(--color-indigo-100); padding: 1.5rem 0 0; gap: 1.25rem; }
+    .contact-course-grid { grid-template-columns: 1fr; }
+    .contact-route { padding: 1.5rem; }
+    .contact-replies { flex-direction: column; align-items: flex-start; gap: 1.5rem; padding: 1.5rem; }
+  }
+</style>
