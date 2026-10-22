@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { engineeringNotesPdf } from "../../data/academicYear2026";
+import { engineeringNotesPdf, engineeringNotesEnglishPdf } from "../../data/academicYear2026";
 
 const lectureNotesPdf =
   "/materials/international-engineering/lecture-01-student-notes-en.pdf";
@@ -18,7 +18,7 @@ const translatedTutorials = [
 
 <Layout
   title="Linear Algebra: International Engineering"
-  description="English lecture notes, earlier recitation materials, and course access instructions for Chen Gadi's International Engineering Linear Algebra class at Tel Aviv University."
+  description="The complete English Linear Algebra tutorial booklet, lecture notes, earlier recitation materials, and course access instructions for Chen Gadi's International Engineering Linear Algebra class at Tel Aviv University."
 >
   <section class="page-intro">
     <div class="mx-auto max-w-6xl px-6">
@@ -27,9 +27,10 @@ const translatedTutorials = [
       </a>
       <p class="edition-label">International Engineering · Tel Aviv University</p>
       <h1>Linear Algebra<br /><em>Course materials in English.</em></h1>
-      <p>Lecture notes, extra practice, and a place to ask your course questions.</p>
+      <p>The complete tutorial booklet, lecture notes, and a place to ask your course questions.</p>
       <nav class="academic-actions mt-6" aria-label="Course material sections">
-        <a class="academic-primary" href="#lecture-notes">Lecture notes ↓</a>
+        <a class="academic-primary" href="#tutorial-booklet">Complete English booklet ↓</a>
+        <a class="academic-secondary" href="#lecture-notes">Lecture notes ↓</a>
         <a class="academic-secondary" href="#recitations">Earlier recitations ↓</a>
         <a class="text-link" href="#classroom-access">How to enter the classroom ↓</a>
       </nav>
@@ -37,6 +38,42 @@ const translatedTutorials = [
   </section>
 
   <div class="mx-auto max-w-6xl px-6 py-12 md:py-16 materials-content">
+    <section id="tutorial-booklet" aria-labelledby="tutorial-booklet-title">
+      <p class="edition-label">Complete English translation · 13 tutorials</p>
+      <h2 id="tutorial-booklet-title" class="font-display text-3xl mb-6">
+        Linear Algebra tutorial booklet
+      </h2>
+      <article class="material-card booklet-card">
+        <div>
+          <p class="material-type">Chen Gadi · English PDF</p>
+          <h3>All 13 tutorials in one booklet</h3>
+          <p>
+            The complete English edition includes the exercises, worked
+            solutions, diagrams, and the appendix on logic and proof methods.
+            Exercise numbers are printed throughout for class discussion and
+            independent practice.
+          </p>
+          <p>
+            These notes collect recitations from previous years. The topic order
+            may differ from this year's lectures; follow the current lectures
+            and course announcements for the required material.
+          </p>
+        </div>
+        <div class="booklet-actions">
+          <a class="academic-primary" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
+            Open complete English booklet ↗
+          </a>
+          <a class="text-link" href={engineeringNotesPdf} target="_blank" rel="noopener">
+            Open Hebrew edition ↗
+          </a>
+        </div>
+      </article>
+      <p class="materials-caption">
+        Both editions include the same exercises. Use the PDF contents and
+        bookmarks to move between tutorials.
+      </p>
+    </section>
+
     <section id="lecture-notes" aria-labelledby="lecture-notes-title">
       <p class="edition-label">English translation</p>
       <h2 id="lecture-notes-title" class="font-display text-3xl mb-6">Lecture notes</h2>
@@ -70,8 +107,8 @@ const translatedTutorials = [
         for the material you need to study.
       </p>
       <p class="section-description mt-3">
-        English translations are available for recitations 1 and 2. The complete
-        handbook below is in Hebrew.
+        The complete English booklet is available above. The individual PDFs below
+        are earlier English translations of recitations 1 and 2.
       </p>
       {
         translatedTutorials.length > 0 && (
@@ -92,7 +129,7 @@ const translatedTutorials = [
       }
       <div class="academic-actions mt-6">
         <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">
-          Complete original handbook · Hebrew PDF ↗
+          Complete booklet · Hebrew PDF ↗
         </a>
         <a class="text-link" href="/teaching/2026-2027/#linear-algebra">
           Browse all 13 recitation topics ↗
@@ -155,6 +192,8 @@ const translatedTutorials = [
   .material-type { margin-bottom: 0.6rem; color: #5f7567; font-size: 0.75rem; font-weight: 650; letter-spacing: 0.05em; text-transform: uppercase; }
   .materials-caption { margin-top: 1rem; color: #647067; font-size: 0.875rem; line-height: 1.7; }
   .section-description { max-width: 50rem; }
+  .booklet-card { background: #f3f6ee; border-color: #c9d7c0; }
+  .booklet-actions { display: flex; flex: 0 1 auto; flex-direction: column; align-items: flex-start; gap: 1rem; }
   .translated-tutorials { display: grid; gap: 1rem; margin-top: 1.5rem; }
   .activities-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
   .activity-card { padding: 1.5rem; border: 1px solid #dce4d6; border-radius: 12px; background: #fafbf7; }

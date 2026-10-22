@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import {
   academicYear,
   engineeringNotesPdf,
+  engineeringNotesEnglishPdf,
+  engineeringAppendixPages,
   engineeringTutorials,
 } from "../../data/academicYear2026";
 const courses = (
@@ -65,9 +67,14 @@ const courses = (
                   Enter classroom ↗
                 </a>
                 {c.courseId === "international-engineering" && (
-                  <a class="text-link" href="/teaching/international-engineering/">
-                    English lecture notes &amp; course materials ↗
-                  </a>
+                  <>
+                    <a class="text-link" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
+                      Complete tutorial booklet · English PDF ↗
+                    </a>
+                    <a class="text-link" href="/teaching/international-engineering/">
+                      English lecture notes &amp; course materials ↗
+                    </a>
+                  </>
                 )}
                 {c.courseId.startsWith("linear-algebra-") && (
                   <a class="text-link" href="#linear-algebra">
@@ -102,11 +109,11 @@ const courses = (
           Linear Algebra tutorial notes
         </h2>
         <p>
-          The complete 198-page handbook by Chen Gadi collects recitation notes
+          The complete handbook by Chen Gadi collects recitation notes
           from previous years, with 13 tutorials and an appendix on logic and
           proof methods. Their numbering and topic order may differ from this
-          year's lectures. The PDF is in Hebrew; the topic
-          guide below is in English. These are study notes, not a replacement
+          year's lectures. The complete booklet is available in English and Hebrew;
+          the topic guide below is in English. These are study notes, not a replacement
           for the lectures or official course announcements.
         </p>
         <div class="academic-actions mt-6">
@@ -114,8 +121,10 @@ const courses = (
             class="academic-primary"
             href={engineeringNotesPdf}
             target="_blank"
-            rel="noopener">Complete handbook · Hebrew PDF ↗</a
-          ><a class="academic-secondary" href="/students?mode=logistics"
+            rel="noopener">Complete handbook · Hebrew PDF ↗</a>
+          <a class="academic-secondary" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
+            Complete booklet · English PDF ↗
+          </a><a class="academic-secondary" href="/students?mode=logistics"
             >Course logistics ↗</a>
         </div>
       </div>
@@ -141,7 +150,7 @@ const courses = (
         <h3 class="font-display text-2xl">Tutorial list</h3><p
           class="text-sm text-slate-500"
         >
-          Read the Hebrew notes or try the activity in either language.
+          Read the booklet in either language or try an interactive activity.
         </p>
       </div>
       <div class="tutorial-search" data-discovery-controls hidden>
@@ -187,14 +196,14 @@ const courses = (
                     Tutorial {t.number}
                   </p>
                   <h4 class="font-semibold text-slate-900 mb-3">{t.title}</h4>
-                  <a
-                    class="text-link"
-                    href={`${engineeringNotesPdf}#page=${t.page}`}
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Read notes · Hebrew PDF, page {t.page} ↗
-                  </a>
+                  <div class="study-language-links" aria-label={`Tutorial ${t.number} notes`}>
+                    <a href={`${engineeringNotesEnglishPdf}#page=${t.englishPage}`} target="_blank" rel="noopener">
+                      English PDF, page {t.englishPage} ↗
+                    </a>
+                    <a href={`${engineeringNotesPdf}#page=${t.page}`} target="_blank" rel="noopener">
+                      Hebrew PDF, page {t.page} ↗
+                    </a>
+                  </div>
                   <div class="tutorial-activity-links">
                     <p>Interactive activity</p>
                     <div class="study-language-links">
@@ -223,9 +232,14 @@ const courses = (
       <div class="academic-actions mt-6">
         <a
           class="academic-secondary"
-          href={`${engineeringNotesPdf}#page=194`}
+          href={`${engineeringNotesEnglishPdf}#page=${engineeringAppendixPages.en}`}
           target="_blank"
-          rel="noopener">Appendix: logic &amp; proof methods ↗</a
+          rel="noopener">Logic &amp; proof methods · English PDF ↗</a
+        ><a
+          class="academic-secondary"
+          href={`${engineeringNotesPdf}#page=${engineeringAppendixPages.he}`}
+          target="_blank"
+          rel="noopener">Logic &amp; proof methods · Hebrew PDF ↗</a
         ><a class="text-link" href="/teaching/linear-algebra"
           >Earlier tutorial recordings ↗</a>
       </div>
