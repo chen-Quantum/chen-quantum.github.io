@@ -16,7 +16,8 @@ export interface SiteSearchEntry {
 export async function getSiteSearchEntries(): Promise<SiteSearchEntry[]> {
   const pages: SiteSearchEntry[] = [
     { title: "Teaching · 2026–2027", url: "/teaching/2026-2027", description: "Current courses, classroom links, 13 linear algebra tutorials, and activities in English and Hebrew.", category: "Teaching", keywords: "קורסים הוראה אלגברה לינארית תרגולים" },
-    { title: "International Engineering · English course materials", url: "/teaching/international-engineering/", description: "English lecture notes, Chen Gadi's recitations from previous years, activities, and classroom access instructions.", category: "Teaching", keywords: "linear algebra lecture notes English translation international engineering Columbia recitations אלגברה לינארית בינלאומי" },
+    { title: "International Engineering · English course materials", url: "/teaching/international-engineering/", description: "Complete English Linear Algebra tutorial booklet, lecture notes, earlier recitations, activities, and classroom access instructions.", category: "Teaching", keywords: "linear algebra lecture notes English translation international engineering Columbia recitations אלגברה לינארית בינלאומי" },
+    { title: "Linear Algebra · Complete tutorial booklet in English", url: "/teaching/international-engineering/#tutorial-booklet", description: "All 13 tutorials by Chen Gadi, with numbered exercises, worked solutions, diagrams, and the logic appendix. English and Hebrew PDF editions.", category: "Teaching", keywords: "booklet handbook book exercises solutions English translation international Columbia תרגולים חוברת אנגלית" },
     { title: "Student Hub", url: "/students", description: "Course classrooms, anonymous questions, peer answers, and private requests. Read replies on the website.", category: "Teaching", keywords: "סטודנטים שאלות כיתה" },
     { title: "Projects & code", url: "/projects", description: "Public projects, research previews, repository links, and release status.", category: "Projects" },
     { title: "Quantum community", url: "/quantum-community", description: "Quantum science conversations, community activities, and events at Tel Aviv University.", category: "Community", keywords: "קהילה קוונטים קוונטום QTC QuanTAU" },
@@ -48,7 +49,7 @@ export async function getSiteSearchEntries(): Promise<SiteSearchEntry[]> {
     ...engineeringTutorials.map((tutorial) => ({
       title: "Linear algebra · Tutorial " + tutorial.number + ": " + tutorial.title,
       url: "/teaching/2026-2027#tutorial-" + tutorial.number,
-      description: "2026–2027 tutorial notes (Hebrew PDF), with English and Hebrew interactive activities.",
+      description: "Tutorial booklet in English and Hebrew, with interactive activities in both languages.",
       category: "Teaching",
       keywords: "linear algebra engineering אלגברה לינארית תרגול " + tutorial.number,
     })),
