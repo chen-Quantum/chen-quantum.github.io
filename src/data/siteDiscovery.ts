@@ -16,6 +16,7 @@ export interface SiteSearchEntry {
 export async function getSiteSearchEntries(): Promise<SiteSearchEntry[]> {
   const pages: SiteSearchEntry[] = [
     { title: "Teaching · 2026–2027", url: "/teaching/2026-2027", description: "Current courses, classroom links, 13 linear algebra tutorials, and activities in English and Hebrew.", category: "Teaching", keywords: "קורסים הוראה אלגברה לינארית תרגולים" },
+    { title: "International Engineering · English course materials", url: "/teaching/international-engineering/", description: "English lecture notes, Chen Gadi's recitations from previous years, activities, and classroom access instructions.", category: "Teaching", keywords: "linear algebra lecture notes English translation international engineering Columbia recitations אלגברה לינארית בינלאומי" },
     { title: "Student Hub", url: "/students", description: "Course classrooms, anonymous questions, peer answers, and private requests. Read replies on the website.", category: "Teaching", keywords: "סטודנטים שאלות כיתה" },
     { title: "Projects & code", url: "/projects", description: "Public projects, research previews, repository links, and release status.", category: "Projects" },
     { title: "Quantum community", url: "/quantum-community", description: "Quantum science conversations, community activities, and events at Tel Aviv University.", category: "Community", keywords: "קהילה קוונטים קוונטום QTC QuanTAU" },

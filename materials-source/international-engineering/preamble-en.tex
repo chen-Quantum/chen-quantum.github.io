@@ -1,0 +1,45 @@
+\documentclass[11pt,a4paper,oneside]{report}
+\usepackage[margin=22mm,top=24mm,bottom=24mm,headheight=16pt,headsep=8mm,footskip=11mm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx,xcolor,enumitem,needspace,microtype,titlesec,fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\definecolor{CourseGreen}{HTML}{294437}
+\definecolor{CourseMuted}{HTML}{59695E}
+\definecolor{CourseLine}{HTML}{C9D7CD}
+\definecolor{CoursePale}{HTML}{F3F6F1}
+\hypersetup{colorlinks=true,urlcolor=CourseGreen,linkcolor=CourseGreen,pdfauthor={Chen Gadi; English translation with ChatGPT},pdfsubject={English translation of recitation notes from previous years}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{3em}
+\setlist{itemsep=3pt,topsep=5pt,leftmargin=1.6em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{CourseGreen}CHEN GADI | LINEAR ALGEBRA}
+\fancyhead[R]{\small\sffamily\color{CourseMuted}Previous-years recitations}
+\fancyfoot[L]{\small\href{https://chengadi.science/teaching/international-engineering/}{Course materials and questions}}
+\fancyfoot[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[L]{\small\href{https://chengadi.science/teaching/international-engineering/}{Course materials and questions}}\fancyfoot[R]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\titleformat{\chapter}[block]{\LARGE\bfseries\color{CourseGreen}}{}{0pt}{}
+\titlespacing*{\chapter}{0pt}{-10pt}{12pt}
+\titleformat{\section}{\large\bfseries\color{CourseGreen}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{CourseGreen}}{\thesubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{16pt}{6pt}
+\titlespacing*{\subsection}{0pt}{11pt}{4pt}
+\let\OriginalChapter\chapter
+\renewcommand{\chapter}[1]{\OriginalChapter{#1}\begingroup\small\color{CourseMuted}Original recitation notes by Chen Gadi. English translation by Chen Gadi and ChatGPT.\par These are recitations from previous years, provided for supplementary practice. Their numbering and topic order may differ from the current course. The material taught in the current lectures and official announcements is authoritative.\par\endgroup\medskip}
+\newtcolorbox{CourseBox}[1][]{enhanced,breakable,sharp corners,boxrule=0.5pt,colframe=CourseLine,colback=white,coltitle=CourseGreen,fonttitle=\bfseries,colbacktitle=CoursePale,left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=8pt,after skip=8pt,#1}
+\newcommand{\Deff}[1]{\begin{CourseBox}[title=Definition]#1\end{CourseBox}}
+\newcommand{\tIdea}[1]{\begin{CourseBox}[colback=CoursePale]#1\end{CourseBox}}
+\newcommand{\tRem}[1]{\begin{CourseBox}[title=Remark]#1\end{CourseBox}}
+\newcommand{\tLemma}[1]{\begin{CourseBox}[title=Claim]#1\end{CourseBox}}
+\newcommand{\tExample}[1]{\begin{CourseBox}[title=Example]#1\end{CourseBox}}
+\newcommand{\tExSol}[2]{\begin{CourseBox}[lines before break=4]#1\tcblower\textbf{\color{CourseGreen}Solution}\par#2\end{CourseBox}}
+\newcommand{\LR}[1]{#1}
+\newcommand{\HebParen}[1]{(#1)}
+\newcommand{\CourseFigure}[2]{\par\medskip\begin{center}\includegraphics[width=0.88\linewidth,height=0.30\textheight,keepaspectratio]{source/Figures/#1.pdf}\par\smallskip{\small\color{CourseMuted}#2}\end{center}\medskip}

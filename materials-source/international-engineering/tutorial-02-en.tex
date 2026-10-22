@@ -1,0 +1,360 @@
+\chapter{Recitation 2: Proof Methods, Sets and Fields}
+\tIdea{\textbf{Recitation goals.} We will strengthen our use of induction and proofs in both directions, identify the field axioms, and calculate in finite fields. We will distinguish familiar calculations with real numbers from calculations adapted to the given field.}
+The first part is a focused review of proof methods and the language of sets. The second part introduces fields and calculations in finite fields; the order of the recitation in class will be adjusted to the progress of the lectures.
+
+\section{The Principle of Induction}
+\Deff{
+\textbf{The principle of \HebParen{weak} induction:}\\
+Let $n_0$ be a nonnegative integer, and let $P(n)$ be a statement defined for every integer $n\ge n_0$. Suppose that:
+\begin{enumerate}
+    \item \textbf{Base case:} The statement $P(n_0)$ is true.
+    \item \textbf{Inductive step:} For every integer $n\ge n_0$, the assumption $P(n)$ implies the statement $P(n+1)$.
+\end{enumerate}
+Then $P(n)$ is true for every integer $n\ge n_0$.
+}
+
+\tExSol{
+Prove by induction that, for every \(n\ge1\),
+\[
+1+2+\cdots+n=\frac{n(n+1)}{2}.
+\]
+}
+{
+\textbf{Defining the statement:} \(P(n):\; \sum_{i=1}^n i=\frac{n(n+1)}{2}\).\\
+\textbf{Base case:} \(n=1\): the left-hand side \(=1\), and the right-hand side \(=\frac{1\cdot 2}{2}=1\). The statement is true.\\
+\textbf{Inductive hypothesis:} Suppose that, for some \(k\ge1\), we have \(\sum_{i=1}^{k} i=\frac{k(k+1)}{2}\).\\
+\textbf{Inductive step:}
+\[
+\sum_{i=1}^{k+1} i=\Big(\sum_{i=1}^{k} i\Big)+(k+1)=\frac{k(k+1)}{2}+(k+1)=\frac{(k+1)(k+2)}{2}.
+\]
+We have obtained the formula for \(k+1\).\\
+\textbf{Conclusion:} The statement is true for every \(n\ge1\).
+}
+\qed
+
+\tExSol{
+Prove by induction that $13\mid(14^n-1)$ for every integer $n\ge1$. Also explain how modular arithmetic provides a short check of the statement.
+}{
+In the base case $n=1$, we obtain $14-1=13$, which is divisible by $13$.
+Suppose that, for $k\ge1$, there exists $m\in\mathbb Z$ such that $14^k-1=13m$. Then
+\[
+14^{k+1}-1=14(14^k-1)+13
+=14\cdot13m+13=13(14m+1).
+\]
+The expression is divisible by $13$, so the inductive step is complete.
+Since the base case and the inductive step are valid, the statement is true for every $n\ge1$.
+As an additional check, $14\equiv1\pmod{13}$, and therefore $14^n\equiv1^n=1\pmod{13}$.
+}
+\qed
+
+\tExSol{
+Prove that, for every \(n\ge 4\),
+\[
+2^{\,n}\ge n^{2}.
+\]
+}
+{
+We prove the statement by induction on \(n\).\\
+\textbf{Base case:} \(n=4\): \(2^4=16=4^2\). The statement is true.\\
+\textbf{Inductive hypothesis:} Suppose that \(2^k\ge k^2\) for \(k\ge 4\).\\
+\textbf{Inductive step:}
+\[
+2^{k+1}=2\cdot 2^k \;\ge\; 2k^2.
+\]
+It is enough to show that \(2k^2\ge (k+1)^2 \iff k^2-2k-1\ge 0\).
+For \(k\ge 4\), we have \(k^2-2k-1>0\), and hence \(2^{k+1}\ge (k+1)^2\).\\
+Thus, by induction, \(2^{n}\ge n^{2}\) for every \(n\ge 4\).
+}
+\qed
+
+\section{Sets}
+
+\Deff{
+\begin{itemize}
+    \item \textbf{Set inclusion:} $A \subseteq B$ means that every element of $A$ also belongs to $B$.
+    \item \textbf{Union:} $A \cup B = \{\,x \mid x \in A \ \text{or}\ x \in B\,\}$.
+    \item \textbf{Intersection:} $A \cap B = \{\,x \mid x \in A \ \text{and}\ x \in B\,\}$.
+\end{itemize}
+}
+
+\tExSol{
+Prove that $A \subseteq B$ if and only if $A \cup B = B$.
+}
+{
+\textbf{Direction 1:} Suppose that $A \subseteq B$. By the definition of union, $A \cup B \subseteq B$, while we always have $B \subseteq A \cup B$. Therefore $A \cup B = B$.\\
+\textbf{Direction 2:} Suppose that $A \cup B = B$. Let $x \in A$. Then $x \in A \cup B$, and hence $x \in B$. Therefore $A \subseteq B$.
+}
+\qed
+
+\tExSol{
+Prove that $A \subseteq B$ if and only if $A \cap B = A$.
+}
+{
+\textbf{Direction 1:} Suppose that $A \subseteq B$. Let $x \in A \cap B$. Then $x \in A$ and $x \in B$; therefore $A \cap B \subseteq A$. Conversely, if $x \in A$, the inclusion gives $x \in B$, so $x \in A \cap B$, and hence $A \subseteq A \cap B$. Together, these give $A \cap B = A$.\\[0.3em]
+\textbf{Direction 2:} Suppose that $A \cap B = A$. Let $x \in A$. Then $x \in A \cap B$, and hence $x \in B$. Therefore $A \subseteq B$.
+}
+\qed
+
+\section{Algebraic Structures: Fields}
+\subsection{The Field Axioms}
+
+\tRem{
+A field is a set $F$ equipped with two operations: addition and multiplication. The operations satisfy the following axioms. In particular, we require $0_{\mathbb{F}}\ne1_{\mathbb{F}}$:
+
+\begin{itemize}
+    \item \textbf{Closure:} If $a,b\in F$, then $a+_{\mathbb{F}}b\in F$ and $a\times_{\mathbb{F}} b\in F$.
+    \item \textbf{Commutativity:} $a+_{\mathbb{F}}b=b+_{\mathbb{F}}a$ and $a\times_{\mathbb{F}} b=b\times_{\mathbb{F}} a$.
+    \item \textbf{Associativity:} $(a+_{\mathbb{F}}b)+_{\mathbb{F}}c=a+_{\mathbb{F}}(b+_{\mathbb{F}}c)$ and $(a\times_{\mathbb{F}} b)\times_{\mathbb{F}} c=a\times_{\mathbb{F}}(b\times_{\mathbb{F}} c)$.
+    \item \textbf{Distributivity:} $a\times_{\mathbb{F}}(b+_{\mathbb{F}}c)=a\times_{\mathbb{F}} b+_{\mathbb{F}}a\times_{\mathbb{F}} c$ and $(a+_{\mathbb{F}}b)\times_{\mathbb{F}} c=a\times_{\mathbb{F}} c+_{\mathbb{F}}b\times_{\mathbb{F}} c$.
+    \item \textbf{Identity elements:} There exists $0\in F$ such that $a+_{\mathbb{F}}0_{\mathbb{F}}=a$ for every $a\in F$;
+          and there exists $1_{\mathbb{F}}\in F$ such that $a\times_{\mathbb{F}} 1_{\mathbb{F}}=a$ for every $a\in F$.
+    \item \textbf{Additive and multiplicative inverses:} For every $a\in F$, there exists an additive inverse $-a$ with $a+_{\mathbb{F}}(-a)=0_{\mathbb{F}}$;
+          and for every nonzero $a\in F$, there exists a multiplicative inverse $a^{-1}$ with $a\times_{\mathbb{F}} a^{-1}=1_{\mathbb{F}}$.
+\end{itemize}
+}
+
+\tExample{
+\begin{itemize}
+    \item \textbf{Examples:} $\mathbb{Q}$ \HebParen{rational numbers}, $\mathbb{R}$ \HebParen{real numbers}, and $\mathbb{C}$ \HebParen{complex numbers} are fields with the usual addition and multiplication.
+    \item \textbf{Not fields:} $\mathbb{Z}$ and $\mathbb{N}$ are \emph{not} fields, because most of their elements have no multiplicative inverse \HebParen{for example, $2$ has no inverse in $\mathbb{Z}$}.
+\end{itemize}
+}
+
+\subsection{Notation}
+A general field is usually denoted by $F$ \HebParen{and sometimes by $\mathbb{F}$}. When the particular field does not matter, we write "Let $F$ be a field."
+\\
+\textbf{Notation convention:} When the field is clear from the context, we omit the field label on the operations and on the elements $0,1$.
+
+\tExSol{
+Let $a\in F$ with $a\neq 0_{\mathbb{F}}$. Prove that $(a^{-1})^{-1}=a$.
+}
+{
+Recall that every invertible element in a field has a unique multiplicative inverse, and in particular $a\times_{\mathbb{F}} a^{-1}=1_{\mathbb{F}}$.
+Write $x=(a^{-1})^{-1}$ and calculate:
+\[
+(a^{-1})\times_{\mathbb{F}} x=1_{\mathbb{F}} \quad / \times_{\mathbb{F}} a
+\]
+\[
+a\times_{\mathbb{F}} (a^{-1})\times_{\mathbb{F}} x = a\times_{\mathbb{F}} 1_{\mathbb{F}}
+\]
+\[
+1_{\mathbb{F}}\times_{\mathbb{F}} x = a \qquad (*)
+\]
+Therefore $x=a$, which means that $(a^{-1})^{-1}=a$.
+
+\emph{Remark:} In step $(*)$, we used the fact that $a\times_{\mathbb{F}} a^{-1}=1_{\mathbb{F}}$.
+}
+\qed
+
+\tExSol{
+Let $a\in F$ with $a\neq 0_{\mathbb{F}}$. Prove that the multiplicative inverse of $a$ is unique.
+}
+{
+Suppose that $b\in F$ satisfies $a\times_{\mathbb{F}} b=1_{\mathbb{F}}$. Multiply on the left by $a^{-1}$:
+\[
+a\times_{\mathbb{F}} b = 1_{\mathbb{F}} \quad / \times_{\mathbb{F}} a^{-1}
+\]
+\[
+(a^{-1})\times_{\mathbb{F}} a\times_{\mathbb{F}} b = a^{-1}\times_{\mathbb{F}} 1_{\mathbb{F}}
+\]
+\[
+1_{\mathbb{F}}\times_{\mathbb{F}} b = a^{-1} \qquad (*)
+\]
+Hence $b=a^{-1}$. Therefore the inverse of $a$ is unique.
+\emph{Remark:} Again, in step $(*)$, we used the identity $(a^{-1})\times_{\mathbb{F}} a=1_{\mathbb{F}}$.
+}
+\qed
+
+\section{Fields: More Exercises}
+
+\tExSol{
+Let $a,b$ be two elements of a field $\mathbb{F}$. Prove that if
+$a\times_{\mathbb{F}} b=0_{\mathbb{F}}$, then $a=0_{\mathbb{F}}$ or $b=0_{\mathbb{F}}$.
+}
+{
+We split into cases according to the value of $b$. \textbf{Case }\textbf{1}\textbf{:}
+$b=0_{\mathbb{F}}$, and we are done.
+
+\textbf{Case }\textbf{2}: $b\neq0_{\mathbb{F}}$. Since $\mathbb{F}$ is a field, $b$ has an inverse $b^{-1}$. Multiplying both sides by $b^{-1}$ gives
+\[
+a \times_{\mathbb{F}} b \times_{\mathbb{F}} b^{-1}=0_{\mathbb{F}}\times_{\mathbb{F}} b^{-1}
+\Longrightarrow a\times_{\mathbb{F}} 1_{\mathbb{F}}=a=0_{\mathbb{F}}
+\]
+\qed
+}
+\qed
+
+\tLemma{A field has no nontrivial zero divisors.}
+
+\tExSol{
+Let $\mathbb{F}$ be a field. Define a new structure as follows: $\left(F\times F,\oplus,\otimes\right)$,
+where
+\[
+\begin{aligned}
+(a,b)\oplus(c,d)&=(a+_{\mathbb{F}}c,b+_{\mathbb{F}}d),\\
+(a,b)\otimes(c,d)&=(a\times_{\mathbb{F}}c,b\times_{\mathbb{F}}d).
+\end{aligned}
+\]
+Is the new structure a field?
+}
+{
+In this structure, each element consists of two elements of the given field \HebParen{like a point in a coordinate system}.
+
+The new addition operation $\oplus$ adds the first components and the second components separately, and the multiplication operation $\otimes$ is defined similarly.
+
+We will show that the structure is not a field by finding two nonzero elements whose product is zero.
+\\
+That is, suppose for a contradiction that $\mathbb{F} \times \mathbb{F}$ is a field, given that $\mathbb{F}$ is a field.
+We also identify the zero element as $(0_{\mathbb{F}},0_{\mathbb{F}})$.
+This follows from the operations of $\mathbb{F}$ in each coordinate.
+Now observe that
+\[
+\begin{aligned}
+(0_{\mathbb{F}},1_{\mathbb{F}})\otimes(1_{\mathbb{F}},0_{\mathbb{F}})
+&=(0_{\mathbb{F}}\times_{\mathbb{F}}1_{\mathbb{F}},1_{\mathbb{F}}\times_{\mathbb{F}}0_{\mathbb{F}})\\
+&=(0_{\mathbb{F}},0_{\mathbb{F}}).
+\end{aligned}
+\]
+Neither factor is the zero element, so the preceding exercise gives a contradiction.
+}
+\qed
+
+\section{Finite Fields}
+
+\subsection*{Definition and Notation}
+
+\Deff{
+\begin{itemize}
+    \item A \textbf{finite field} is a field with finitely many elements. We write $|\mathbb{F}|=q$.
+    \item Every finite field has a number of elements of the form $q=p^n$, where $p$ is prime and $n\ge1$ is an integer. This is a structural theorem about finite fields.
+    \item For a prime number $p$, the set $\mathbb{F}_p=\mathbb{Z}/p\mathbb{Z}$ with addition and multiplication modulo $p$ is a field. This field is called the \textbf{prime field of characteristic $p$}.
+    \item Addition and multiplication in the field $\mathbb{F}_p$ are defined by:
+    \[
+    a+_{\mathbb{F}_p} b := (a+b)\bmod p,
+    \quad
+    a\times_{\mathbb{F}_p} b := (a\cdot b)\bmod p.
+    \]
+\end{itemize}
+}
+
+\subsection*{Examples}
+
+\tExample{
+\begin{itemize}
+    \item $\mathbb{F}_2 = \{0,1\}$ with $1+1=0$ and $1\cdot1=1$.
+    \item $\mathbb{F}_3 = \{0,1,2\}$ with addition and multiplication modulo $3$.
+    \item $\mathbb{F}_5 = \{0,1,2,3,4\}$ with operations modulo $5$.
+\end{itemize}
+}
+
+\subsection*{Basic Properties}
+
+\tLemma{%
+In every finite field $\mathbb{F}_q$, the set of nonzero elements $\mathbb{F}_q^{\times}$ is closed under multiplication, and every element in it has a unique inverse.
+}
+
+\tLemma{%
+In every finite field $\mathbb{F}_q$, every $a\in\mathbb{F}_q$ satisfies
+\[
+a^q = a.
+\]
+}
+
+\tLemma{%
+For every $a\neq0$ in a finite field $\mathbb{F}_q$, we have $a^{\,q-1}=1$.
+}
+
+\textbf{Explanation:}
+Closure follows from the fact that a field has no zero divisors; the existence and uniqueness of the inverse follow from the field axioms and the proof above.
+To prove the two power identities, let $a\ne0$ and write
+\[
+P=\prod_{x\in\mathbb{F}_q^{\times}}x\ne0.
+\]
+Multiplication by $a$ rearranges the nonzero elements: the map $x\mapsto ax$ is invertible, and its inverse is $x\mapsto a^{-1}x$. Therefore
+\[
+P=\prod_{x\in\mathbb{F}_q^{\times}}(ax)=a^{q-1}P.
+\]
+We may cancel $P\ne0$, obtaining $a^{q-1}=1$, and hence $a^q=a$. For $a=0$, the identity $0^q=0$ follows directly.
+
+\tExample{
+Let us calculate all the inverses in $\mathbb{F}_7=\mathbb{Z}/7\mathbb{Z}$ \HebParen{for $1\le a\le6$}:
+\[
+\begin{array}{c|cccccc}
+a & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline
+a^{-1} & 1 & 4 & 5 & 2 & 3 & 6
+\end{array}
+\]
+
+For example, we check:
+$2\cdot4=8\equiv1,\; 3\cdot5=15\equiv1,\; 4\cdot2\equiv1$, and so on.
+}
+
+\tExSol{
+Show that, in every finite field $\mathbb{F}_q$,
+\[
+(a-b)^q = a^q - b^q.
+\]
+}{
+We use the identity $x^q=x$, proved for every element $x\in\mathbb{F}_q$. In particular, it also applies to $a-b$, so
+\[
+(a-b)^q=a-b=a^q-b^q.
+\]
+This proves the statement directly, without the need to calculate binomial coefficients.
+}
+
+\tExSol{
+Work in the field $\mathbb F_{13}=\mathbb Z/13\mathbb Z$.
+\begin{enumerate}
+\item Find the inverses of $2,3,4,5,6$.
+\item Calculate the following expression, checking that every denominator is nonzero:
+\[E=(5^{-1}+2)(4-3^{-1})^{-1}-1.\]
+\end{enumerate}
+}{
+All arithmetic is performed modulo $13$. Check the products
+\[
+2\cdot7=14\equiv1,\quad3\cdot9=27\equiv1,\quad
+4\cdot10=40\equiv1,
+\]
+\[
+5\cdot8=40\equiv1,\qquad6\cdot11=66\equiv1.
+\]
+Therefore the inverses, in order, are $7,9,10,8,11$.
+Now $5^{-1}+2=8+2=10$, while
+\[
+4-3^{-1}=4-9=-5\equiv8\ne0.
+\]
+The inverse of $8$ is $5$, since $8\cdot5=40\equiv1$. Consequently,
+\[
+E\equiv10\cdot5-1=49\equiv10\pmod{13}.
+\]
+All the inverses used here are defined, and the result is the residue class $10$.
+}
+
+\tExSol{
+Show that, in a finite field $\mathbb{F}_q$, for every $a\neq 0$ there exists $n\in\mathbb{N}$ such that $a^n=1$.
+}{
+The set $\mathbb{F}_q^{\times}$ has exactly $q-1$ elements and is closed under multiplication.
+Let its size be $m=q-1$.
+Consider the list:
+\[
+a, a^2, a^3, \dots, a^{m+1}.
+\]
+There are $m+1$ elements in the list but only $m$ distinct possible values, so two are equal; write $a^k=a^l$ with $k>l$.
+Multiplying by $a^{-l}$ gives $a^{k-l}=1$.
+Therefore every nonzero element has a positive integer power equal to the multiplicative identity. \qed
+}
+
+\section{Calculations and Applications in Finite Fields}
+
+\tExSol{
+A system stores two information bits $a,b\in\mathbb{F}_2$ and adds a check bit $c$ such that $a+b+c=0$.
+Find $c$. If one of the three bits flips, does the check detect it? What happens if exactly two bits flip?
+}{
+In $\mathbb{F}_2$, we have $-x=x$, so $c=a+b$. For example, if $a=b=1$, then $c=0$.
+Denote the errors by $e_1,e_2,e_3\in\mathbb{F}_2$, where $e_j=1$ indicates a flip. The sum of the received bits is
+\[
+(a+e_1)+(b+e_2)+(c+e_3)
+=(a+b+c)+(e_1+e_2+e_3)=e_1+e_2+e_3.
+\]
+For a single flip, the sum is $1$, so the check detects an error. For two flips, the sum is $1+1=0$, so such an error is not detected. The check detects a single bit flip but does not determine which bit flipped.
+}

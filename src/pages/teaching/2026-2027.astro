@@ -64,6 +64,11 @@ const courses = (
                 >
                   Enter classroom ↗
                 </a>
+                {c.courseId === "international-engineering" && (
+                  <a class="text-link" href="/teaching/international-engineering/">
+                    English lecture notes &amp; course materials ↗
+                  </a>
+                )}
                 {c.courseId.startsWith("linear-algebra-") && (
                   <a class="text-link" href="#linear-algebra">
                     Tutorial notes · Hebrew PDF ↓
@@ -97,8 +102,10 @@ const courses = (
           Linear Algebra tutorial notes
         </h2>
         <p>
-          The complete 198-page handbook by Chen Gadi, with 13 tutorials and an
-          appendix on logic and proof methods. The PDF is in Hebrew; the topic
+          The complete 198-page handbook by Chen Gadi collects recitation notes
+          from previous years, with 13 tutorials and an appendix on logic and
+          proof methods. Their numbering and topic order may differ from this
+          year's lectures. The PDF is in Hebrew; the topic
           guide below is in English. These are study notes, not a replacement
           for the lectures or official course announcements.
         </p>

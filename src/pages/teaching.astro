@@ -170,6 +170,14 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
                   </div>
                 </div>
               )}
+              {c.data.courseId === "international-engineering" && (
+                <a
+                  class="text-link mb-4"
+                  href="/teaching/international-engineering/"
+                >
+                  English lecture notes &amp; course materials ↗
+                </a>
+              )}
               {c.data.courseId === "linear-algebra-electrical" && (
                 <a
                   class="text-link mb-4"

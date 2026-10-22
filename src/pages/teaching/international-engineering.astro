@@ -1,0 +1,171 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { engineeringNotesPdf } from "../../data/academicYear2026";
+
+const lectureNotesPdf =
+  "/materials/international-engineering/lecture-01-student-notes-en.pdf";
+const translatedTutorials = [
+  {
+    title: "Recitation 1: Complex Numbers and Induction",
+    pdf: "/materials/international-engineering/recitation-01-en.pdf",
+  },
+  {
+    title: "Recitation 2: Proof Methods, Sets and Fields",
+    pdf: "/materials/international-engineering/recitation-02-en.pdf",
+  },
+];
+---
+
+<Layout
+  title="Linear Algebra: International Engineering"
+  description="English lecture notes, earlier recitation materials, and course access instructions for Chen Gadi's International Engineering Linear Algebra class at Tel Aviv University."
+>
+  <section class="page-intro">
+    <div class="mx-auto max-w-6xl px-6">
+      <a class="text-link materials-back" href="/teaching/2026-2027/">
+        ← Courses 2026–2027
+      </a>
+      <p class="edition-label">International Engineering · Tel Aviv University</p>
+      <h1>Linear Algebra<br /><em>Course materials in English.</em></h1>
+      <p>Lecture notes, extra practice, and a place to ask your course questions.</p>
+      <nav class="academic-actions mt-6" aria-label="Course material sections">
+        <a class="academic-primary" href="#lecture-notes">Lecture notes ↓</a>
+        <a class="academic-secondary" href="#recitations">Earlier recitations ↓</a>
+        <a class="text-link" href="#classroom-access">How to enter the classroom ↓</a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-12 md:py-16 materials-content">
+    <section id="lecture-notes" aria-labelledby="lecture-notes-title">
+      <p class="edition-label">English translation</p>
+      <h2 id="lecture-notes-title" class="font-display text-3xl mb-6">Lecture notes</h2>
+      <article class="material-card">
+        <div>
+          <p class="material-type">Lecture 1 · PDF</p>
+          <h3>Lecture 1: English student notes</h3>
+          <p>
+            Original notes by Yochai Maayan. Translated into English by
+            Chen Gadi and ChatGPT.
+          </p>
+        </div>
+        <a class="academic-primary" href={lectureNotesPdf} target="_blank" rel="noopener">
+          Open English lecture notes ↗
+        </a>
+      </article>
+      <p class="materials-caption">
+        Open the PDF to read it, or use your PDF viewer's download button to save a copy.
+      </p>
+    </section>
+
+    <section id="recitations" aria-labelledby="recitations-title">
+      <p class="edition-label">Supplementary practice</p>
+      <h2 id="recitations-title" class="font-display text-3xl mb-4">
+        Recitations from previous years
+      </h2>
+      <p class="section-description">
+        These are Chen Gadi's recitation notes from previous years, provided for
+        extra practice. Their numbering and topic order may differ from this
+        year's lectures. Follow the current lectures and course announcements
+        for the material you need to study.
+      </p>
+      <p class="section-description mt-3">
+        English translations are available for recitations 1 and 2. The complete
+        handbook below is in Hebrew.
+      </p>
+      {
+        translatedTutorials.length > 0 && (
+          <div class="translated-tutorials">
+            {translatedTutorials.map((tutorial) => (
+              <article class="material-card">
+                <div>
+                  <p class="material-type">English translation · Previous years</p>
+                  <h3>{tutorial.title}</h3>
+                </div>
+                <a class="academic-primary" href={tutorial.pdf} target="_blank" rel="noopener">
+                  Open English PDF ↗
+                </a>
+              </article>
+            ))}
+          </div>
+        )
+      }
+      <div class="academic-actions mt-6">
+        <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">
+          Complete original handbook · Hebrew PDF ↗
+        </a>
+        <a class="text-link" href="/teaching/2026-2027/#linear-algebra">
+          Browse all 13 recitation topics ↗
+        </a>
+      </div>
+    </section>
+
+    <section id="activities" aria-labelledby="activities-title">
+      <p class="edition-label">Explore and practise</p>
+      <h2 id="activities-title" class="font-display text-3xl mb-6">Activities in English</h2>
+      <div class="activities-grid">
+        <article class="activity-card">
+          <h3>Interactive tutorial lab</h3>
+          <p>Explore examples and visualisations for the 13 recitation topics.</p>
+          <a class="text-link" href="/teaching/linear-algebra/lab/en/">Open English lab ↗</a>
+        </article>
+        <article class="activity-card">
+          <h3>Guided LLM activities</h3>
+          <p>Work through exercises and check the reasoning behind the answers.</p>
+          <a class="text-link" href="/teaching/linear-algebra/llm/en/">Open English activities ↗</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="classroom-access" class="access-panel" aria-labelledby="access-title">
+      <p class="edition-label">Questions and course communication</p>
+      <h2 id="access-title" class="font-display text-3xl mb-4">How to enter the classroom</h2>
+      <ol class="access-steps">
+        <li>Open the Student Hub and choose <strong>International Engineering Program</strong>.</li>
+        <li>Enter the code shared by Chen in the <strong>Class code</strong> field.</li>
+        <li>Click <strong>Enter classroom</strong> to ask questions and read replies.</li>
+      </ol>
+      <p>
+        No registration or email is needed for class discussions. The PDFs above
+        open directly; the class code is for the classroom.
+      </p>
+      <p>
+        For a private logistics question, use <strong>Course logistics</strong>
+        in the Student Hub and provide your course and email. Replies appear on
+        the website, so return there to check them.
+      </p>
+      <div class="academic-actions mt-6">
+        <a class="academic-primary" href="/students?course=international-engineering">
+          Open International Engineering classroom ↗
+        </a>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .materials-back { display: inline-flex; margin-bottom: 1.5rem; }
+  .materials-content > section + section { margin-top: 3.5rem; }
+  .materials-content section { scroll-margin-top: 7rem; }
+  .material-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.75rem; border: 1px solid #dce4d6; border-radius: 12px; background: #fff; }
+  .material-card > div { flex: 1 1 22rem; min-width: 0; }
+  .material-card h3, .activity-card h3 { color: #294437; font-size: 1.125rem; font-weight: 650; }
+  .material-card p:not(.material-type), .activity-card p, .section-description, .access-panel > p:not(.edition-label) { color: #59695e; line-height: 1.8; }
+  .material-card p:not(.material-type) { margin-top: 0.6rem; max-width: 42rem; }
+  .material-type { margin-bottom: 0.6rem; color: #5f7567; font-size: 0.75rem; font-weight: 650; letter-spacing: 0.05em; text-transform: uppercase; }
+  .materials-caption { margin-top: 1rem; color: #647067; font-size: 0.875rem; line-height: 1.7; }
+  .section-description { max-width: 50rem; }
+  .translated-tutorials { display: grid; gap: 1rem; margin-top: 1.5rem; }
+  .activities-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+  .activity-card { padding: 1.5rem; border: 1px solid #dce4d6; border-radius: 12px; background: #fafbf7; }
+  .activity-card p { margin: 0.65rem 0 1rem; }
+  .access-panel { padding: 2rem; border: 1px solid #dce4d6; border-radius: 12px; background: #f3f6ee; }
+  .access-steps { list-style: decimal; margin: 1rem 0 1.5rem; padding-left: 1.5rem; color: #294437; line-height: 1.8; }
+  .access-steps li + li { margin-top: 0.5rem; }
+  .access-panel > p + p { margin-top: 0.75rem; }
+  @media (max-width: 640px) {
+    .activities-grid { grid-template-columns: minmax(0, 1fr); }
+    .material-card, .activity-card, .access-panel { padding: 1.25rem; }
+    .materials-content > section + section { margin-top: 2.75rem; }
+  }
+</style>
