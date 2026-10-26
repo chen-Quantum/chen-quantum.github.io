@@ -1,11 +1,14 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
 import { getCollection } from "astro:content";
 import {
   academicYear,
   engineeringNotesPdf,
   engineeringNotesEnglishPdf,
   engineeringAppendixPages,
+  engineeringTutorialPdf,
+  engineeringLogicAppendixPdf,
   engineeringTutorials,
 } from "../../data/academicYear2026";
 const courses = (
@@ -35,9 +38,10 @@ const courses = (
         English or Hebrew.
       </p>
       <div class="academic-actions mt-6">
-        <a class="academic-primary" href="#linear-algebra"
-          >Find a tutorial ↓</a
-        ><a class="academic-secondary" href="#year-courses">Find your classroom ↓</a>
+        <a class="academic-primary" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">Full booklet · English PDF ↗</a>
+        <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">Full booklet · Hebrew PDF ↗</a>
+        <a class="text-link" href="#tutorial-downloads">Individual tutorial PDFs ↓</a>
+        <a class="text-link" href="#year-courses">Find your classroom ↓</a>
         <a class="text-link" href="/students">Student Hub ↗</a>
       </div>
     </div>
@@ -71,6 +75,9 @@ const courses = (
                     <a class="text-link" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
                       Complete tutorial booklet · English PDF ↗
                     </a>
+                    <a class="text-link" href="/teaching/international-engineering/#tutorial-downloads">
+                      Individual tutorial PDFs · English &amp; Hebrew ↗
+                    </a>
                     <a class="text-link" href="/teaching/international-engineering/">
                       English lecture notes &amp; course materials ↗
                     </a>
@@ -78,7 +85,7 @@ const courses = (
                 )}
                 {c.courseId.startsWith("linear-algebra-") && (
                   <a class="text-link" href="#linear-algebra">
-                    Tutorial notes · Hebrew PDF ↓
+                    Tutorial PDFs · English &amp; Hebrew ↓
                   </a>
                 )}
                 {c.courseId === "linear-algebra-electrical" && (
@@ -119,11 +126,11 @@ const courses = (
         <div class="academic-actions mt-6">
           <a
             class="academic-primary"
-            href={engineeringNotesPdf}
+            href={engineeringNotesEnglishPdf}
             target="_blank"
-            rel="noopener">Complete handbook · Hebrew PDF ↗</a>
-          <a class="academic-secondary" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
-            Complete booklet · English PDF ↗
+            rel="noopener">Full booklet · English PDF ↗</a>
+          <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">
+            Full booklet · Hebrew PDF ↗
           </a><a class="academic-secondary" href="/students?mode=logistics"
             >Course logistics ↗</a>
         </div>
@@ -146,11 +153,11 @@ const courses = (
           </div>
         </div>
       </nav>
-      <div class="mt-8 flex items-baseline justify-between gap-4 flex-wrap">
-        <h3 class="font-display text-2xl">Tutorial list</h3><p
+      <div id="tutorial-downloads" class="mt-8 flex items-baseline justify-between gap-4 flex-wrap scroll-mt-24">
+        <h3 class="font-display text-2xl">Individual tutorial PDFs</h3><p
           class="text-sm text-slate-500"
         >
-          Read the booklet in either language or try an interactive activity.
+          Download a single tutorial in English or Hebrew.
         </p>
       </div>
       <div class="tutorial-search" data-discovery-controls hidden>
@@ -196,12 +203,18 @@ const courses = (
                     Tutorial {t.number}
                   </p>
                   <h4 class="font-semibold text-slate-900 mb-3">{t.title}</h4>
-                  <div class="study-language-links" aria-label={`Tutorial ${t.number} notes`}>
+                  <TutorialPdfDownloads
+                    label={`Tutorial ${t.number}`}
+                    englishPdf={engineeringTutorialPdf(t.number, "en")}
+                    hebrewPdf={engineeringTutorialPdf(t.number, "he")}
+                  />
+                  <div class="booklet-page-links" aria-label={`Tutorial ${t.number} in the full booklet`}>
+                    <span>Full booklet:</span>
                     <a href={`${engineeringNotesEnglishPdf}#page=${t.englishPage}`} target="_blank" rel="noopener">
-                      English PDF, page {t.englishPage} ↗
+                      English p. {t.englishPage} ↗
                     </a>
                     <a href={`${engineeringNotesPdf}#page=${t.page}`} target="_blank" rel="noopener">
-                      Hebrew PDF, page {t.page} ↗
+                      Hebrew p. {t.page} ↗
                     </a>
                   </div>
                   <div class="tutorial-activity-links">
@@ -226,21 +239,20 @@ const courses = (
         <button type="button" class="academic-secondary" data-tutorial-reset>Show all tutorials</button>
       </div>
       <p class="mt-6 text-sm text-slate-500">
-        PDF page numbers count from the cover. Some mobile viewers may open the
-        document at its beginning; use the PDF bookmarks to jump to a tutorial.
+        Full-booklet page numbers count from the cover. Use the PDF bookmarks
+        if your viewer opens at the beginning.
       </p>
+      <article class="logic-downloads mt-6" aria-labelledby="logic-downloads-title">
+        <h3 id="logic-downloads-title" class="font-display text-xl mb-3">Appendix: logic and proof methods</h3>
+        <TutorialPdfDownloads label="the logic and proof methods appendix" englishPdf={engineeringLogicAppendixPdf.en} hebrewPdf={engineeringLogicAppendixPdf.he} />
+        <div class="booklet-page-links">
+          <span>Full booklet:</span>
+          <a href={`${engineeringNotesEnglishPdf}#page=${engineeringAppendixPages.en}`} target="_blank" rel="noopener">English p. {engineeringAppendixPages.en} ↗</a>
+          <a href={`${engineeringNotesPdf}#page=${engineeringAppendixPages.he}`} target="_blank" rel="noopener">Hebrew p. {engineeringAppendixPages.he} ↗</a>
+        </div>
+      </article>
       <div class="academic-actions mt-6">
-        <a
-          class="academic-secondary"
-          href={`${engineeringNotesEnglishPdf}#page=${engineeringAppendixPages.en}`}
-          target="_blank"
-          rel="noopener">Logic &amp; proof methods · English PDF ↗</a
-        ><a
-          class="academic-secondary"
-          href={`${engineeringNotesPdf}#page=${engineeringAppendixPages.he}`}
-          target="_blank"
-          rel="noopener">Logic &amp; proof methods · Hebrew PDF ↗</a
-        ><a class="text-link" href="/teaching/linear-algebra"
+        <a class="text-link" href="/teaching/linear-algebra"
           >Earlier tutorial recordings ↗</a>
       </div>
     </section>
@@ -263,6 +275,9 @@ const courses = (
   .year-back { display: inline-flex; color: #43624f; font-size: 0.8125rem; font-weight: 600; margin-bottom: 1.5rem; }
   .year-back:hover { text-decoration: underline; text-underline-offset: 4px; }
   #year-courses, .tutorial-list > li { scroll-margin-top: 7rem; }
+  .booklet-page-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.75rem; margin-top: 0.75rem; color: #657367; font-size: 0.75rem; }
+  .booklet-page-links a { color: #43624f; text-decoration: underline; text-underline-offset: 3px; }
+  .logic-downloads { padding: 1.25rem 1.5rem; border: 1px solid #dce4d6; border-radius: 10px; background: #fafbf7; }
   .study-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-top: 1.5rem; border: 1px solid #dce4d6; background: #dce4d6; border-radius: 10px; overflow: hidden; }
   .study-tools > div { padding: 1.25rem 1.5rem; background: #fafbf7; }
   .study-tools h3 { color: #294437; font-size: 0.9375rem; font-weight: 650; }

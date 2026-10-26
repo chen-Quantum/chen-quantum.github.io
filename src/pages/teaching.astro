@@ -7,7 +7,7 @@ import PdfDownloadGate from "../components/PdfDownloadGate.astro";
 import { getCollection } from "astro:content";
 import { tirgulim } from "../data/tirgulim";
 import { teachingCourses } from "../data/courses";
-import { engineeringTutorials } from "../data/academicYear2026";
+import { engineeringTutorials, engineeringNotesPdf, engineeringNotesEnglishPdf } from "../data/academicYear2026";
 import {
   youtubeVideos,
   hedva2Videos,
@@ -103,10 +103,14 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
   <section class="mx-auto max-w-6xl px-6 pt-10" id="academic-year-2026-2027" aria-label="Student resources">
     <nav class="teaching-shortcuts" aria-label="Study shortcuts">
       <div>
-        <p class="shortcut-meta">2026–2027 · Hebrew PDF</p>
+        <p class="shortcut-meta">2026–2027 · English &amp; Hebrew PDFs</p>
         <h2>Tutorial notes</h2>
         <p>{engineeringTutorials.length} Linear Algebra tutorials, with explanations and solutions.</p>
-        <a href="/teaching/2026-2027#linear-algebra">Find your topic ↗</a>
+        <div class="shortcut-links">
+          <a href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">Full English booklet ↗</a>
+          <a href={engineeringNotesPdf} target="_blank" rel="noopener">Full Hebrew booklet ↗</a>
+        </div>
+        <a href="/teaching/2026-2027/#tutorial-downloads">Individual tutorial PDFs ↗</a>
       </div>
       <div>
         <p class="shortcut-meta">Interactive activities</p>
@@ -171,12 +175,11 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
                 </div>
               )}
               {c.data.courseId === "international-engineering" && (
-                <a
-                  class="text-link mb-4"
-                  href="/teaching/international-engineering/"
-                >
-                  English lecture notes &amp; course materials ↗
-                </a>
+                <div class="mb-4 grid gap-2">
+                  <a class="text-link" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">Full tutorial booklet · English PDF ↗</a>
+                  <a class="text-link" href="/teaching/international-engineering/#tutorial-downloads">Individual tutorial PDFs · English &amp; Hebrew ↗</a>
+                  <a class="text-link" href="/teaching/international-engineering/">English lecture notes &amp; course materials ↗</a>
+                </div>
               )}
               {c.data.courseId === "linear-algebra-electrical" && (
                 <a
