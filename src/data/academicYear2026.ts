@@ -4,6 +4,13 @@ export const engineeringNotesPdf =
 export const engineeringNotesEnglishPdf =
   "/materials/2026-2027/linear-algebra-engineering-tutorials-en.pdf";
 export const engineeringAppendixPages = { he: 242, en: 245 };
+export function engineeringTutorialPdf(number: number, language: "he" | "en") {
+  return `/materials/2026-2027/linear-algebra/tutorial-${String(number).padStart(2, "0")}-${language}.pdf`;
+}
+export const engineeringLogicAppendixPdf = {
+  he: "/materials/2026-2027/linear-algebra/logic-appendix-he.pdf",
+  en: "/materials/2026-2027/linear-algebra/logic-appendix-en.pdf",
+};
 export const engineeringTutorials = [
   { number: 1, title: "Complex numbers and induction", page: 6, englishPage: 6 },
   { number: 2, title: "Proof methods, sets, and fields", page: 21, englishPage: 22 },

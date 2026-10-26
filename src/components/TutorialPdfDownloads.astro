@@ -1,0 +1,24 @@
+---
+interface Props {
+  label: string;
+  englishPdf: string;
+  hebrewPdf: string;
+}
+const { label, englishPdf, hebrewPdf } = Astro.props;
+---
+
+<div class="tutorial-pdf-downloads" role="group" aria-label={`${label} PDFs`}>
+  <a href={englishPdf} download aria-label={`Download ${label} in English (PDF)`} data-pdf-language="en">
+    English PDF <span aria-hidden="true">↓</span>
+  </a>
+  <a href={hebrewPdf} download aria-label={`Download ${label} in Hebrew (PDF)`} data-pdf-language="he">
+    Hebrew PDF <span aria-hidden="true">↓</span>
+  </a>
+</div>
+
+<style>
+  .tutorial-pdf-downloads { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tutorial-pdf-downloads a { display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; min-height: 44px; padding: 0.55rem 0.85rem; border: 1px solid #c8d6c5; border-radius: 7px; background: #edf3e9; color: #1b4e3f; font-size: 0.8125rem; font-weight: 650; text-decoration: none; }
+  .tutorial-pdf-downloads a:hover { background: #e2ecd8; border-color: #8fa88a; }
+  .tutorial-pdf-downloads a:focus-visible { outline: 2px solid #1b4e3f; outline-offset: 3px; }
+</style>
