@@ -1,0 +1,47 @@
+name: Validate international teaching feature (temporary)
+on:
+  push:
+    branches:
+      - feat/international-engineering-featured-2027
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build entire Astro site
+        run: pnpm build
+      - name: Verify feature content and preserved recording anchors
+        run: |
+          node --input-type=module <<'JS'
+          import fs from "node:fs";
+          const page = fs.readFileSync("dist/teaching/index.html","utf8");
+          const international = fs.readFileSync("dist/teaching/international-engineering/index.html","utf8");
+          const must = (condition, message) => {
+            if (!condition) { console.error("FAIL:",message); process.exitCode = 1; }
+            else console.log("PASS:",message);
+          };
+          const ids = [...page.matchAll(/id="([^"]+)"/g)].map(match=>match[1]);
+          const count = (id)=>ids.filter(value=>value===id).length;
+          must(count("international-engineering-2026-2027")===1, "Single international section anchor");
+          must(count("archive-current-recordings-biomedical")===1, "Biomedical recordings anchor preserved");
+          must(count("archive-current-recordings-electrical")===1, "Electrical recordings anchor preserved");
+          must(page.includes("lecture-01-student-notes-en.pdf"), "English lecture 1 PDF linked");
+          must(page.includes("recitation-01-en.pdf") && page.includes("recitation-02-en.pdf"), "Both earlier English recitations linked");
+          must(page.includes("tutorial-01-en.pdf") && page.includes("tutorial-13-he.pdf"), "All 13 numbered practice notes sourced in both languages");
+          must(page.includes("No recordings"), "International course not labeled as having recordings");
+          must(international.includes("Lecture 1"), "Dedicated international course page remains available");
+          must(ids.filter(id=>id==="current-year-feature").length===1, "Course navigation appears at top");
+          const sectionIndex = page.indexOf('id="current-year-feature"');
+          const archiveIndex = page.indexOf('id="recording-archive"');
+          must(sectionIndex>=0 && sectionIndex<archiveIndex, "Current-year courses appear above older archive");
+          JS
