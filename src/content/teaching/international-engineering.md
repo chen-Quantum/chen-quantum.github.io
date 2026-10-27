@@ -1,6 +1,5 @@
 ---
 title: "International Engineering Program"
-titleHebrew: "המסלול הבינלאומי להנדסה"
 description: "Lecturer in the International Engineering Program at Tel Aviv University. Teaching in English, with course questions and student support available through the Student Hub."
 courseId: "international-engineering"
 audience:

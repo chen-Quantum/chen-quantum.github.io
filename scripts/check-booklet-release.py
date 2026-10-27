@@ -146,10 +146,11 @@ def main() -> None:
     check(year is not None, 'Current-year course page exists')
     if international:
         check('tutorial-booklet' in international.ids, 'International materials page has the full-booklet section')
-        for url in [EN_PDF, HE_PDF]:
-            links = [a for a in international.anchors if a['in_booklet'] and a['attrs'].get('href') == url]
-            check(bool(links), f'Full-booklet section links the {url} edition')
-            check(all(a['text'].strip() for a in links), f'Booklet link is named: {url}')
+        links = [a for a in international.anchors if a['in_booklet'] and a['attrs'].get('href') == EN_PDF]
+        check(bool(links), 'International booklet section links the English edition')
+        check(all(a['text'].strip() for a in links), 'International English booklet link has a name')
+        check(not any(a['attrs'].get('href') == HE_PDF for a in international.anchors),
+              'International course has no Hebrew booklet links')
         text = ' '.join(' '.join(international.text).split())
         check('English translations are available for recitations 1 and 2.' not in text, 'Remove stale partial-translation claim')
         check('The complete handbook below is in Hebrew.' not in text, 'Remove stale Hebrew-only full-book claim')

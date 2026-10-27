@@ -5,7 +5,6 @@ import {
   engineeringTutorials,
   engineeringTutorialPdf,
   engineeringNotesEnglishPdf,
-  engineeringNotesPdf,
 } from "../data/academicYear2026";
 import { internationalLectureNotes, internationalEarlierRecitations } from "../data/internationalEngineering";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
@@ -25,9 +24,8 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
         Linear Algebra · International Programme
       </h2>
       <p class="intl-description">
-        Written lecture notes and tutorial sheets in English, with Hebrew
-        editions of the complete recitation handbook. This course has no
-        recordings listed here.
+        Lecture notes and tutorial materials are provided in English only.
+        No recordings are available for this programme.
       </p>
     </div>
     <a href="/teaching/international-engineering/" class="intl-main-link">
@@ -64,12 +62,12 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
     </article>
 
     <article class="intl-panel intl-recitations">
-      <p class="intl-label">Tutorial notes · English &amp; Hebrew</p>
+      <p class="intl-label">Tutorial notes · English only</p>
       <h3>All 13 tutorial sheets</h3>
       <p class="intl-muted">
-        The complete handbook and each numbered tutorial are available in both
-        languages. These are notes from previous years, so their topic order
-        may differ from the current course.
+        The complete handbook and all 13 numbered tutorial PDFs are available
+        in English. These are supplementary notes from previous years, so
+        their topic order may differ from the current course.
       </p>
 
       <div class="intl-booklets">
@@ -77,14 +75,6 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
           <span>Complete English tutorial booklet</span>
           <PdfDownloadGate
             pdfPath={engineeringNotesEnglishPdf}
-            code={code}
-            label="Open / download PDF"
-          />
-        </div>
-        <div>
-          <span>חוברת תרגולים מלאה בעברית</span>
-          <PdfDownloadGate
-            pdfPath={engineeringNotesPdf}
             code={code}
             label="Open / download PDF"
           />
@@ -101,7 +91,7 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
                 {tutorial.title}
               </p>
               <details class="intl-single">
-                <summary>Preview and download · English / עברית</summary>
+                <summary>Preview and download · English PDF</summary>
                 <div class="intl-languages">
                   <div>
                     <h4>English PDF</h4>
@@ -113,19 +103,6 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
                     <PdfPreview
                       pdfPath={engineeringTutorialPdf(tutorial.number, "en")}
                       title={"Tutorial " + tutorial.number + " · English"}
-                      downloadCode={code}
-                    />
-                  </div>
-                  <div>
-                    <h4 lang="he" dir="rtl">קובץ בעברית</h4>
-                    <PdfDownloadGate
-                      pdfPath={engineeringTutorialPdf(tutorial.number, "he")}
-                      code={code}
-                      label="Open / download"
-                    />
-                    <PdfPreview
-                      pdfPath={engineeringTutorialPdf(tutorial.number, "he")}
-                      title={"Tutorial " + tutorial.number + " · Hebrew"}
                       downloadCode={code}
                     />
                   </div>
@@ -202,7 +179,7 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
   .intl-tutorial-name { display: flex; align-items: baseline; gap: 0.65rem; color: #2f483a; font-size: 0.82rem; font-weight: 650; line-height: 1.6; }
   .intl-number { color: #68906f; font-size: 1rem; font-weight: 750; font-variant-numeric: tabular-nums; }
   .intl-single > summary { margin: 0.4rem 0 0 1.65rem; color: #1b4e3f; font-size: 0.77rem; font-weight: 650; cursor: pointer; }
-  .intl-languages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; margin-top: 0.85rem; }
+  .intl-languages { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.65rem; margin-top: 0.85rem; }
   .intl-languages > div { min-width: 0; display: flex; flex-direction: column; align-items: start; gap: 0.65rem; background: white; border: 1px solid #e2e9df; border-radius: 8px; padding: 0.8rem; }
   .intl-languages h4 { color: #294437; font-size: 0.8rem; font-weight: 700; }
   .intl-languages .pdf-preview { width: 100%; }
