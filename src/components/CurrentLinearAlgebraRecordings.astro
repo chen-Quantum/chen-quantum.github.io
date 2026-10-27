@@ -68,16 +68,18 @@ const tracks = [
     They are linked by tutorial number; the exercises and topic order may
     differ from the current year's recorded sessions.
   </p>
-  <nav class="track-shortcuts" aria-label="Choose an engineering track">
-    {tracks.map((track) => (
-      <a href={"#" + anchorBase + "-" + track.id} aria-label={"Jump to " + track.label + " recordings"}>
-        <span class="track-shortcut-year">2026–2027 · Current course</span>
-        <span class="track-shortcut-label" dir="rtl" lang="he">{track.labelHe}</span>
-        <span class="track-shortcut-english">{track.label} · {track.videoCount} recording{track.videoCount === 1 ? "" : "s"}</span>
-        <span aria-hidden="true" class="track-shortcut-arrow">↓</span>
-      </a>
-    ))}
-  </nav>
+  {mode !== "featured" && (
+    <nav class="track-shortcuts" aria-label="Choose an engineering track">
+      {tracks.map((track) => (
+        <a href={"#" + anchorBase + "-" + track.id} aria-label={"Jump to " + track.label + " recordings"}>
+          <span class="track-shortcut-year">2026–2027 · Current course</span>
+          <span class="track-shortcut-label" dir="rtl" lang="he">{track.labelHe}</span>
+          <span class="track-shortcut-english">{track.label} · {track.videoCount} recording{track.videoCount === 1 ? "" : "s"}</span>
+          <span aria-hidden="true" class="track-shortcut-arrow">↓</span>
+        </a>
+      ))}
+    </nav>
+  )}
 
   {tracks.map((track) => (
     <section

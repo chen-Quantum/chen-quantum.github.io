@@ -1,0 +1,221 @@
+---
+import PdfPreview from "./PdfPreview.astro";
+import PdfDownloadGate from "./PdfDownloadGate.astro";
+import {
+  engineeringTutorials,
+  engineeringTutorialPdf,
+  engineeringNotesEnglishPdf,
+  engineeringNotesPdf,
+} from "../data/academicYear2026";
+import { internationalLectureNotes, internationalEarlierRecitations } from "../data/internationalEngineering";
+import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
+
+const code = TEACHING_PDF_DOWNLOAD_CODE;
+---
+
+<section
+  id="international-engineering-2026-2027"
+  class="intl-course scroll-mt-24"
+  aria-labelledby="international-course-title"
+>
+  <div class="intl-header">
+    <div>
+      <p class="edition-label">Academic year 2026–2027 · International Engineering</p>
+      <h2 id="international-course-title" class="font-display">
+        Linear Algebra · International Programme
+      </h2>
+      <p class="intl-description">
+        Written lecture notes and tutorial sheets in English, with Hebrew
+        editions of the complete recitation handbook. This course has no
+        recordings listed here.
+      </p>
+    </div>
+    <a href="/teaching/international-engineering/" class="intl-main-link">
+      Full international course materials ↗
+    </a>
+  </div>
+
+  <div class="intl-columns">
+    <article class="intl-panel intl-lectures">
+      <p class="intl-label">Lecture notes · English</p>
+      <h3>Lecture 1 · Student notes</h3>
+      <p class="intl-muted">
+        {internationalLectureNotes.sourceCredit}. Lecture 1 is the lecture
+        PDF currently available on the website.
+      </p>
+      <div class="intl-file">
+        <div class="intl-file-heading">
+          <span>{internationalLectureNotes.title}</span>
+          <PdfDownloadGate
+            pdfPath={internationalLectureNotes.pdf}
+            code={code}
+            label="Open / download PDF"
+          />
+        </div>
+        <PdfPreview
+          pdfPath={internationalLectureNotes.pdf}
+          title={internationalLectureNotes.title}
+          downloadCode={code}
+        />
+      </div>
+      <a class="intl-sub-link" href="/teaching/international-engineering/#lecture-notes">
+        Open the lecture notes section ↗
+      </a>
+    </article>
+
+    <article class="intl-panel intl-recitations">
+      <p class="intl-label">Tutorial notes · English &amp; Hebrew</p>
+      <h3>All 13 tutorial sheets</h3>
+      <p class="intl-muted">
+        The complete handbook and each numbered tutorial are available in both
+        languages. These are notes from previous years, so their topic order
+        may differ from the current course.
+      </p>
+
+      <div class="intl-booklets">
+        <div>
+          <span>Complete English tutorial booklet</span>
+          <PdfDownloadGate
+            pdfPath={engineeringNotesEnglishPdf}
+            code={code}
+            label="Open / download PDF"
+          />
+        </div>
+        <div>
+          <span>חוברת תרגולים מלאה בעברית</span>
+          <PdfDownloadGate
+            pdfPath={engineeringNotesPdf}
+            code={code}
+            label="Open / download PDF"
+          />
+        </div>
+      </div>
+
+      <details class="intl-list">
+        <summary>Browse all {engineeringTutorials.length} individual tutorials</summary>
+        <ol>
+          {engineeringTutorials.map((tutorial) => (
+            <li>
+              <p class="intl-tutorial-name">
+                <span class="intl-number">{String(tutorial.number).padStart(2, "0")}</span>
+                {tutorial.title}
+              </p>
+              <details class="intl-single">
+                <summary>Preview and download · English / עברית</summary>
+                <div class="intl-languages">
+                  <div>
+                    <h4>English PDF</h4>
+                    <PdfDownloadGate
+                      pdfPath={engineeringTutorialPdf(tutorial.number, "en")}
+                      code={code}
+                      label="Open / download"
+                    />
+                    <PdfPreview
+                      pdfPath={engineeringTutorialPdf(tutorial.number, "en")}
+                      title={"Tutorial " + tutorial.number + " · English"}
+                      downloadCode={code}
+                    />
+                  </div>
+                  <div>
+                    <h4 lang="he" dir="rtl">קובץ בעברית</h4>
+                    <PdfDownloadGate
+                      pdfPath={engineeringTutorialPdf(tutorial.number, "he")}
+                      code={code}
+                      label="Open / download"
+                    />
+                    <PdfPreview
+                      pdfPath={engineeringTutorialPdf(tutorial.number, "he")}
+                      title={"Tutorial " + tutorial.number + " · Hebrew"}
+                      downloadCode={code}
+                    />
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ol>
+      </details>
+
+      <a class="intl-sub-link" href="/teaching/international-engineering/#tutorial-downloads">
+        Open the complete tutorial library ↗
+      </a>
+    </article>
+  </div>
+
+  <section class="intl-earlier" aria-labelledby="intl-earlier-title">
+    <div class="intl-earlier-heading">
+      <div>
+        <p class="intl-label">Supplementary material</p>
+        <h3 id="intl-earlier-title">Earlier English recitation notes</h3>
+        <p class="intl-muted">
+          Two separate translated recitations from previous years, provided for
+          additional practice.
+        </p>
+      </div>
+      <a href="/teaching/international-engineering/#recitations" class="intl-sub-link">
+        See all earlier recitation notes ↗
+      </a>
+    </div>
+    <div class="intl-earlier-grid">
+      {internationalEarlierRecitations.map((recitation) => (
+        <article>
+          <h4>{recitation.title}</h4>
+          <PdfDownloadGate
+            pdfPath={recitation.pdf}
+            code={code}
+            label="Open / download PDF"
+          />
+          <PdfPreview
+            pdfPath={recitation.pdf}
+            title={recitation.title}
+            downloadCode={code}
+          />
+        </article>
+      ))}
+    </div>
+  </section>
+</section>
+
+<style>
+  .intl-course { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid #d4e1d1; }
+  .intl-header { display: flex; align-items: end; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .intl-header h2 { color: #294437; font-size: clamp(1.5rem, 2.8vw, 2.05rem); line-height: 1.25; margin: 0.4rem 0 0.65rem; }
+  .intl-description { max-width: 54rem; color: #536659; font-size: 0.875rem; line-height: 1.8; }
+  .intl-main-link { display: inline-flex; min-height: 42px; align-items: center; padding: 0.6rem 0.9rem; background: #244f3e; color: white; border-radius: 8px; text-decoration: none; font-weight: 650; font-size: 0.8125rem; }
+  .intl-main-link:hover { background: #18392b; }
+  .intl-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: start; }
+  .intl-panel { min-width: 0; background: #fff; border: 1px solid #d7e3d3; border-radius: 12px; padding: 1.5rem; }
+  .intl-panel h3 { color: #294437; font-size: 1.22rem; font-weight: 700; line-height: 1.45; margin: 0.3rem 0 0.5rem; }
+  .intl-label { color: #5d7862; font-size: 0.7rem; font-weight: 750; letter-spacing: 0.055em; text-transform: uppercase; }
+  .intl-muted { color: #627268; font-size: 0.81rem; line-height: 1.75; }
+  .intl-file { margin: 1.3rem 0 0.85rem; padding: 0.9rem; background: #f7faf5; border: 1px solid #e1e9dd; border-radius: 10px; }
+  .intl-file-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem; }
+  .intl-file-heading > span { font-size: 0.86rem; font-weight: 650; color: #294437; }
+  .intl-sub-link { display: inline-flex; margin-top: 0.9rem; color: #1b4e3f; font-size: 0.8125rem; text-decoration: underline; text-underline-offset: 3px; font-weight: 650; }
+  .intl-booklets { display: grid; gap: 0.7rem; margin: 1.3rem 0; }
+  .intl-booklets > div { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; padding: 0.7rem 0.85rem; background: #f7faf5; border: 1px solid #e1e9dd; border-radius: 9px; }
+  .intl-booklets > div > span { color: #294437; font-size: 0.82rem; font-weight: 650; }
+  .intl-list { border: 1px solid #d7e3d3; background: #f7faf5; border-radius: 9px; }
+  .intl-list > summary { padding: 0.9rem 1rem; font-size: 0.83rem; font-weight: 700; color: #294437; cursor: pointer; }
+  .intl-list > ol { margin: 0; padding: 0 0.85rem 0.75rem; list-style: none; }
+  .intl-list li { padding: 0.85rem 0; border-top: 1px solid #dde8d9; }
+  .intl-tutorial-name { display: flex; align-items: baseline; gap: 0.65rem; color: #2f483a; font-size: 0.82rem; font-weight: 650; line-height: 1.6; }
+  .intl-number { color: #68906f; font-size: 1rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+  .intl-single > summary { margin: 0.4rem 0 0 1.65rem; color: #1b4e3f; font-size: 0.77rem; font-weight: 650; cursor: pointer; }
+  .intl-languages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; margin-top: 0.85rem; }
+  .intl-languages > div { min-width: 0; display: flex; flex-direction: column; align-items: start; gap: 0.65rem; background: white; border: 1px solid #e2e9df; border-radius: 8px; padding: 0.8rem; }
+  .intl-languages h4 { color: #294437; font-size: 0.8rem; font-weight: 700; }
+  .intl-languages .pdf-preview { width: 100%; }
+  .intl-earlier { margin-top: 1.5rem; padding: 1.4rem; border: 1px solid #d7e3d3; background: #f8faf5; border-radius: 12px; }
+  .intl-earlier-heading { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+  .intl-earlier-heading h3 { margin: 0.35rem 0; color: #294437; font-size: 1.08rem; font-weight: 700; }
+  .intl-earlier-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+  .intl-earlier-grid article { min-width: 0; background: white; border: 1px solid #e0e9dd; border-radius: 9px; padding: 1rem; }
+  .intl-earlier-grid h4 { margin-bottom: 0.85rem; font-size: 0.9rem; line-height: 1.5; font-weight: 650; color: #294437; }
+  .intl-course a:focus-visible, .intl-course summary:focus-visible { outline: 3px solid #8cb7a1; outline-offset: 3px; }
+  @media (max-width: 900px) { .intl-columns { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 680px) {
+    .intl-panel, .intl-earlier { padding: 1.05rem; }
+    .intl-earlier-grid, .intl-languages { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
