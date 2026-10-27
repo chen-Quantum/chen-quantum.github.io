@@ -1,20 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
+import { internationalLectureNotes, internationalEarlierRecitations } from "../../data/internationalEngineering";
 import { engineeringNotesPdf, engineeringNotesEnglishPdf, engineeringTutorials, engineeringTutorialPdf, engineeringLogicAppendixPdf } from "../../data/academicYear2026";
 
-const lectureNotesPdf =
-  "/materials/international-engineering/lecture-01-student-notes-en.pdf";
-const translatedTutorials = [
-  {
-    title: "Recitation 1: Complex Numbers and Induction",
-    pdf: "/materials/international-engineering/recitation-01-en.pdf",
-  },
-  {
-    title: "Recitation 2: Proof Methods, Sets and Fields",
-    pdf: "/materials/international-engineering/recitation-02-en.pdf",
-  },
-];
+const lectureNotesPdf = internationalLectureNotes.pdf;
+const translatedTutorials = internationalEarlierRecitations;
 ---
 
 <Layout
