@@ -2,7 +2,7 @@
 interface Props {
   label: string;
   englishPdf: string;
-  hebrewPdf: string;
+  hebrewPdf?: string;
 }
 const { label, englishPdf, hebrewPdf } = Astro.props;
 ---
@@ -11,9 +11,11 @@ const { label, englishPdf, hebrewPdf } = Astro.props;
   <a href={englishPdf} download aria-label={`Download ${label} in English (PDF)`} data-pdf-language="en">
     English PDF <span aria-hidden="true">↓</span>
   </a>
-  <a href={hebrewPdf} download aria-label={`Download ${label} in Hebrew (PDF)`} data-pdf-language="he">
-    Hebrew PDF <span aria-hidden="true">↓</span>
-  </a>
+  {hebrewPdf && (
+    <a href={hebrewPdf} download aria-label={`Download ${label} in Hebrew (PDF)`} data-pdf-language="he">
+      Hebrew PDF <span aria-hidden="true">↓</span>
+    </a>
+  )}
 </div>
 
 <style>
