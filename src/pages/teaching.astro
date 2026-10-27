@@ -4,6 +4,7 @@ import { practiceTopicsEn, englishVideoTitle } from "../data/englishTeaching";
 import LiteYouTube from "../components/LiteYouTube.astro";
 import PdfPreview from "../components/PdfPreview.astro";
 import PdfDownloadGate from "../components/PdfDownloadGate.astro";
+import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 import { getCollection } from "astro:content";
 import { tirgulim } from "../data/tirgulim";
 import { teachingCourses } from "../data/courses";
@@ -67,7 +68,7 @@ const filterCourses = teachingCourses.filter(
 // preview stays visible without a code; only opening / downloading the full
 // PDF requires it. This is classroom UX, not security: the code is in the
 // page source and the PDF URL is public.
-const DOWNLOAD_CODE = "juanBalagan";
+const DOWNLOAD_CODE = TEACHING_PDF_DOWNLOAD_CODE;
 
 // Show the newest practice sheet first. Sort by the trailing tutorial number
 // in the id (tirgul1 → 1, tirgul6 → 6), so tirgul6 appears first today and
