@@ -6,6 +6,13 @@ import { videosByPlaylist } from "../data/youtubeVideos";
 import { engineeringTutorialPdf, engineeringTutorials } from "../data/academicYear2026";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 
+interface Props {
+  mode?: "full" | "archive";
+}
+const { mode = "full" } = Astro.props;
+const inArchive = mode === "archive";
+const anchorBase = inArchive ? "archive-current-recordings" : "new-recordings";
+
 // Only titles and individual video IDs verified from the instructor-provided
 // YouTube playlist are classified here. Avoid showing mixed-track playlists
 // inside a specific engineering track.
@@ -30,11 +37,21 @@ const tracks = [
 });
 ---
 
-<section id="new-recordings" class="current-recordings mt-16 scroll-mt-24" aria-labelledby="current-recordings-title">
+<section
+  id={anchorBase}
+  class:list={["current-recordings scroll-mt-24", inArchive ? "archive-recordings mt-8" : "mt-16"]}
+  aria-labelledby={anchorBase + "-title"}
+>
   <p class="edition-label">Linear Algebra · 2026–2027</p>
-  <h2 id="current-recordings-title" class="font-display text-3xl mb-4">
-    Tutorial recordings &amp; practice sheets
-  </h2>
+  {inArchive ? (
+    <h3 id={anchorBase + "-title"} class="font-display text-2xl mb-4">
+      New recordings &amp; practice sheets · 2026–2027
+    </h3>
+  ) : (
+    <h2 id={anchorBase + "-title"} class="font-display text-3xl mb-4">
+      Tutorial recordings &amp; practice sheets
+    </h2>
+  )}
   <p class="recordings-description">
     Recorded recitations are organised separately for Biomedical Engineering
     and Electrical Engineering. Each recording is accompanied by the existing
@@ -48,7 +65,7 @@ const tracks = [
   </p>
   <nav class="track-shortcuts" aria-label="Choose an engineering track">
     {tracks.map((track) => (
-      <a href={"#new-recordings-" + track.id} aria-label={"Jump to " + track.label + " recordings"}>
+      <a href={"#" + anchorBase + "-" + track.id} aria-label={"Jump to " + track.label + " recordings"}>
         <span class="track-shortcut-label" dir="rtl" lang="he">{track.labelHe}</span>
         <span class="track-shortcut-english">{track.label} · {track.videoCount} recording{track.videoCount === 1 ? "" : "s"}</span>
         <span aria-hidden="true" class="track-shortcut-arrow">↓</span>
@@ -58,29 +75,35 @@ const tracks = [
 
   {tracks.map((track) => (
     <section
-      id={"new-recordings-" + track.id}
+      id={anchorBase + "-" + track.id}
       class="recordings-track"
-      aria-labelledby={"new-recordings-" + track.id + "-title"}
+      aria-labelledby={anchorBase + "-" + track.id + "-title"}
     >
       <div class="recordings-track-heading">
         <div>
           <p class="track-eyebrow">Linear Algebra · {track.label}</p>
-          <h3 id={"new-recordings-" + track.id + "-title"} class="font-display" dir="rtl" lang="he">
-            {track.labelHe}
-          </h3>
+          {inArchive ? (
+            <h4 id={anchorBase + "-" + track.id + "-title"} class="font-display" dir="rtl" lang="he">
+              {track.labelHe}
+            </h4>
+          ) : (
+            <h3 id={anchorBase + "-" + track.id + "-title"} class="font-display" dir="rtl" lang="he">
+              {track.labelHe}
+            </h3>
+          )}
           <p>{track.videoCount} recording{track.videoCount === 1 ? "" : "s"} · {track.sessions.length} tutorial sheet{track.sessions.length === 1 ? "" : "s"}</p>
         </div>
-        <a href="#new-recordings" class="track-back">All tracks ↑</a>
+        <a href={"#" + anchorBase} class="track-back">All tracks ↑</a>
       </div>
 
       <div class="session-list">
         {track.sessions.map((session) => (
-          <article class="recorded-session" id={"new-recordings-" + track.id + "-tutorial-" + session.number}>
+          <article class="recorded-session" id={anchorBase + "-" + track.id + "-tutorial-" + session.number}>
             <header class="session-heading">
               <span class="session-number" aria-hidden="true">{String(session.number).padStart(2, "0")}</span>
               <div>
                 <p class="session-kicker">Tutorial {session.number} · {track.label}</p>
-                <h4>{session.title}</h4>
+                {inArchive ? <h5>{session.title}</h5> : <h4>{session.title}</h4>}
               </div>
             </header>
 
@@ -171,7 +194,7 @@ const tracks = [
   .recordings-track + .recordings-track { margin-top: 3.75rem; }
   .recordings-track-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #dce4d6; }
   .track-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #607266; }
-  .recordings-track-heading h3 { margin-top: 0.35rem; font-size: 1.6rem; color: #294437; }
+  .recordings-track-heading h3, .recordings-track-heading h4 { margin-top: 0.35rem; font-size: 1.6rem; color: #294437; }
   .recordings-track-heading p:last-child { font-size: 0.8125rem; color: #657367; }
   .track-back { color: #1b4e3f; font-size: 0.8125rem; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
   .session-list { display: grid; gap: 1.5rem; }
@@ -179,7 +202,7 @@ const tracks = [
   .session-heading { display: flex; align-items: start; gap: 1rem; margin-bottom: 1.25rem; }
   .session-number { display: inline-grid; place-items: center; flex: 0 0 2.75rem; height: 2.75rem; background: #edf3e9; border-radius: 9px; font-size: 1.25rem; color: #244f3e; font-weight: 700; font-variant-numeric: tabular-nums; }
   .session-kicker { color: #607266; font-size: 0.75rem; font-weight: 650; margin-bottom: 0.2rem; }
-  .session-heading h4 { color: #294437; font-size: 1.2rem; font-weight: 700; line-height: 1.5; }
+  .session-heading h4, .session-heading h5 { color: #294437; font-size: 1.2rem; font-weight: 700; line-height: 1.5; }
   .session-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1.25rem; align-items: start; }
   .content-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.055em; color: #607266; margin-bottom: 0.75rem; }
   .recording-videos { display: grid; gap: 1rem; }
