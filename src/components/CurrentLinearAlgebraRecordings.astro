@@ -1,0 +1,204 @@
+---
+import LiteYouTube from "./LiteYouTube.astro";
+import PdfPreview from "./PdfPreview.astro";
+import PdfDownloadGate from "./PdfDownloadGate.astro";
+import { videosByPlaylist } from "../data/youtubeVideos";
+import { engineeringTutorialPdf, engineeringTutorials } from "../data/academicYear2026";
+import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
+
+// Only titles and individual video IDs verified from the instructor-provided
+// YouTube playlist are classified here. Avoid showing mixed-track playlists
+// inside a specific engineering track.
+const playlistId = "PLEvis3LHS9Ks";
+const playlistUrl = "https://www.youtube.com/playlist?list=" + playlistId;
+const recordings = videosByPlaylist(playlistId).filter((video) => video.laTutorial !== null);
+const tracks = [
+  { id: "biomedical", label: "Biomedical Engineering", labelHe: "הנדסה ביו־רפואית", track: "Biomedical Engineering" },
+  { id: "electrical", label: "Electrical Engineering", labelHe: "הנדסת חשמל", track: "Electrical Engineering" },
+].map((track) => {
+  const trackVideos = recordings.filter((video) => video.track === track.track);
+  const sessionNumbers = [...new Set(trackVideos.map((video) => video.laTutorial).filter((n): n is number => n !== null))].sort((a, b) => a - b);
+  return {
+    ...track,
+    videoCount: trackVideos.length,
+    sessions: sessionNumbers.map((number) => ({
+      number,
+      title: engineeringTutorials.find((tutorial) => tutorial.number === number)?.title ?? ("Tutorial " + number),
+      videos: trackVideos.filter((video) => video.laTutorial === number),
+    })),
+  };
+});
+---
+
+<section id="new-recordings" class="current-recordings mt-16 scroll-mt-24" aria-labelledby="current-recordings-title">
+  <p class="edition-label">Linear Algebra · 2026–2027</p>
+  <h2 id="current-recordings-title" class="font-display text-3xl mb-4">
+    Tutorial recordings &amp; practice sheets
+  </h2>
+  <p class="recordings-description">
+    Recorded recitations are organised separately for Biomedical Engineering
+    and Electrical Engineering. Each recording is accompanied by the existing
+    numbered tutorial sheet. Preview a sheet directly on this page, then
+    enter the course download code to open its full PDF.
+  </p>
+  <p class="recordings-context">
+    The accompanying PDFs are from Chen Gadi's existing tutorial handbook.
+    They are linked by tutorial number; the exercises and topic order may
+    differ from the current year's recorded sessions.
+  </p>
+  <nav class="track-shortcuts" aria-label="Choose an engineering track">
+    {tracks.map((track) => (
+      <a href={"#new-recordings-" + track.id} aria-label={"Jump to " + track.label + " recordings"}>
+        <span class="track-shortcut-label" dir="rtl" lang="he">{track.labelHe}</span>
+        <span class="track-shortcut-english">{track.label} · {track.videoCount} recording{track.videoCount === 1 ? "" : "s"}</span>
+        <span aria-hidden="true" class="track-shortcut-arrow">↓</span>
+      </a>
+    ))}
+  </nav>
+
+  {tracks.map((track) => (
+    <section
+      id={"new-recordings-" + track.id}
+      class="recordings-track"
+      aria-labelledby={"new-recordings-" + track.id + "-title"}
+    >
+      <div class="recordings-track-heading">
+        <div>
+          <p class="track-eyebrow">Linear Algebra · {track.label}</p>
+          <h3 id={"new-recordings-" + track.id + "-title"} class="font-display" dir="rtl" lang="he">
+            {track.labelHe}
+          </h3>
+          <p>{track.videoCount} recording{track.videoCount === 1 ? "" : "s"} · {track.sessions.length} tutorial sheet{track.sessions.length === 1 ? "" : "s"}</p>
+        </div>
+        <a href="#new-recordings" class="track-back">All tracks ↑</a>
+      </div>
+
+      <div class="session-list">
+        {track.sessions.map((session) => (
+          <article class="recorded-session" id={"new-recordings-" + track.id + "-tutorial-" + session.number}>
+            <header class="session-heading">
+              <span class="session-number" aria-hidden="true">{String(session.number).padStart(2, "0")}</span>
+              <div>
+                <p class="session-kicker">Tutorial {session.number} · {track.label}</p>
+                <h4>{session.title}</h4>
+              </div>
+            </header>
+
+            <div class="session-content">
+              <div class="session-video">
+                <p class="content-label">Watch the recording</p>
+                <div class="recording-videos">
+                  {session.videos.map((video) => (
+                    <LiteYouTube
+                      videoId={video.videoId}
+                      title={video.title}
+                      thumbnail={video.thumbnail}
+                      embedUrl={video.embedUrl}
+                      url={video.url}
+                      duration={video.duration}
+                      track={video.track}
+                      note={video.sessionNote}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div class="session-material">
+                <p class="content-label">Practice sheet · PDF</p>
+                <p class="material-help">
+                  Select the language, open the inline preview, or use the
+                  download code to open the complete sheet.
+                </p>
+                <div class="session-pdfs">
+                  <div class="session-pdf" lang="he">
+                    <div class="pdf-heading">
+                      <span>Hebrew · עברית</span>
+                      <PdfDownloadGate
+                        pdfPath={engineeringTutorialPdf(session.number, "he")}
+                        code={TEACHING_PDF_DOWNLOAD_CODE}
+                        label="Open / download PDF"
+                      />
+                    </div>
+                    <PdfPreview
+                      pdfPath={engineeringTutorialPdf(session.number, "he")}
+                      title={"Tutorial " + session.number + " (Hebrew)"}
+                      downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
+                    />
+                  </div>
+                  <div class="session-pdf">
+                    <div class="pdf-heading">
+                      <span>English</span>
+                      <PdfDownloadGate
+                        pdfPath={engineeringTutorialPdf(session.number, "en")}
+                        code={TEACHING_PDF_DOWNLOAD_CODE}
+                        label="Open / download PDF"
+                      />
+                    </div>
+                    <PdfPreview
+                      pdfPath={engineeringTutorialPdf(session.number, "en")}
+                      title={"Tutorial " + session.number + " (English)"}
+                      downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <p class="playlist-footer">
+    <a href={playlistUrl} target="_blank" rel="noopener noreferrer">
+      View all three recordings in the original YouTube playlist ↗
+    </a>
+    <span>Individual video links are available inside each track above.</span>
+  </p>
+</section>
+
+<style>
+  .current-recordings { scroll-margin-top: 7rem; }
+  .recordings-description { max-width: 52rem; line-height: 1.8; color: #59695e; }
+  .recordings-context { max-width: 52rem; margin-top: 0.8rem; font-size: 0.8125rem; line-height: 1.75; color: #647067; }
+  .track-shortcuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.75rem 0 2.5rem; }
+  .track-shortcuts a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.15rem 1rem; align-content: center; padding: 1.25rem 1.5rem; background: #f3f6ee; border: 1px solid #cedcc8; border-radius: 12px; color: #244f3e; text-decoration: none; }
+  .track-shortcuts a:hover { background: #edf3e8; border-color: #93b29b; }
+  .track-shortcut-label { font-weight: 700; font-size: 1.125rem; grid-column: 1; }
+  .track-shortcut-english { font-size: 0.8rem; color: #607266; grid-column: 1; }
+  .track-shortcut-arrow { align-self: center; font-size: 1.2rem; grid-column: 2; grid-row: 1 / span 2; }
+  .recordings-track { margin-top: 2.5rem; scroll-margin-top: 7rem; }
+  .recordings-track + .recordings-track { margin-top: 3.75rem; }
+  .recordings-track-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #dce4d6; }
+  .track-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #607266; }
+  .recordings-track-heading h3 { margin-top: 0.35rem; font-size: 1.6rem; color: #294437; }
+  .recordings-track-heading p:last-child { font-size: 0.8125rem; color: #657367; }
+  .track-back { color: #1b4e3f; font-size: 0.8125rem; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+  .session-list { display: grid; gap: 1.5rem; }
+  .recorded-session { border: 1px solid #dce4d6; border-radius: 14px; background: white; padding: 1.5rem; scroll-margin-top: 7rem; }
+  .session-heading { display: flex; align-items: start; gap: 1rem; margin-bottom: 1.25rem; }
+  .session-number { display: inline-grid; place-items: center; flex: 0 0 2.75rem; height: 2.75rem; background: #edf3e9; border-radius: 9px; font-size: 1.25rem; color: #244f3e; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .session-kicker { color: #607266; font-size: 0.75rem; font-weight: 650; margin-bottom: 0.2rem; }
+  .session-heading h4 { color: #294437; font-size: 1.2rem; font-weight: 700; line-height: 1.5; }
+  .session-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1.25rem; align-items: start; }
+  .content-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.055em; color: #607266; margin-bottom: 0.75rem; }
+  .recording-videos { display: grid; gap: 1rem; }
+  .session-material { min-width: 0; background: #fafbf7; border: 1px solid #e1e8dc; border-radius: 10px; padding: 1.25rem; }
+  .material-help { font-size: 0.8rem; line-height: 1.7; color: #647067; margin-bottom: 1rem; }
+  .session-pdfs { display: grid; gap: 1rem; }
+  .session-pdf { min-width: 0; padding: 0.95rem; background: white; border: 1px solid #e1e8dc; border-radius: 9px; }
+  .pdf-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+  .pdf-heading > span { font-size: 0.85rem; font-weight: 700; color: #294437; }
+  .playlist-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.65rem 1.25rem; margin-top: 2rem; padding: 1.25rem; border-top: 1px solid #dce4d6; font-size: 0.8125rem; }
+  .playlist-footer a { font-weight: 650; color: #1b4e3f; text-decoration: underline; text-underline-offset: 3px; }
+  .playlist-footer span { color: #647067; }
+  .current-recordings a:focus-visible { outline: 3px solid #8cb7a1; outline-offset: 3px; }
+  @media (max-width: 860px) { .session-content { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 600px) {
+    .track-shortcuts { grid-template-columns: 1fr; }
+    .track-shortcuts a { padding: 1.1rem; }
+    .recorded-session { padding: 1.1rem; }
+    .session-material { padding: 0.85rem; }
+    .session-pdf { padding: 0.85rem; }
+  }
+</style>
