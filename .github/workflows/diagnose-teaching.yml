@@ -31,8 +31,9 @@ jobs:
             const compiled = await transform(fs.readFileSync(file,'utf8'), {filename:file,sourcemap:'both'});
             const lines=compiled.code.split('\n');
             console.log("COMPILER RESULT:",lines.length,"lines");
-            const viteRequire = createRequire(require.resolve('vite/package.json'));
-            const esbuild = viteRequire('esbuild');
+            const esbuildPackage = fs.readdirSync('node_modules/.pnpm').find((x)=>x.startsWith('esbuild@'));
+            console.log('ESBUILD PACKAGE',esbuildPackage);
+            const esbuild = require(process.cwd()+'/node_modules/.pnpm/'+esbuildPackage+'/node_modules/esbuild');
             try {
               await esbuild.transform(compiled.code, {loader:'ts',sourcefile:'compiled-teaching.ts',logLevel:'silent'});
               console.log("ESBUILD TRANSFORM PASSED");
