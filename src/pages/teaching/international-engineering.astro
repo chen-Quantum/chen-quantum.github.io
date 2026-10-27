@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
 import { internationalLectureNotes, internationalEarlierRecitations } from "../../data/internationalEngineering";
-import { engineeringNotesPdf, engineeringNotesEnglishPdf, engineeringTutorials, engineeringTutorialPdf, engineeringLogicAppendixPdf } from "../../data/academicYear2026";
+import { engineeringNotesEnglishPdf, engineeringTutorials, engineeringTutorialPdf, engineeringLogicAppendixPdf } from "../../data/academicYear2026";
 
 const lectureNotesPdf = internationalLectureNotes.pdf;
 const translatedTutorials = internationalEarlierRecitations;
@@ -17,7 +17,7 @@ const translatedTutorials = internationalEarlierRecitations;
       <a class="text-link materials-back" href="/teaching/2026-2027/">
         ← Courses 2026–2027
       </a>
-      <p class="edition-label">International Engineering · Tel Aviv University</p>
+      <p class="edition-label">International Engineering · English-only materials · Tel Aviv University</p>
       <h1>Linear Algebra<br /><em>Course materials in English.</em></h1>
       <p>The complete tutorial booklet, lecture notes, and a place to ask your course questions.</p>
       <nav class="academic-actions mt-6" aria-label="Course material sections">
@@ -38,7 +38,7 @@ const translatedTutorials = internationalEarlierRecitations;
       </h2>
       <article class="material-card booklet-card">
         <div>
-          <p class="material-type">Chen Gadi · English &amp; Hebrew PDFs</p>
+          <p class="material-type">Chen Gadi · English-only course materials</p>
           <h3>All 13 tutorials in one booklet</h3>
           <p>
             The complete English edition includes the exercises, worked
@@ -56,35 +56,32 @@ const translatedTutorials = internationalEarlierRecitations;
           <a class="academic-primary" href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">
             Full booklet · English PDF ↗
           </a>
-          <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">
-            Full booklet · Hebrew PDF ↗
-          </a>
         </div>
       </article>
       <p class="materials-caption">
-        Both editions include the same exercises. Use the PDF contents and
-        bookmarks to move between tutorials.
+        The English booklet includes exercises, solutions and a navigable
+        table of contents. Use the PDF bookmarks to move between tutorials.
       </p>
     </section>
 
     <section id="tutorial-downloads" aria-labelledby="tutorial-downloads-title">
       <p class="edition-label">One PDF per tutorial</p>
       <h2 id="tutorial-downloads-title" class="font-display text-3xl mb-4">Individual tutorial PDFs</h2>
-      <p class="section-description">Choose a tutorial and download its English or Hebrew PDF.</p>
-      <ol class="download-list" aria-label="Tutorial PDFs in English and Hebrew">
+      <p class="section-description">Choose any of the 13 tutorials and download its English PDF.</p>
+      <ol class="download-list" aria-label="Tutorial PDFs in English">
         {engineeringTutorials.map((tutorial) => (
           <li id={`download-tutorial-${tutorial.number}`}>
             <span class="download-number" aria-hidden="true">{String(tutorial.number).padStart(2, "0")}</span>
             <div>
               <h3>Tutorial {tutorial.number}: {tutorial.title}</h3>
-              <TutorialPdfDownloads label={`Tutorial ${tutorial.number}`} englishPdf={engineeringTutorialPdf(tutorial.number, "en")} hebrewPdf={engineeringTutorialPdf(tutorial.number, "he")} />
+              <TutorialPdfDownloads label={`Tutorial ${tutorial.number}`} englishPdf={engineeringTutorialPdf(tutorial.number, "en")} />
             </div>
           </li>
         ))}
       </ol>
       <article class="appendix-download" aria-labelledby="appendix-download-title">
         <h3 id="appendix-download-title">Appendix: logic and proof methods</h3>
-        <TutorialPdfDownloads label="the logic and proof methods appendix" englishPdf={engineeringLogicAppendixPdf.en} hebrewPdf={engineeringLogicAppendixPdf.he} />
+        <TutorialPdfDownloads label="the logic and proof methods appendix" englishPdf={engineeringLogicAppendixPdf.en} />
       </article>
     </section>
 
@@ -142,9 +139,6 @@ const translatedTutorials = internationalEarlierRecitations;
         )
       }
       <div class="academic-actions mt-6">
-        <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">
-          Complete booklet · Hebrew PDF ↗
-        </a>
         <a class="text-link" href="/teaching/2026-2027/#linear-algebra">
           Browse all 13 recitation topics ↗
         </a>
