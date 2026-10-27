@@ -1,0 +1,39 @@
+name: Diagnose teaching Astro compilation (temporary)
+on:
+  push:
+    branches: [fix/featured-teaching-2027-build]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Astro compiler diagnosis
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import { createRequire } from 'node:module';
+          const require = createRequire(import.meta.url);
+          const astroRequire = createRequire(require.resolve('astro/package.json'));
+          const { transform } = astroRequire('@astrojs/compiler');
+          const file = 'src/pages/teaching.astro';
+          try {
+            const compiled = await transform(fs.readFileSync(file,'utf8'), {filename:file,sourcemap:'both'});
+            const lines=compiled.code.split('\n');
+            console.log("COMPILER RESULT:",lines.length,"lines");
+            for(let i=100;i<Math.min(lines.length,165);i++) console.log("COMPILED",i+1,lines[i]);
+          } catch(e) { console.error("COMPILER ERROR", e.stack||e); }
+          JS
+      - name: Build for verification
+        shell: bash
+        run: pnpm build
