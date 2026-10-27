@@ -31,7 +31,19 @@ jobs:
             const compiled = await transform(fs.readFileSync(file,'utf8'), {filename:file,sourcemap:'both'});
             const lines=compiled.code.split('\n');
             console.log("COMPILER RESULT:",lines.length,"lines");
-            for(let i=100;i<Math.min(lines.length,165);i++) console.log("COMPILED",i+1,lines[i]);
+            const viteRequire = createRequire(require.resolve('vite/package.json'));
+            const esbuild = viteRequire('esbuild');
+            try {
+              await esbuild.transform(compiled.code, {loader:'ts',sourcefile:'compiled-teaching.ts',logLevel:'silent'});
+              console.log("ESBUILD TRANSFORM PASSED");
+            } catch(e) {
+              console.log("ESBUILD COMPILE ERRORS",JSON.stringify(e.errors||[]));
+              for(const error of e.errors||[]) {
+                const line=error.location?.line ?? 1;
+                for(let i=Math.max(0,line-9); i<Math.min(lines.length,line+8); i++)
+                  console.log("NEAR ERROR",i+1,lines[i]);
+              }
+            }
           } catch(e) { console.error("COMPILER ERROR", e.stack||e); }
           JS
       - name: Build for verification
