@@ -4,6 +4,7 @@ import { practiceTopicsEn, englishVideoTitle } from "../data/englishTeaching";
 import LiteYouTube from "../components/LiteYouTube.astro";
 import PdfPreview from "../components/PdfPreview.astro";
 import PdfDownloadGate from "../components/PdfDownloadGate.astro";
+import CurrentLinearAlgebraRecordings from "../components/CurrentLinearAlgebraRecordings.astro";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 import { getCollection } from "astro:content";
 import { tirgulim } from "../data/tirgulim";
@@ -375,15 +376,28 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         </h2>
       </div>
       <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-4">
-        Earlier recordings (tutorials 8–13) and worked exam questions are
-        listed below. The new 2026–2027 recordings (tutorials 1–2) are
-        separated by engineering track, with inline PDF previews and
-        code-gated downloads, on the <a
-          class="text-link"
-          href="/teaching/2026-2027#linear-algebra"
-          >current academic year page</a
-        >.
+        The new 2026–2027 recordings are available directly below, separated
+        into Biomedical Engineering (tutorials 1 and 2) and Electrical
+        Engineering (tutorial 2). Each recording is paired with a practice
+        sheet preview in Hebrew and English; full PDF opening uses the
+        existing download code. These resources also appear on the
+        <a class="text-link" href="/teaching/2026-2027/#new-recordings">current academic year page</a>.
       </p>
+
+      <CurrentLinearAlgebraRecordings mode="archive" />
+
+      <div id="earlier-linear-algebra" class="mt-14 pt-8 border-t border-slate-200 scroll-mt-24">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">
+          Earlier teaching
+        </p>
+        <h3 class="font-display text-xl md:text-2xl text-slate-900 mb-2">
+          Earlier Linear Algebra recordings · Tutorials 8–13
+        </h3>
+        <p class="text-sm text-slate-500 max-w-3xl mb-4">
+          Recorded recitations from previous teaching, worked exam questions
+          and extra study resources.
+        </p>
+      </div>
       <p class="mb-4">
         <a
           href="/teaching/linear-algebra"
