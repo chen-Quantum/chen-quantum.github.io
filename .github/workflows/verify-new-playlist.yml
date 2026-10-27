@@ -1,0 +1,35 @@
+name: Verify unlisted course playlist metadata (temporary)
+on:
+  push:
+    branches: [feat/track-separated-recordings-pdf-preview-2026]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read public playlist with yt-dlp
+        shell: bash
+        run: |
+          python3 -m pip install -q yt-dlp
+          set +e
+          yt-dlp --flat-playlist --skip-download --dump-single-json "https://www.youtube.com/playlist?list=PLEvis3LHS9Ks" > /tmp/playlist.json 2>/tmp/playlist-errors.txt
+          CODE=$?
+          echo "Extraction status: $CODE"
+          cat /tmp/playlist-errors.txt
+          python3 - <<'PY'
+          import json, pathlib
+          path = pathlib.Path("/tmp/playlist.json")
+          if not path.exists() or not path.stat().st_size:
+              print("No playlist metadata returned")
+          else:
+              try:
+                  obj=json.loads(path.read_text())
+                  print("PLAYLIST:", obj.get("title"), "COUNT:",len(obj.get("entries") or []))
+                  for i,item in enumerate(obj.get("entries") or [],1):
+                      print("VIDEO",i, "id=",item.get("id"),"title=",item.get("title"),"duration=",item.get("duration"))
+              except Exception as error:
+                  print("Could not parse:",str(error))
+                  print(path.read_text()[:500])
+          PY
+          exit 0
