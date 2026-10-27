@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the built bilingual tutorial downloads before publication.
+"""Validate bilingual general-course downloads and English-only international course PDFs.
 
 The optional manifest is an array of asset objects, or an object containing a
 ``files`` (or ``assets``) array. Each asset has ``url`` (or ``path``), ``sha256``,
@@ -196,6 +196,9 @@ def main() -> None:
             continue
         for language, url in FULL_BOOKS.items():
             links = [a for a in doc.anchors if local_url(a["attrs"].get("href", ""), route) and local_url(a["attrs"].get("href", ""), route).path == url and full_section in a["ancestors"]]
+            if route == INTERNATIONAL and language == "he":
+                check(not links, "International course has no Hebrew booklet downloads")
+                continue
             check(bool(links), f"{route}: full {language} booklet remains linked in #{full_section}")
             check(all((a["attrs"].get("aria-label") or a["text"]).strip() for a in links), f"{route}: full {language} booklet links have accessible names")
             list_id = "tutorial-list" if route == YEAR else "tutorial-downloads"
@@ -206,6 +209,9 @@ def main() -> None:
         for asset in expected:
             url = asset["url"]
             links = [a for a in doc.anchors if local_url(a["attrs"].get("href", ""), route) and local_url(a["attrs"].get("href", ""), route).path == url]
+            if route == INTERNATIONAL and asset["language"] == "he":
+                check(not links, f"International course does not expose Hebrew tutorial PDF: {url}")
+                continue
             check(bool(links), f"{route}: individual PDF is linked: {url}")
             language_words = r"English|אנגלית" if asset["language"] == "en" else r"Hebrew|עברית"
             for anchor in links:
