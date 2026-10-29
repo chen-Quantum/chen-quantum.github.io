@@ -142,9 +142,9 @@ export const teachingPlaylists: TeachingPlaylist[] = [
     courseId: "linear-algebra",
     contentType: "tutorial",
     description: "Tutorials 1–2: biomedical and electrical engineering, recorded in 2026–2027.",
-    videoIds: ["xL5B6qhW6g0", "QSUn0l4b33w", "lpHbtmZLqZ4"],
+    videoIds: ["Xy7s8vz1kk4", "xL5B6qhW6g0", "QSUn0l4b33w", "lpHbtmZLqZ4"],
     confidence: "high",
-    notes: "Video titles, IDs and durations retrieved directly from the instructor-provided YouTube playlist on 2026-10-27.",
+    notes: "Video titles, IDs and durations retrieved from the instructor-provided YouTube playlist on 2026-10-27 and 2026-10-29. Unknown office-hour videos in older mixed playlists are not automatically assigned to a course.",
   },
 ];
 
