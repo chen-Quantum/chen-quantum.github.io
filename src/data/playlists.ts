@@ -65,7 +65,9 @@ export const teachingPlaylists: TeachingPlaylist[] = [
     notes:
       "Original main teaching playlist; video-level classification is " +
       "required because it contains both Hedva 2 and Linear Algebra " +
-      "recordings.",
+      "recordings. 2026-10-29 review: ZxPROZnluZM " +
+      "(שעת קבלה לפני מבחן, uploaded 2026-07-23) is not published because " +
+      "its course, track and tutorial number are not verified.",
   },
   {
     id: "PLm0oTNdEqyanqRzbtG56IX1fzIjknH6An",
@@ -144,7 +146,7 @@ export const teachingPlaylists: TeachingPlaylist[] = [
     description: "Tutorials 1–2: biomedical and electrical engineering, recorded in 2026–2027.",
     videoIds: ["Xy7s8vz1kk4", "xL5B6qhW6g0", "QSUn0l4b33w", "lpHbtmZLqZ4"],
     confidence: "high",
-    notes: "Video titles, IDs and durations retrieved from the instructor-provided YouTube playlist on 2026-10-27 and 2026-10-29. Unknown office-hour videos in older mixed playlists are not automatically assigned to a course.",
+    notes: "Video titles, IDs and durations retrieved from the instructor-provided YouTube playlist on 2026-10-27 and 2026-10-29.",
   },
 ];
 
