@@ -1,11 +1,12 @@
 ---
+import { newestNumberedFirst } from "../../data/teachingOrder";
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
 import { internationalLectureNotes, internationalEarlierRecitations } from "../../data/internationalEngineering";
 import { engineeringNotesEnglishPdf, engineeringTutorials, engineeringTutorialPdf, engineeringLogicAppendixPdf } from "../../data/academicYear2026";
 
 const lectureNotesPdf = internationalLectureNotes.pdf;
-const translatedTutorials = internationalEarlierRecitations;
+const translatedTutorials = newestNumberedFirst(internationalEarlierRecitations);
 ---
 
 <Layout
@@ -67,9 +68,9 @@ const translatedTutorials = internationalEarlierRecitations;
     <section id="tutorial-downloads" aria-labelledby="tutorial-downloads-title">
       <p class="edition-label">One PDF per tutorial</p>
       <h2 id="tutorial-downloads-title" class="font-display text-3xl mb-4">Individual tutorial PDFs</h2>
-      <p class="section-description">Choose any of the 13 tutorials and download its English PDF.</p>
+      <p class="section-description">Tutorials are listed by number, latest first. Choose a tutorial and download its English PDF.</p>
       <ol class="download-list" aria-label="Tutorial PDFs in English">
-        {engineeringTutorials.map((tutorial) => (
+        {newestNumberedFirst(engineeringTutorials).map((tutorial) => (
           <li id={`download-tutorial-${tutorial.number}`}>
             <span class="download-number" aria-hidden="true">{String(tutorial.number).padStart(2, "0")}</span>
             <div>

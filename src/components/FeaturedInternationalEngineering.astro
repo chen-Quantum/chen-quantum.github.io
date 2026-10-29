@@ -1,4 +1,5 @@
 ---
+import { newestNumberedFirst } from "../data/teachingOrder";
 import PdfPreview from "./PdfPreview.astro";
 import PdfDownloadGate from "./PdfDownloadGate.astro";
 import {
@@ -82,10 +83,10 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
       </div>
 
       <details class="intl-list">
-        <summary>Browse all {engineeringTutorials.length} individual tutorials</summary>
-        <ol>
-          {engineeringTutorials.map((tutorial) => (
-            <li>
+        <summary>Browse all {engineeringTutorials.length} tutorials - latest numbers first</summary>
+        <ol data-tutorial-order="newest-first">
+          {newestNumberedFirst(engineeringTutorials).map((tutorial) => (
+            <li data-tutorial-number={tutorial.number}>
               <p class="intl-tutorial-name">
                 <span class="intl-number">{String(tutorial.number).padStart(2, "0")}</span>
                 {tutorial.title}
@@ -134,7 +135,7 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
       </a>
     </div>
     <div class="intl-earlier-grid">
-      {internationalEarlierRecitations.map((recitation) => (
+      {newestNumberedFirst(internationalEarlierRecitations).map((recitation) => (
         <article>
           <h4>{recitation.title}</h4>
           <PdfDownloadGate

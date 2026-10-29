@@ -1,4 +1,5 @@
 ---
+import { newestNumberedFirst } from "../../data/teachingOrder";
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
 import CurrentLinearAlgebraRecordings from "../../components/CurrentLinearAlgebraRecordings.astro";
@@ -174,7 +175,7 @@ const courses = (
         <h3 class="font-display text-2xl">Individual tutorial PDFs</h3><p
           class="text-sm text-slate-500"
         >
-          Download a single tutorial in English or Hebrew.
+          Latest tutorial numbers first. Download a single tutorial in English or Hebrew.
         </p>
       </div>
       <div class="tutorial-search" data-discovery-controls hidden>
@@ -202,7 +203,7 @@ const courses = (
         aria-label="Linear Algebra tutorials"
       >
         {
-          engineeringTutorials.map((t) => (
+          newestNumberedFirst(engineeringTutorials).map((t) => (
             <li
               class="rounded-2xl border border-slate-200 bg-white p-6 flex gap-4 items-start"
               id={`tutorial-${t.number}`}

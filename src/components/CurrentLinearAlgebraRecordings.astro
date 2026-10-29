@@ -26,7 +26,7 @@ const tracks = [
   { id: "electrical", label: "Electrical Engineering", labelHe: "הנדסת חשמל", track: "Electrical Engineering" },
 ].map((track) => {
   const trackVideos = recordings.filter((video) => video.track === track.track);
-  const sessionNumbers = [...new Set(trackVideos.map((video) => video.laTutorial).filter((n): n is number => n !== null))].sort((a, b) => a - b);
+  const sessionNumbers = [...new Set(trackVideos.map((video) => video.laTutorial).filter((n): n is number => n !== null))].sort((a, b) => b - a);
   return {
     ...track,
     videoCount: trackVideos.length,
@@ -61,7 +61,8 @@ const tracks = [
     Recorded recitations are organised separately for Biomedical Engineering
     and Electrical Engineering. Each recording is accompanied by the existing
     numbered tutorial sheet. Preview a sheet directly on this page, then
-    enter the course download code to open its full PDF.
+    enter the course download code to open its full PDF. Higher tutorial
+    numbers are listed first within each track.
   </p>
   <p class="recordings-context">
     The accompanying PDFs are from Chen Gadi's existing tutorial handbook.
@@ -182,7 +183,7 @@ const tracks = [
 
   <p class="playlist-footer">
     <a href={playlistUrl} target="_blank" rel="noopener noreferrer">
-      View all three recordings in the original YouTube playlist ↗
+      View all {recordings.length} recordings in the original YouTube playlist ↗
     </a>
     <span>Individual video links are available inside each track above.</span>
   </p>

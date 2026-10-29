@@ -20,6 +20,10 @@ import {
   videosForPractice,
 } from "../data/youtubeVideos";
 
+const currentRecordingCount = (track: string) => linearAlgebraVideos.filter(
+  (v) => v.playlistId === "PLEvis3LHS9Ks" && v.track === track,
+).length;
+
 const allTeaching = await getCollection("teaching", ({ data }) => !data.draft);
 const activeCourses = allTeaching
   .filter((c) => c.data.status === "active")
@@ -117,14 +121,14 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
           <span class="featured-course-meta">2026–2027 · Linear Algebra</span>
           <strong lang="he" dir="rtl">לינארית לביו־רפואה</strong>
           <span class="featured-course-english">Biomedical Engineering</span>
-          <span class="featured-course-detail">2 recordings · Tutorial PDFs</span>
+          <span class="featured-course-detail">{currentRecordingCount("Biomedical Engineering")} recordings · Tutorial PDFs</span>
           <span aria-hidden="true" class="featured-course-icon">↓</span>
         </a>
         <a href="#archive-current-recordings-electrical" aria-label="2026–2027 Electrical Engineering Linear Algebra recordings and PDFs">
           <span class="featured-course-meta">2026–2027 · Linear Algebra</span>
           <strong lang="he" dir="rtl">לינארית לחשמל</strong>
           <span class="featured-course-english">Electrical Engineering</span>
-          <span class="featured-course-detail">1 recording · Tutorial PDFs</span>
+          <span class="featured-course-detail">{currentRecordingCount("Electrical Engineering")} recording{currentRecordingCount("Electrical Engineering") === 1 ? "" : "s"} · Tutorial PDFs</span>
           <span aria-hidden="true" class="featured-course-icon">↓</span>
         </a>
         <a href="#international-engineering-2026-2027" aria-label="2026–2027 International Engineering lecture and tutorial notes">
