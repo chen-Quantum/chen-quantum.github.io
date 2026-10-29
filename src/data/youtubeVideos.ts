@@ -7,6 +7,7 @@
 // privacy-enhanced youtube-nocookie.com domain.
 
 import { courseFor } from "./courses";
+import { newestRecordingsFirst } from "./teachingOrder";
 
 export type VideoCategory =
   | "hedva2"
@@ -40,6 +41,8 @@ export interface YouTubeVideo {
   thumbnail: string;
   duration: string;
   durationSeconds: number;
+  // Optional ISO publication date, verified from YouTube; never inferred.
+  publishedAt?: string;
   description: string;
   category: VideoCategory;
   relatedPractice: string | null; // tirgulN for Hedva 2, else null
@@ -182,12 +185,12 @@ const rawVideos: RawVideo[] = [
 // truth = the course registry in courses.ts). Also default contentType for
 // rows that don't set it ("tutorial", or "exam-solution" for exam questions).
 // This is the public export.
-export const youtubeVideos: YouTubeVideo[] = rawVideos.map((v) => ({
+export const youtubeVideos: YouTubeVideo[] = newestRecordingsFirst(rawVideos.map((v) => ({
   ...v,
   contentType:
     v.contentType ?? (v.isExamQuestion ? "exam-solution" : "tutorial"),
   ...courseFor(v.category),
-}));
+})));
 
 export const hedva2Videos = youtubeVideos.filter((v) => v.category === "hedva2");
 export const linearAlgebraVideos = youtubeVideos.filter((v) => v.category === "linear_algebra");
