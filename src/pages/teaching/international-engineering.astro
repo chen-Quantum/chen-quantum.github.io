@@ -2,10 +2,9 @@
 import { newestNumberedFirst } from "../../data/teachingOrder";
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
-import { internationalLectureNotes, internationalEarlierRecitations } from "../../data/internationalEngineering";
+import { internationalLectureNotes, internationalLectureArchive, internationalEarlierRecitations } from "../../data/internationalEngineering";
 import { engineeringNotesEnglishPdf, engineeringTutorials, engineeringTutorialPdf, engineeringLogicAppendixPdf } from "../../data/academicYear2026";
 
-const lectureNotesPdf = internationalLectureNotes.pdf;
 const translatedTutorials = newestNumberedFirst(internationalEarlierRecitations);
 ---
 
@@ -87,24 +86,30 @@ const translatedTutorials = newestNumberedFirst(internationalEarlierRecitations)
     </section>
 
     <section id="lecture-notes" aria-labelledby="lecture-notes-title">
-      <p class="edition-label">English translation</p>
+      <p class="edition-label">Weeks 1-6 · English</p>
       <h2 id="lecture-notes-title" class="font-display text-3xl mb-6">Lecture notes</h2>
-      <article class="material-card">
+      <article class="material-card booklet-card">
         <div>
-          <p class="material-type">Lecture 1 · PDF</p>
-          <h3>Lecture 1: English student notes</h3>
-          <p>
-            Original notes by Yochai Maayan. Translated into English by
-            Chen Gadi and ChatGPT.
-          </p>
+          <p class="material-type">6 PDFs · ZIP</p>
+          <h3>{internationalLectureArchive.title}</h3>
         </div>
-        <a class="academic-primary" href={lectureNotesPdf} target="_blank" rel="noopener">
-          Open English lecture notes ↗
+        <a class="academic-primary" href={internationalLectureArchive.zip} download>
+          Download all lecture notes · ZIP ↓
         </a>
       </article>
-      <p class="materials-caption">
-        Open the PDF to read it, or use your PDF viewer's download button to save a copy.
-      </p>
+      <ol class="download-list" aria-label="Lecture notes in English, latest week first">
+        {newestNumberedFirst(internationalLectureNotes).map((lecture) => (
+          <li id={`lecture-week-${lecture.number}`}>
+            <span class="download-number" aria-hidden="true">{String(lecture.number).padStart(2, "0")}</span>
+            <div>
+              <h3>{lecture.title}</h3>
+              <a class="academic-primary" href={lecture.pdf} target="_blank" rel="noopener">
+                Open / download PDF ↗
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
 
     <section id="recitations" aria-labelledby="recitations-title">

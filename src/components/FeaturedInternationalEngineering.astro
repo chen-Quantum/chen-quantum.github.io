@@ -7,7 +7,11 @@ import {
   engineeringTutorialPdf,
   engineeringNotesEnglishPdf,
 } from "../data/academicYear2026";
-import { internationalLectureNotes, internationalEarlierRecitations } from "../data/internationalEngineering";
+import {
+  internationalLectureNotes,
+  internationalLectureArchive,
+  internationalEarlierRecitations,
+} from "../data/internationalEngineering";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 
 const code = TEACHING_PDF_DOWNLOAD_CODE;
@@ -37,26 +41,28 @@ const code = TEACHING_PDF_DOWNLOAD_CODE;
   <div class="intl-columns">
     <article class="intl-panel intl-lectures">
       <p class="intl-label">Lecture notes · English</p>
-      <h3>Lecture 1 · Student notes</h3>
-      <p class="intl-muted">
-        {internationalLectureNotes.sourceCredit}. Lecture 1 is the lecture
-        PDF currently available on the website.
-      </p>
-      <div class="intl-file">
-        <div class="intl-file-heading">
-          <span>{internationalLectureNotes.title}</span>
-          <PdfDownloadGate
-            pdfPath={internationalLectureNotes.pdf}
-            code={code}
-            label="Open / download PDF"
+      <h3>Weeks 1-6 · Student notes</h3>
+      {newestNumberedFirst(internationalLectureNotes).map((lecture) => (
+        <div class="intl-file" data-lecture-number={lecture.number}>
+          <div class="intl-file-heading">
+            <span>{lecture.title}</span>
+            <PdfDownloadGate
+              pdfPath={lecture.pdf}
+              code={code}
+              label="Open / download PDF"
+            />
+          </div>
+          <PdfPreview
+            pdfPath={lecture.pdf}
+            title={lecture.title}
+            downloadCode={code}
           />
         </div>
-        <PdfPreview
-          pdfPath={internationalLectureNotes.pdf}
-          title={internationalLectureNotes.title}
-          downloadCode={code}
-        />
-      </div>
+      ))}
+      <a class="intl-sub-link" href={internationalLectureArchive.zip} download>
+        Download {internationalLectureArchive.title} (ZIP) ↓
+      </a>
+      <br />
       <a class="intl-sub-link" href="/teaching/international-engineering/#lecture-notes">
         Open the lecture notes section ↗
       </a>
