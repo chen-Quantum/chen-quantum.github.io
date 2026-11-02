@@ -1,0 +1,57 @@
+name: Audit teaching YouTube metadata (temporary 2026-11-02)
+on:
+  push:
+    branches:
+      - audit/teaching-youtube-20261102
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install metadata-only extractor
+        run: |
+          python3 -m pip install --user --quiet --upgrade yt-dlp
+          yt-dlp --version
+      - name: Compare every tracked playlist against main
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, re, subprocess
+          text=pathlib.Path("src/data/playlists.ts").read_text(encoding="utf-8")
+          records=pathlib.Path("src/data/youtubeVideos.ts").read_text(encoding="utf-8")
+          urls=list(dict.fromkeys(re.findall(r"https://www\\.youtube\\.com/playlist\\?list=[A-Za-z0-9_-]+",text)))
+          existing=set(re.findall(r'videoId:\\s*"([A-Za-z0-9_-]{6,})"',records))
+          print("AUDIT_BASELINE",json.dumps({"playlists":len(urls),"existing":len(existing)}),flush=True)
+          found={}
+          for url in urls:
+              pid=url.split("list=",1)[1]
+              try:
+                  p=subprocess.run(["yt-dlp","--flat-playlist","--ignore-errors","--no-warnings","--quiet","--dump-single-json",url],capture_output=True,text=True,timeout=90)
+                  if not p.stdout.strip():
+                      print("AUDIT_PLAYLIST",json.dumps({"playlist":pid,"ok":False,"error":p.stderr[-700:] or "missing metadata"},ensure_ascii=False),flush=True)
+                      continue
+                  j=json.loads(p.stdout)
+                  entries=[e for e in (j.get("entries") or []) if isinstance(e,dict) and e.get("id")]
+                  new=[{"id":e["id"],"title":e.get("title"),"duration":e.get("duration"),"upload_date":e.get("upload_date"),"url":e.get("url")} for e in entries if e["id"] not in existing]
+                  print("AUDIT_PLAYLIST",json.dumps({"playlist":pid,"ok":p.returncode==0,"title":j.get("title"),"count":len(entries),"new":new,"stderr":p.stderr[-200:]},ensure_ascii=False),flush=True)
+                  for e in new:
+                      found.setdefault(e["id"],[]).append(pid)
+              except Exception as exc:
+                  print("AUDIT_PLAYLIST",json.dumps({"playlist":pid,"ok":False,"error":str(exc)},ensure_ascii=False),flush=True)
+          for vid,pids in found.items():
+              try:
+                  q=subprocess.run(["yt-dlp","--no-playlist","--skip-download","--no-warnings","--dump-single-json","--ignore-no-formats-error",f"https://www.youtube.com/watch?v={vid}"],capture_output=True,text=True,timeout=65)
+                  if not q.stdout.strip():
+                      print("AUDIT_VIDEO",json.dumps({"id":vid,"playlists":pids,"ok":False,"error":q.stderr[-800:]},ensure_ascii=False),flush=True)
+                      continue
+                  k=json.loads(q.stdout)
+                  props={field:k.get(field) for field in ["id","title","description","duration","upload_date","release_date","timestamp","availability","live_status","channel","uploader"]}
+                  props["playlists"]=pids
+                  props["ok"]=q.returncode==0
+                  print("AUDIT_VIDEO",json.dumps(props,ensure_ascii=False),flush=True)
+              except Exception as exc:
+                  print("AUDIT_VIDEO",json.dumps({"id":vid,"playlists":pids,"ok":False,"error":str(exc)},ensure_ascii=False),flush=True)
+          print("AUDIT_SUMMARY",json.dumps({"new_count":len(found),"new_video_ids":list(found),"scanned_playlists":len(urls)},ensure_ascii=False),flush=True)
+          PY
