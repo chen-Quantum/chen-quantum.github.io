@@ -21,8 +21,8 @@ jobs:
           import json, pathlib, re, subprocess
           text=pathlib.Path("src/data/playlists.ts").read_text(encoding="utf-8")
           records=pathlib.Path("src/data/youtubeVideos.ts").read_text(encoding="utf-8")
-          urls=list(dict.fromkeys(re.findall(r"https://www\\.youtube\\.com/playlist\\?list=[A-Za-z0-9_-]+",text)))
-          existing=set(re.findall(r'videoId:\\s*"([A-Za-z0-9_-]{6,})"',records))
+          urls=list(dict.fromkeys(re.findall(r"https://www\.youtube\.com/playlist\?list=[A-Za-z0-9_-]+",text)))
+          existing=set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{6,})"',records))
           print("AUDIT_BASELINE",json.dumps({"playlists":len(urls),"existing":len(existing)}),flush=True)
           found={}
           for url in urls:
