@@ -1,0 +1,45 @@
+name: Temporary teaching YouTube audit 2026-11-03
+on:
+  push:
+    branches:
+      - audit/teaching-youtube-20261103-verify-current
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yt-dlp
+        run: python3 -m pip install --quiet yt-dlp
+      - name: Scan all registered teaching playlists
+        run: |
+          node scripts/sync-teaching-content.mjs
+          python3 - <<'PY'
+          import json
+          r=json.load(open("reports/teaching-sync/latest.json",encoding="utf-8"))
+          print("AUDIT_GENERATED:",r["generatedAt"])
+          print("KNOWN_VIDEO_COUNT:",r["existingVideoCount"])
+          for p in r["playlists"]:
+              print("PLAYLIST",p["id"],"STATUS", "ok" if p["ok"] else "failed","NEW",p.get("newCount"),"TOTAL",p.get("totalVideos"),"ERROR",p.get("error",""))
+              for v in p.get("newVideos",[]):
+                  print("NEW_CANDIDATE_JSON",json.dumps({"playlistId":p["id"],**v},ensure_ascii=False))
+          PY
+      - name: Inspect new video descriptions and publication date
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,sys
+          r=json.load(open("reports/teaching-sync/latest.json",encoding="utf-8"))
+          candidates={v["videoId"] for p in r["playlists"] if p["ok"] for v in p.get("newVideos",[])}
+          for vid in sorted(candidates):
+              proc=subprocess.run(["yt-dlp","--skip-download","--no-playlist","--dump-single-json","--no-warnings","https://www.youtube.com/watch?v="+vid],capture_output=True,text=True,timeout=100)
+              if proc.returncode:
+                  print("METADATA_FAILED",vid,proc.stderr[:350])
+                  continue
+              d=json.loads(proc.stdout)
+              keys=("id","title","duration","upload_date","release_date","availability","live_status","description")
+              data={k:d.get(k) for k in keys}
+              if data.get("description"): data["description"]=data["description"][:1200]
+              print("METADATA_JSON",json.dumps(data,ensure_ascii=False))
+          PY
