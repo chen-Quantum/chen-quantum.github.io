@@ -10,6 +10,7 @@ import {
   engineeringNotesEnglishPdf,
   engineeringAppendixPages,
   engineeringTutorialPdf,
+  engineeringTutorialActivities,
   engineeringLogicAppendixPdf,
   engineeringTutorials,
 } from "../../data/academicYear2026";
@@ -134,12 +135,10 @@ const courses = (
           Linear Algebra tutorial notes
         </h2>
         <p>
-          The complete handbook by Chen Gadi collects recitation notes
-          from previous years, with 13 tutorials and an appendix on logic and
-          proof methods. Their numbering and topic order may differ from this
-          year's lectures. The complete booklet is available in English and Hebrew;
-          the topic guide below is in English. These are study notes, not a replacement
-          for the lectures or official course announcements.
+          The complete handbook by Chen Gadi follows the tutorial topic plan,
+          with 13 tutorials and an appendix on logic and proof methods.
+          Exercises, worked solutions and diagrams are available in English
+          and Hebrew. Use the notes alongside lectures and official course announcements.
         </p>
         <div class="academic-actions mt-6">
           <a
@@ -236,15 +235,18 @@ const courses = (
                     </a>
                   </div>
                   <div class="tutorial-activity-links">
-                    <p>Interactive activity</p>
-                    <div class="study-language-links">
-                      <a href={`/teaching/linear-algebra/lab/en/#tutorial-${t.number}`} aria-label={`Tutorial ${t.number} activity in English`}>
-                        English <span aria-hidden="true">↗</span>
-                      </a>
-                      <a href={`/teaching/linear-algebra/lab#tutorial-${t.number}`} aria-label={`Tutorial ${t.number} activity in Hebrew`}>
-                        Hebrew <span aria-hidden="true">↗</span>
-                      </a>
-                    </div>
+                    <p>Related interactive activities</p>
+                    {engineeringTutorialActivities(t.number).map((activity) => (
+                      <div class="study-language-links">
+                        <span>{activity.topic}</span>
+                        <a href={`/teaching/linear-algebra/lab/en/#tutorial-${activity.id}`} aria-label={`${activity.topic} activity in English`}>
+                          English <span aria-hidden="true">↗</span>
+                        </a>
+                        <a href={`/teaching/linear-algebra/lab#tutorial-${activity.id}`} aria-label={`${activity.topic} activity in Hebrew`}>
+                          Hebrew <span aria-hidden="true">↗</span>
+                        </a>
+                      </div>
+                    ))}
                   </div>
               </div>
             </li>

@@ -32,11 +32,10 @@ const tracks = [
     videoCount: trackVideos.length,
     sessions: sessionNumbers.map((number) => {
       const sessionVideos = trackVideos.filter((video) => video.laTutorial === number);
-      // Both new tutorial 3 recordings explicitly cover fields and finite fields.
-      // The earlier-year booklet's tutorial 3 is on linear systems, not this topic.
+      // The verified fields recordings match chapter 3 of the current booklet.
       const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
         sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
-      const practiceTutorialNumber = isFieldsTutorial ? 2 :
+      const practiceTutorialNumber = isFieldsTutorial ? 3 :
         ([1, 2].includes(number) ? number : null);
       const practiceTutorial = engineeringTutorials.find(
         (tutorial) => tutorial.number === practiceTutorialNumber,
