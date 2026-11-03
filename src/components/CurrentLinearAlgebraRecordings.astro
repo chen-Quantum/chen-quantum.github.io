@@ -36,11 +36,16 @@ const tracks = [
       // The earlier-year booklet's tutorial 3 is on linear systems, not this topic.
       const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
         sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
+      const practiceTutorialNumber = isFieldsTutorial ? 2 :
+        ([1, 2].includes(number) ? number : null);
+      const practiceTutorial = engineeringTutorials.find(
+        (tutorial) => tutorial.number === practiceTutorialNumber,
+      );
       return {
         number,
         title: isFieldsTutorial ? "Fields and finite fields" :
-          (engineeringTutorials.find((tutorial) => tutorial.number === number)?.title ?? ("Tutorial " + number)),
-        hasSupplementarySheet: !isFieldsTutorial,
+          ("Tutorial " + number),
+        practiceTutorial,
         videos: sessionVideos,
       };
     }),
@@ -73,9 +78,8 @@ const tracks = [
     numbers are listed first within each track.
   </p>
   <p class="recordings-context">
-    The PDFs are from Chen Gadi's existing handbook from earlier years.
-    They are shown by tutorial number for reference, not as verified handouts
-    for these recordings. Exercises and topic order may differ.
+    The PDFs are from the updated tutorial handbook. Handbook chapter numbers
+    may differ from recording numbers. Each sheet shows its chapter and topics.
   </p>
   {mode !== "featured" && (
     <nav class="track-shortcuts" aria-label="Choose an engineering track">
@@ -143,9 +147,12 @@ const tracks = [
                 </div>
               </div>
 
-              {session.hasSupplementarySheet ? (
+              {session.practiceTutorial ? (
               <div class="session-material">
                 <p class="content-label">Practice sheet · PDF</p>
+                <p class="material-chapter">
+                  Handbook chapter {session.practiceTutorial.number} · {session.practiceTutorial.title}
+                </p>
                 <p class="material-help">
                   Select the language, open the inline preview, or use the
                   download code to open the complete sheet.
@@ -155,14 +162,14 @@ const tracks = [
                     <div class="pdf-heading">
                       <span>Hebrew · עברית</span>
                       <PdfDownloadGate
-                        pdfPath={engineeringTutorialPdf(session.number, "he")}
+                        pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "he")}
                         code={TEACHING_PDF_DOWNLOAD_CODE}
                         label="Open / download PDF"
                       />
                     </div>
                     <PdfPreview
-                      pdfPath={engineeringTutorialPdf(session.number, "he")}
-                      title={"Tutorial " + session.number + " (Hebrew)"}
+                      pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "he")}
+                      title={"Handbook chapter " + session.practiceTutorial.number + " (Hebrew)"}
                       downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
                     />
                   </div>
@@ -170,14 +177,14 @@ const tracks = [
                     <div class="pdf-heading">
                       <span>English</span>
                       <PdfDownloadGate
-                        pdfPath={engineeringTutorialPdf(session.number, "en")}
+                        pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "en")}
                         code={TEACHING_PDF_DOWNLOAD_CODE}
                         label="Open / download PDF"
                       />
                     </div>
                     <PdfPreview
-                      pdfPath={engineeringTutorialPdf(session.number, "en")}
-                      title={"Tutorial " + session.number + " (English)"}
+                      pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "en")}
+                      title={"Handbook chapter " + session.practiceTutorial.number + " (English)"}
                       downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
                     />
                   </div>
@@ -187,8 +194,7 @@ const tracks = [
                 <div class="session-material">
                   <p class="content-label">Practice sheet</p>
                   <p class="material-help">
-                    This recording covers fields and finite fields. The older handbook's
-                    Tutorial 3 is on a different topic, so no matching PDF is linked here.
+                    A related handbook chapter will appear here when it is available.
                   </p>
                 </div>
               )}
@@ -238,6 +244,7 @@ const tracks = [
   .recording-videos { display: grid; gap: 1rem; }
   .session-material { min-width: 0; background: #fafbf7; border: 1px solid #e1e8dc; border-radius: 10px; padding: 1.25rem; }
   .material-help { font-size: 0.8rem; line-height: 1.7; color: #647067; margin-bottom: 1rem; }
+  .material-chapter { color: #294437; font-size: 0.85rem; font-weight: 650; line-height: 1.6; margin-bottom: 0.65rem; }
   .session-pdfs { display: grid; gap: 1rem; }
   .session-pdf { min-width: 0; padding: 0.95rem; background: white; border: 1px solid #e1e8dc; border-radius: 9px; }
   .pdf-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
