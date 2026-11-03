@@ -1,0 +1,48 @@
+name: Temporary teaching recording verification
+on:
+  push:
+    branches: [recordings-2026-11-03-scan]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yt-dlp
+        run: python3 -m pip install --quiet yt-dlp
+      - name: Inspect current year playlist
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, re, subprocess
+          from pathlib import Path
+          url = "https://www.youtube.com/playlist?list=PLEvis3LHS9Ks"
+          proc = subprocess.run(["yt-dlp", "--flat-playlist", "--no-warnings", "--dump-single-json", url], capture_output=True, text=True, timeout=120)
+          if proc.returncode:
+              print("PLAYLIST_SCAN_FAILED:", proc.stderr[-4000:])
+              raise SystemExit(1)
+          data = json.loads(proc.stdout)
+          known = set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{6,})"', Path("src/data/youtubeVideos.ts").read_text()))
+          entries = data.get("entries", [])
+          print("PLAYLIST_COUNT", len(entries))
+          print("PLAYLIST_VERIFIED_METADATA_BEGIN")
+          for e in entries:
+              eid = e.get("id")
+              print(json.dumps({"id": eid, "title": e.get("title"), "duration": e.get("duration"), "known": eid in known}, ensure_ascii=False))
+          print("PLAYLIST_VERIFIED_METADATA_END")
+          for e in entries:
+              eid = e.get("id")
+              if eid in known or not eid:
+                  continue
+              print("NEW_VIDEO_DETAILS_BEGIN", eid)
+              p = subprocess.run(["yt-dlp", "--skip-download", "--no-warnings", "--print", "%(upload_date)s | %(title)s | %(duration)s | %(availability)s", "https://www.youtube.com/watch?v="+eid], capture_output=True, text=True, timeout=75)
+              print("detail-exit", p.returncode, "stdout:", p.stdout[-2000:], "stderr:", p.stderr[-1200:])
+              print("NEW_VIDEO_DETAILS_END", eid)
+          PY
+      - name: Build after metadata check
+        if: success()
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+          corepack pnpm build
