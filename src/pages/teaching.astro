@@ -11,6 +11,7 @@ import { getCollection } from "astro:content";
 import { tirgulim } from "../data/tirgulim";
 import { teachingCourses } from "../data/courses";
 import { engineeringTutorials, engineeringNotesPdf, engineeringNotesEnglishPdf } from "../data/academicYear2026";
+import { biomedicalTutorials, biomedicalNotesPdf, biomedicalNotesEnglishPdf } from "../data/biomedicalTutorials2026";
 import {
   youtubeVideos,
   hedva2Videos,
@@ -44,7 +45,7 @@ function countFor(courseId: string) {
     };
   if (courseId === "linear-algebra-biomedical")
     return {
-      materials: engineeringTutorials.length,
+      materials: biomedicalTutorials.length,
       videos: linearAlgebraVideos.filter((v) => v.track.includes("Biomedical"))
         .length,
     };
@@ -116,28 +117,57 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         <span class="current-year-feature-tag">Current courses · 2026–2027</span>
         <span class="current-year-feature-note">Recordings · Lecture notes · Tutorial PDFs</span>
       </div>
-      <nav class="featured-course-index" aria-label="Choose your 2026–2027 course">
-        <a href="#archive-current-recordings-biomedical" aria-label="2026–2027 Biomedical Engineering Linear Algebra recordings and PDFs">
-          <span class="featured-course-meta">2026–2027 · Linear Algebra</span>
-          <strong lang="he" dir="rtl">לינארית לביו־רפואה</strong>
-          <span class="featured-course-english">Biomedical Engineering</span>
-          <span class="featured-course-detail">{currentRecordingCount("Biomedical Engineering")} recordings · Tutorial PDFs</span>
-          <span aria-hidden="true" class="featured-course-icon">↓</span>
-        </a>
-        <a href="#archive-current-recordings-electrical" aria-label="2026–2027 Electrical Engineering Linear Algebra recordings and PDFs">
-          <span class="featured-course-meta">2026–2027 · Linear Algebra</span>
-          <strong lang="he" dir="rtl">לינארית לחשמל</strong>
-          <span class="featured-course-english">Electrical Engineering</span>
-          <span class="featured-course-detail">{currentRecordingCount("Electrical Engineering")} recording{currentRecordingCount("Electrical Engineering") === 1 ? "" : "s"} · Tutorial PDFs</span>
-          <span aria-hidden="true" class="featured-course-icon">↓</span>
-        </a>
-        <a href="#international-engineering-2026-2027" aria-label="2026–2027 International Engineering lecture and tutorial notes">
-          <span class="featured-course-meta">2026–2027 · English programme</span>
-          <strong lang="en">International Engineering</strong>
-          <span class="featured-course-english">Linear Algebra · English programme</span>
-          <span class="featured-course-detail">Lecture notes · 13 tutorials · No recordings</span>
-          <span aria-hidden="true" class="featured-course-icon">↓</span>
-        </a>
+      <nav class="featured-course-index" aria-label="Choose your 2026-2027 course">
+        <article class="featured-course-card" data-teaching-track="biomedical">
+          <a class="featured-course-heading" href="/teaching/2026-2027/#biomedical-tutorial-downloads">
+            <span class="featured-course-meta">2026-2027 · Linear Algebra</span>
+            <strong lang="he" dir="rtl">לינארית לביו-רפואה</strong>
+            <span class="featured-course-english">Biomedical Engineering</span>
+          </a>
+          <p class="featured-course-detail">{biomedicalTutorials.length} tutorial units · {currentRecordingCount("Biomedical Engineering")} recordings</p>
+          <span class="featured-course-book-label">Full booklet</span>
+          <div class="featured-course-books">
+            <PdfDownloadGate pdfPath={biomedicalNotesPdf} code={DOWNLOAD_CODE} label="עברית · PDF" />
+            <PdfDownloadGate pdfPath={biomedicalNotesEnglishPdf} code={DOWNLOAD_CODE} label="English · PDF" />
+          </div>
+          <div class="featured-course-links">
+            <a href="/teaching/2026-2027/#biomedical-tutorial-downloads">All tutorial PDFs ↗</a>
+            <a href="#archive-current-recordings-biomedical">Recordings &amp; practice sheets ↓</a>
+          </div>
+        </article>
+        <article class="featured-course-card" data-teaching-track="electrical">
+          <a class="featured-course-heading" href="/teaching/2026-2027/#tutorial-downloads">
+            <span class="featured-course-meta">2026-2027 · Linear Algebra</span>
+            <strong lang="he" dir="rtl">לינארית לחשמל</strong>
+            <span class="featured-course-english">Electrical Engineering</span>
+          </a>
+          <p class="featured-course-detail">{engineeringTutorials.length} tutorials · {currentRecordingCount("Electrical Engineering")} recording{currentRecordingCount("Electrical Engineering") === 1 ? "" : "s"}</p>
+          <span class="featured-course-book-label">Full booklet</span>
+          <div class="featured-course-books">
+            <PdfDownloadGate pdfPath={engineeringNotesPdf} code={DOWNLOAD_CODE} label="עברית · PDF" />
+            <PdfDownloadGate pdfPath={engineeringNotesEnglishPdf} code={DOWNLOAD_CODE} label="English · PDF" />
+          </div>
+          <div class="featured-course-links">
+            <a href="/teaching/2026-2027/#tutorial-downloads">All tutorial PDFs ↗</a>
+            <a href="#archive-current-recordings-electrical">Recordings &amp; practice sheets ↓</a>
+          </div>
+        </article>
+        <article class="featured-course-card" data-teaching-track="international" lang="en">
+          <a class="featured-course-heading" href="/teaching/international-engineering/">
+            <span class="featured-course-meta">2026-2027 · English programme</span>
+            <strong>International Electrical Engineering</strong>
+            <span class="featured-course-english">Linear Algebra · English programme</span>
+          </a>
+          <p class="featured-course-detail">Lecture notes · {engineeringTutorials.length} tutorials · No recordings</p>
+          <span class="featured-course-book-label">Full booklet</span>
+          <div class="featured-course-books">
+            <PdfDownloadGate pdfPath={engineeringNotesEnglishPdf} code={DOWNLOAD_CODE} label="English · PDF" />
+          </div>
+          <div class="featured-course-links">
+            <a href="/teaching/international-engineering/#tutorial-downloads">All tutorial PDFs · English ↗</a>
+            <a href="#international-engineering-2026-2027">Lecture notes &amp; course materials ↓</a>
+          </div>
+        </article>
       </nav>
       <CurrentLinearAlgebraRecordings mode="featured" />
       <FeaturedInternationalEngineering />
@@ -149,12 +179,12 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
       <div>
         <p class="shortcut-meta">2026–2027 · English &amp; Hebrew PDFs</p>
         <h2>Tutorial notes</h2>
-        <p>{engineeringTutorials.length} Linear Algebra tutorials, with explanations and solutions.</p>
+        <p>Separate Electrical and Biomedical editions, with explanations and solutions in Hebrew and English.</p>
         <div class="shortcut-links">
-          <a href={engineeringNotesEnglishPdf} target="_blank" rel="noopener">Full English booklet ↗</a>
-          <a href={engineeringNotesPdf} target="_blank" rel="noopener">Full Hebrew booklet ↗</a>
+          <a href="/teaching/2026-2027/#tutorial-downloads">Electrical Engineering ↗</a>
+          <a href="/teaching/2026-2027/#biomedical-tutorial-downloads">Biomedical Engineering ↗</a>
         </div>
-        <a href="/teaching/2026-2027/#tutorial-downloads">Individual tutorial PDFs ↗</a>
+        <a href="/teaching/international-engineering/#tutorial-downloads">International programme · English ↗</a>
       </div>
       <div>
         <p class="shortcut-meta">Interactive activities</p>
@@ -243,9 +273,9 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
               {c.data.courseId.startsWith("linear-algebra-") && (
                 <a
                   class="text-link mb-4"
-                  href="/teaching/2026-2027#linear-algebra"
+                  href={c.data.courseId === "linear-algebra-biomedical" ? "/teaching/2026-2027/#biomedical-tutorial-downloads" : "/teaching/2026-2027/#tutorial-downloads"}
                 >
-                  2026–2027 tutorial notes (Hebrew) ↗
+                  2026-2027 tutorial notes · Hebrew &amp; English ↗
                 </a>
               )}
               {c.data.courseId === "linear-algebra-biomedical" && (
@@ -652,14 +682,22 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
 <style>
   .current-year-feature { padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid #c9d9c3; background: linear-gradient(165deg, #f3f7ee 0%, #fff 34%); border-radius: 18px; box-shadow: 0 10px 28px rgba(39, 72, 47, 0.045); }
   .featured-course-index { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; margin: 1rem 0 2.25rem; }
-  .featured-course-index a { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; min-width: 0; padding: 1.2rem 1.25rem; border: 1px solid #b8ceb9; border-radius: 12px; background: #f2f7ee; color: #244f3e; text-decoration: none; transition: background-color 0.15s, border-color 0.15s; }
-  .featured-course-index a:hover { background: #e8f2e5; border-color: #779c81; }
-  .featured-course-index a:focus-visible { outline: 3px solid #8cb7a1; outline-offset: 3px; }
+  .featured-course-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 1.2rem 1.25rem; border: 1px solid #b8ceb9; border-radius: 12px; background: #f2f7ee; color: #244f3e; }
+  .featured-course-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; min-height: 6rem; color: inherit; text-decoration: none; }
+  .featured-course-heading:hover strong { text-decoration: underline; text-underline-offset: 4px; }
+  .featured-course-card a:focus-visible { outline: 3px solid #8cb7a1; outline-offset: 3px; }
+  .featured-course-card > .featured-course-detail { margin: 0.6rem 0 0.85rem; }
+  .featured-course-book-label { color: #54725c; font-size: 0.7rem; font-weight: 750; margin-bottom: 0.35rem; }
+  .featured-course-books { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.85rem; }
+  .featured-course-books :global(.pdf-gate > summary) { font-size: 0.72rem; padding: 0.45rem 0.65rem; }
+  .featured-course-books :global(.pdf-gate-form) { max-width: 100%; }
+  .featured-course-links { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; margin-top: auto; }
+  .featured-course-links a { color: #244f3e; font-size: 0.77rem; font-weight: 650; line-height: 1.5; text-decoration: underline; text-decoration-color: #b8ceb9; text-underline-offset: 3px; }
+  .featured-course-links a:hover { text-decoration-color: currentColor; }
   .featured-course-meta { color: #54725c; font-size: 0.66rem; letter-spacing: 0.055em; text-transform: uppercase; font-weight: 750; }
   .featured-course-index strong { display: block; color: #244f3e; font-size: 1.11rem; line-height: 1.4; }
   .featured-course-english { color: #365d46; font-size: 0.82rem; font-weight: 650; }
   .featured-course-detail { color: #69796e; font-size: 0.72rem; line-height: 1.55; }
-  .featured-course-icon { position: absolute; inset-inline-end: 0.9rem; top: 1.05rem; font-size: 1.1rem; }
   .current-year-feature-topline { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
   .current-year-feature-tag { display: inline-block; padding: 0.42rem 0.75rem; border-radius: 999px; background: #244f3e; color: white; font-size: 0.72rem; letter-spacing: 0.035em; font-weight: 750; }
   .current-year-feature-note { font-size: 0.77rem; font-weight: 600; color: #5a7565; }
