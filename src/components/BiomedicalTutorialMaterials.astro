@@ -1,0 +1,63 @@
+---
+import TutorialPdfDownloads from "./TutorialPdfDownloads.astro";
+import { newestNumberedFirst } from "../data/teachingOrder";
+import {
+  biomedicalNotesPdf,
+  biomedicalNotesEnglishPdf,
+  biomedicalEnrichmentPdf,
+  biomedicalTutorialPdf,
+  biomedicalTutorials,
+} from "../data/biomedicalTutorials2026";
+---
+
+<section id="biomedical-tutorial-downloads" class="biomedical-materials mt-16 scroll-mt-24" aria-labelledby="biomedical-notes-title">
+  <p class="edition-label">Biomedical Engineering · 2026-2027</p>
+  <h2 id="biomedical-notes-title" class="font-display text-3xl mb-4">Biomedical Linear Algebra tutorial notes</h2>
+  <p class="biomedical-description" lang="he" dir="rtl">
+    רשימות התרגול לביו רפואית, עם תרגילים ופתרונות לפי סדר ההרצאות.
+    מתרגול 4 ממשיכים לפי חומר ההרצאה של השבוע הקודם, עם השלמה קצרה על מערכות משוואות.
+    תרגול 14 מתאים להרצאת שבוע 13, ותרגול 15 הוא מפגש ההשלמה.
+  </p>
+  <p class="biomedical-description mt-3">
+    Exercises, worked solutions, and diagrams follow the biomedical course sequence.
+    Open the complete book or download a single tutorial below.
+  </p>
+  <div class="academic-actions mt-6">
+    <a class="academic-primary" href={biomedicalNotesPdf} target="_blank" rel="noopener">Biomedical booklet · Hebrew PDF ↗</a>
+    <a class="academic-secondary" href={biomedicalNotesEnglishPdf} target="_blank" rel="noopener">Biomedical booklet · English PDF ↗</a>
+    <a class="text-link" href="#new-recordings-biomedical">Biomedical recordings ↓</a>
+  </div>
+  <ol class="biomedical-tutorial-list mt-7 grid gap-4 md:grid-cols-2" aria-label="Biomedical Linear Algebra tutorials">
+    {newestNumberedFirst(biomedicalTutorials).map((tutorial) => (
+      <li id={`biomedical-tutorial-${tutorial.number}`} class="biomedical-tutorial-card" data-biomedical-tutorial={tutorial.number}>
+        <span class="biomedical-tutorial-number" aria-hidden="true">{String(tutorial.number).padStart(2, "0")}</span>
+        <div class="min-w-0">
+          <p class="biomedical-tutorial-kicker">{tutorial.number === 15 ? "Completion meeting" : `Tutorial ${tutorial.number}`}{tutorial.lectureWeek && ` · Lecture week ${tutorial.lectureWeek}`}</p>
+          <h3 class="font-semibold text-slate-900" dir="rtl" lang="he">{tutorial.titleHe}</h3>
+          <p class="biomedical-topic-english">{tutorial.title}</p>
+          <TutorialPdfDownloads label={`Biomedical tutorial ${tutorial.number}`} englishPdf={biomedicalTutorialPdf(tutorial.number, "en")} hebrewPdf={biomedicalTutorialPdf(tutorial.number, "he")} />
+          <div class="biomedical-page-links" aria-label={`Biomedical tutorial ${tutorial.number} in the full booklet`}>
+            <span>Full booklet:</span>
+            <a href={`${biomedicalNotesPdf}#page=${tutorial.page}`} target="_blank" rel="noopener">Hebrew p. {tutorial.page} ↗</a>
+            <a href={`${biomedicalNotesEnglishPdf}#page=${tutorial.englishPage}`} target="_blank" rel="noopener">English p. {tutorial.englishPage} ↗</a>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+  <div class="mt-7">
+    <h3 class="font-display text-xl mb-3">Additional practice and enrichment</h3>
+    <TutorialPdfDownloads label="Biomedical supplementary material" englishPdf={biomedicalEnrichmentPdf.en} hebrewPdf={biomedicalEnrichmentPdf.he} />
+  </div>
+</section>
+
+<style>
+  .biomedical-materials { border-top: 1px solid #dce4d6; padding-top: 2.5rem; }
+  .biomedical-description { max-width: 55rem; color: #59695e; line-height: 1.85; }
+  .biomedical-tutorial-card { display: flex; align-items: start; gap: 1rem; padding: 1.5rem; border: 1px solid #dce4d6; border-radius: 1rem; background: #fff; scroll-margin-top: 7rem; }
+  .biomedical-tutorial-number { flex: 0 0 2.5rem; color: #1b4e3f; font-family: var(--font-display); font-size: 1.75rem; font-variant-numeric: tabular-nums; }
+  .biomedical-tutorial-kicker { margin-bottom: 0.45rem; color: #647067; font-size: 0.72rem; font-weight: 650; }
+  .biomedical-topic-english { margin-top: 0.45rem; margin-bottom: 0.9rem; color: #647067; font-size: 0.85rem; }
+  .biomedical-page-links { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; margin-top: 0.85rem; font-size: 0.75rem; color: #647067; }
+  .biomedical-page-links a { color: #1b4e3f; text-decoration: underline; text-underline-offset: 3px; }
+</style>

@@ -3,6 +3,7 @@ import { newestNumberedFirst } from "../../data/teachingOrder";
 import Layout from "../../layouts/Layout.astro";
 import TutorialPdfDownloads from "../../components/TutorialPdfDownloads.astro";
 import CurrentLinearAlgebraRecordings from "../../components/CurrentLinearAlgebraRecordings.astro";
+import BiomedicalTutorialMaterials from "../../components/BiomedicalTutorialMaterials.astro";
 import { getCollection } from "astro:content";
 import {
   academicYear,
@@ -46,6 +47,7 @@ const courses = (
         <a class="academic-secondary" href={engineeringNotesPdf} target="_blank" rel="noopener">Full booklet · Hebrew PDF ↗</a>
         <a class="text-link" href="#new-recordings">Recordings by track &amp; practice PDFs ↓</a>
         <a class="text-link" href="#tutorial-downloads">Individual tutorial PDFs ↓</a>
+        <a class="text-link" href="#biomedical-tutorial-downloads">Biomedical booklet &amp; tutorial PDFs ↓</a>
         <a class="text-link" href="#year-courses">Find your classroom ↓</a>
         <a class="text-link" href="/students">Student Hub ↗</a>
       </div>
@@ -92,16 +94,21 @@ const courses = (
                   </>
                 )}
                 {c.courseId === "linear-algebra-biomedical" && (
-                  <a class="text-link" href="#new-recordings-biomedical">
-                    Biomedical · Recordings &amp; practice sheets ↓
-                  </a>
+                  <>
+                    <a class="text-link" href="#new-recordings-biomedical">
+                      Biomedical · Recordings &amp; practice sheets ↓
+                    </a>
+                    <a class="text-link" href="#biomedical-tutorial-downloads">
+                      Biomedical booklet &amp; weekly PDFs · Hebrew &amp; English ↓
+                    </a>
+                  </>
                 )}
                 {c.courseId === "linear-algebra-electrical" && (
                   <a class="text-link" href="#new-recordings-electrical">
                     Electrical · Recordings &amp; practice sheets ↓
                   </a>
                 )}
-                {c.courseId.startsWith("linear-algebra-") && (
+                {c.courseId === "linear-algebra-electrical" && (
                   <a class="text-link" href="#linear-algebra">
                     Tutorial PDFs · English &amp; Hebrew ↓
                   </a>
@@ -121,6 +128,7 @@ const courses = (
       </div>
     </section>
     <CurrentLinearAlgebraRecordings />
+    <BiomedicalTutorialMaterials />
     <section
       id="linear-algebra"
       class="mt-16 scroll-mt-24"

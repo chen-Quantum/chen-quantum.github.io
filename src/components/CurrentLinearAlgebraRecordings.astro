@@ -4,6 +4,7 @@ import PdfPreview from "./PdfPreview.astro";
 import PdfDownloadGate from "./PdfDownloadGate.astro";
 import { videosByPlaylist } from "../data/youtubeVideos";
 import { engineeringTutorialPdf, engineeringTutorials } from "../data/academicYear2026";
+import { biomedicalTutorialPdf, biomedicalTutorials } from "../data/biomedicalTutorials2026";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 
 interface Props {
@@ -35,9 +36,11 @@ const tracks = [
       // The verified fields recordings match chapter 3 of the current booklet.
       const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
         sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
-      const practiceTutorialNumber = isFieldsTutorial ? 3 :
+      const practiceTutorialNumber = track.id === "biomedical" ? number : isFieldsTutorial ? 3 :
         ([1, 2].includes(number) ? number : null);
-      const practiceTutorial = engineeringTutorials.find(
+      const tutorialRegistry = track.id === "biomedical" ? biomedicalTutorials : engineeringTutorials;
+      const practicePdf = track.id === "biomedical" ? biomedicalTutorialPdf : engineeringTutorialPdf;
+      const practiceTutorial = tutorialRegistry.find(
         (tutorial) => tutorial.number === practiceTutorialNumber,
       );
       return {
@@ -45,6 +48,7 @@ const tracks = [
         title: isFieldsTutorial ? "Fields and finite fields" :
           ("Tutorial " + number),
         practiceTutorial,
+        practicePdf,
         videos: sessionVideos,
       };
     }),
@@ -116,6 +120,11 @@ const tracks = [
         <a href={"#" + anchorBase} class="track-back">All tracks ↑</a>
       </div>
 
+      {track.id === "biomedical" && (
+        <p class="material-help">
+          <a class="track-back" href="/teaching/2026-2027/#biomedical-tutorial-downloads">Biomedical booklet and all weekly practice PDFs ↗</a>
+        </p>
+      )}
       <div class="session-list">
         {track.sessions.map((session) => (
           <article class="recorded-session" id={anchorBase + "-" + track.id + "-tutorial-" + session.number}>
@@ -161,13 +170,13 @@ const tracks = [
                     <div class="pdf-heading">
                       <span>Hebrew · עברית</span>
                       <PdfDownloadGate
-                        pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "he")}
+                        pdfPath={session.practicePdf(session.practiceTutorial.number, "he")}
                         code={TEACHING_PDF_DOWNLOAD_CODE}
                         label="Open / download PDF"
                       />
                     </div>
                     <PdfPreview
-                      pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "he")}
+                      pdfPath={session.practicePdf(session.practiceTutorial.number, "he")}
                       title={"Handbook chapter " + session.practiceTutorial.number + " (Hebrew)"}
                       downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
                     />
@@ -176,13 +185,13 @@ const tracks = [
                     <div class="pdf-heading">
                       <span>English</span>
                       <PdfDownloadGate
-                        pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "en")}
+                        pdfPath={session.practicePdf(session.practiceTutorial.number, "en")}
                         code={TEACHING_PDF_DOWNLOAD_CODE}
                         label="Open / download PDF"
                       />
                     </div>
                     <PdfPreview
-                      pdfPath={engineeringTutorialPdf(session.practiceTutorial.number, "en")}
+                      pdfPath={session.practicePdf(session.practiceTutorial.number, "en")}
                       title={"Handbook chapter " + session.practiceTutorial.number + " (English)"}
                       downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
                     />
