@@ -30,11 +30,20 @@ const tracks = [
   return {
     ...track,
     videoCount: trackVideos.length,
-    sessions: sessionNumbers.map((number) => ({
-      number,
-      title: engineeringTutorials.find((tutorial) => tutorial.number === number)?.title ?? ("Tutorial " + number),
-      videos: trackVideos.filter((video) => video.laTutorial === number),
-    })),
+    sessions: sessionNumbers.map((number) => {
+      const sessionVideos = trackVideos.filter((video) => video.laTutorial === number);
+      // Both new tutorial 3 recordings explicitly cover fields and finite fields.
+      // The earlier-year booklet's tutorial 3 is on linear systems, not this topic.
+      const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
+        sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
+      return {
+        number,
+        title: isFieldsTutorial ? "Fields and finite fields" :
+          (engineeringTutorials.find((tutorial) => tutorial.number === number)?.title ?? ("Tutorial " + number)),
+        hasSupplementarySheet: !isFieldsTutorial,
+        videos: sessionVideos,
+      };
+    }),
   };
 });
 ---
@@ -99,7 +108,7 @@ const tracks = [
               {track.labelHe}
             </h3>
           )}
-          <p>{track.videoCount} recording{track.videoCount === 1 ? "" : "s"} · {track.sessions.length} tutorial sheet{track.sessions.length === 1 ? "" : "s"}</p>
+          <p>{track.videoCount} recording{track.videoCount === 1 ? "" : "s"} · {track.sessions.length} tutorial session{track.sessions.length === 1 ? "" : "s"}</p>
         </div>
         <a href={"#" + anchorBase} class="track-back">All tracks ↑</a>
       </div>
@@ -134,6 +143,7 @@ const tracks = [
                 </div>
               </div>
 
+              {session.hasSupplementarySheet ? (
               <div class="session-material">
                 <p class="content-label">Practice sheet · PDF</p>
                 <p class="material-help">
@@ -173,6 +183,15 @@ const tracks = [
                   </div>
                 </div>
               </div>
+              ) : (
+                <div class="session-material">
+                  <p class="content-label">Practice sheet</p>
+                  <p class="material-help">
+                    This recording covers fields and finite fields. The older handbook's
+                    Tutorial 3 is on a different topic, so no matching PDF is linked here.
+                  </p>
+                </div>
+              )}
             </div>
           </article>
         ))}
