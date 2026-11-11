@@ -143,10 +143,10 @@ export const teachingPlaylists: TeachingPlaylist[] = [
     title: "אלגברה לינארית להנדסות 2026-2027",
     courseId: "linear-algebra",
     contentType: "tutorial",
-    description: "Tutorials 1–3: biomedical and electrical engineering, recorded in 2026–2027.",
-    videoIds: ["MYP2y5KKN4s", "ZINkpAfA3dk", "Cc9AKi4tkHs", "Xy7s8vz1kk4", "xL5B6qhW6g0", "QSUn0l4b33w", "lpHbtmZLqZ4"],
+    description: "Tutorials 1–4: biomedical and electrical engineering, recorded in 2026–2027.",
+    videoIds: ["4-6uFqHX-yw", "2tMrNminZ9Y", "KJ9rZ7OP17k", "MYP2y5KKN4s", "ZINkpAfA3dk", "Cc9AKi4tkHs", "Xy7s8vz1kk4", "xL5B6qhW6g0", "QSUn0l4b33w", "lpHbtmZLqZ4"],
     confidence: "high",
-    notes: "Video titles, IDs and durations retrieved from the instructor-provided YouTube playlist on 2026-10-27, 2026-10-29, 2026-11-03, and 2026-11-05.",
+    notes: "Video titles, IDs and durations retrieved from the instructor-provided YouTube playlist on 2026-10-27, 2026-10-29, 2026-11-03, 2026-11-05, and 2026-11-11. Individual upload date of KJ9rZ7OP17k verified 2026-11-11; dates of 4-6uFqHX-yw and 2tMrNminZ9Y unavailable due to YouTube sign-in restriction.",
   },
 ];
 
