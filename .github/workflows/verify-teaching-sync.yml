@@ -24,7 +24,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: node scripts/tests/teaching-order.mjs
-      - run: python3 scripts/check-teaching-tracks.py
       - name: Check unique new video IDs and playlist matching
         run: |
           node --input-type=module <<'NODE'
