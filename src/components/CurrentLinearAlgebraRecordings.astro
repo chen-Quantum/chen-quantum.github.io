@@ -36,7 +36,9 @@ const tracks = [
       // The verified fields recordings match chapter 3 of the current booklet.
       const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
         sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
-      const practiceTutorialNumber = track.id === "biomedical" ? number : isFieldsTutorial ? 3 :
+      // Do not associate tutorial 4 with a PDF solely by matching numbers.
+      // Its topic coverage was not independently verified against the handbook.
+      const practiceTutorialNumber = number === 4 ? null : track.id === "biomedical" ? number : isFieldsTutorial ? 3 :
         ([1, 2].includes(number) ? number : null);
       const tutorialRegistry = track.id === "biomedical" ? biomedicalTutorials : engineeringTutorials;
       const practicePdf = track.id === "biomedical" ? biomedicalTutorialPdf : engineeringTutorialPdf;
