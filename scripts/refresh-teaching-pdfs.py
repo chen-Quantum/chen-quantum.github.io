@@ -254,7 +254,24 @@ def main():
     root=args.root
     mark=root/'.github/teaching-pdf-release-v2.json'
     if mark.exists():
-        print('Already applied. To reprocess with a newer algorithm, change the version marker.')
+        # Audit remaining examination source labels without changing a published PDF.
+        for fp in [
+            'linear-algebra-engineering-notes.pdf',
+            'linear-algebra-engineering-tutorials-en.pdf',
+            'linear-algebra-biomedical-notes-he.pdf',
+            'linear-algebra-biomedical-notes-en.pdf',
+        ]:
+            f=root/'public/materials/2026-2027'/fp
+            examples=[]
+            with fitz.open(f) as pdf:
+                for page in pdf:
+                    lines=page.get_text().splitlines()
+                    for i,line in enumerate(lines):
+                        if any(key in line for key in ['מועד א','מועד ב','מתוך מבחן','מרצה:','תשפ״','תשפ"', 'Quiz 1', 'Exam,']):
+                            context=' | '.join(lines[max(0,i-1):min(len(lines),i+2)])
+                            examples.append({'page':page.number+1,'text':context[:260]})
+            print(json.dumps({'pdf':fp,'exam_source_markers':len(examples),'examples':examples[:50]},ensure_ascii=False))
+        print('PDF release already applied; no binary changes made.')
         return
     manifests=['materials/2026-2027/linear-algebra/tutorial-downloads.json',
                'materials/2026-2027/linear-algebra-biomedical/tutorial-downloads.json']
