@@ -271,6 +271,21 @@ def main():
                             context=' | '.join(lines[max(0,i-1):min(len(lines),i+2)])
                             examples.append({'page':page.number+1,'text':context[:260]})
             print(json.dumps({'pdf':fp,'exam_source_markers':len(examples),'examples':examples[:50]},ensure_ascii=False))
+        for fn,nums in {
+          'linear-algebra-engineering-notes.pdf':[73,87,88],
+          'linear-algebra-biomedical-notes-he.pdf':[63,65]
+        }.items():
+            with fitz.open(root/'public/materials/2026-2027'/fn) as pdf:
+                for pn in nums:
+                    pg=pdf[pn-1]
+                    snippets=[]
+                    for block in pg.get_text('dict')['blocks']:
+                        for line in block.get('lines',[]):
+                            for sp in line['spans']:
+                                t=sp['text']
+                                if any(k in t for k in ['מועד','מיום','ממבחן','צוות','עיבוד','MIT','הוחלף','Spring','המרצים','שאלה']):
+                                    snippets.append({'text':t[:220], 'box':[round(v,1) for v in sp['bbox']], 'size':round(sp['size'],1),'color':sp['color']})
+                    print(json.dumps({'pdf':fn,'page':pn,'spans':snippets[:30]},ensure_ascii=False))
         print('PDF release already applied; no binary changes made.')
         return
     manifests=['materials/2026-2027/linear-algebra/tutorial-downloads.json',
