@@ -5,14 +5,14 @@
     "he": {
       "url": "/materials/2026-2027/linear-algebra-biomedical-notes-he.pdf",
       "pages": 405,
-      "sha256": "7f41c1adf2f6af19ba71ae3c5431aeeaee058c11c29d21ea3c7815cb55a82de8",
-      "bytes": 4838083
+      "sha256": "31031d79fb66bb5ef99b386aaa1aac8c9a7648e1f8793b48b364ae825a56ead9",
+      "bytes": 5247962
     },
     "en": {
       "url": "/materials/2026-2027/linear-algebra-biomedical-notes-en.pdf",
       "pages": 412,
-      "sha256": "d7a1c26461cbe0f9b8ff5caf107a3bd910e69f07475a7f1e2ad9d1125202d580",
-      "bytes": 4989180
+      "sha256": "efe3cb69aa3376b808ec95c357c2f5207725042c8b1c6ac665625e8e2dc4d7dc",
+      "bytes": 5423020
     }
   },
   "files": [
@@ -28,8 +28,8 @@
       "pages": 20,
       "original_page_label_start": "3",
       "original_page_label_end": "22",
-      "sha256": "09b9ea6b1c6f6f3385cc7e0a8879424d25e1353818176da244b76cf2fad2d12c",
-      "bytes": 246163,
+      "sha256": "f8768e6823fcec9999527deecb43f3eadffdd7a345c6525f80309745546dd1c0",
+      "bytes": 288803,
       "internal_links": 0,
       "external_links": 21
     },
@@ -45,8 +45,8 @@
       "pages": 5,
       "original_page_label_start": "23",
       "original_page_label_end": "27",
-      "sha256": "85ced7b9b319b80487cf7714de771ceb21fd3d9bbd6b2f77ba855c7edcf1bccb",
-      "bytes": 123212,
+      "sha256": "99b0bcf315485cfa39c35b07339e63c6e0484527871d1e5552b5402096f6e416",
+      "bytes": 158405,
       "internal_links": 0,
       "external_links": 5
     },
@@ -62,8 +62,8 @@
       "pages": 17,
       "original_page_label_start": "28",
       "original_page_label_end": "44",
-      "sha256": "802b90932aac699b51701fe33a340034fc446a96e8c46d1c8e2bc7d53b5ce9f6",
-      "bytes": 168159,
+      "sha256": "ebe1bc3f601f7aaffa310be7447afe8664ce8c7a8faecf3e61627997f0b42892",
+      "bytes": 212768,
       "internal_links": 0,
       "external_links": 17
     },
@@ -79,10 +79,10 @@
       "pages": 20,
       "original_page_label_start": "45",
       "original_page_label_end": "64",
-      "sha256": "f9b034eda3847d50e802dadf27ec738be49407e6853be2d5e635b7c3f4337fa2",
-      "bytes": 189537,
+      "sha256": "d6dd66a2793ac1f19ad1233bacae6bed0136bb8d4eac5374529b291fa44c09a0",
+      "bytes": 230520,
       "internal_links": 0,
-      "external_links": 22
+      "external_links": 21
     },
     {
       "kind": "tutorial",
@@ -96,8 +96,8 @@
       "pages": 20,
       "original_page_label_start": "65",
       "original_page_label_end": "84",
-      "sha256": "ea0ede760c12f90bf189ea393cb4f95866975b9fd50c710fbb51525ee5d2c377",
-      "bytes": 235272,
+      "sha256": "a405e64d4acb817d2517f2110b638d1f49b3bd41526ee685f58fb15b1d61454a",
+      "bytes": 276192,
       "internal_links": 0,
       "external_links": 20
     },
@@ -113,8 +113,8 @@
       "pages": 21,
       "original_page_label_start": "85",
       "original_page_label_end": "105",
-      "sha256": "22c13aa32ba7fcab4e9ab81313744352f5119f75d5a3d710cb1137e4131c953c",
-      "bytes": 193019,
+      "sha256": "a228c41831da258fc41b3691cd96c5a3d5d6f963020fa1b4108ec1fbc70dcf47",
+      "bytes": 235956,
       "internal_links": 0,
       "external_links": 21
     },
@@ -130,8 +130,8 @@
       "pages": 19,
       "original_page_label_start": "106",
       "original_page_label_end": "124",
-      "sha256": "12860db12524bd15de9aaa6c0e7b0e010f1ed8194e5205eaacac9d48c9a43c36",
-      "bytes": 162413,
+      "sha256": "a810b7c2692dfcaa981045ee317580ca99c416a9888578420f5bdea7933b2071",
+      "bytes": 204846,
       "internal_links": 0,
       "external_links": 19
     },
@@ -147,8 +147,8 @@
       "pages": 22,
       "original_page_label_start": "125",
       "original_page_label_end": "146",
-      "sha256": "c7aa27aa540994cc303edd67476af09120b4070388478678aa6bfd2a73fcf28c",
-      "bytes": 185992,
+      "sha256": "d09de57cf66e216ca96cf42b9f4274940d683ba7ca188469f6832fc36cb2e07f",
+      "bytes": 229501,
       "internal_links": 0,
       "external_links": 22
     },
@@ -164,8 +164,8 @@
       "pages": 27,
       "original_page_label_start": "147",
       "original_page_label_end": "173",
-      "sha256": "bc76d58138ede18cdcedcf04cc9f6bc69abb86d2aa4d34e5df7740c96bb17c8b",
-      "bytes": 257156,
+      "sha256": "67e90c09382e5608941774537fd8b2b92b7de5b8e7a5ec28aa4c6e3c375581d4",
+      "bytes": 299392,
       "internal_links": 0,
       "external_links": 27
     },
@@ -181,8 +181,8 @@
       "pages": 34,
       "original_page_label_start": "174",
       "original_page_label_end": "207",
-      "sha256": "2cf0ce7bb1b6325c4e9c13aff8aae9c93f6753972c14fae9623953035d82225e",
-      "bytes": 285278,
+      "sha256": "ce18862874ce890538a86c480d6f5cc38df83f4b1306a5e178799d22fe975f66",
+      "bytes": 330320,
       "internal_links": 0,
       "external_links": 34
     },
@@ -198,8 +198,8 @@
       "pages": 25,
       "original_page_label_start": "208",
       "original_page_label_end": "232",
-      "sha256": "af2a65c6ec239a10596697bea608d3327035e51f3fc9777396c4329f9aa63d5f",
-      "bytes": 248338,
+      "sha256": "647bcf7f03011646fc5a7b102501e5593efd4ab2c6861fd4bf0216cf07b735a5",
+      "bytes": 294252,
       "internal_links": 0,
       "external_links": 25
     },
@@ -215,9 +215,9 @@
       "pages": 25,
       "original_page_label_start": "233",
       "original_page_label_end": "257",
-      "sha256": "ae8184ed09aca38a1b400c9ee9d29fd786e011b83d92c5bc5d73eeff67228d7f",
-      "bytes": 216012,
-      "internal_links": 4,
+      "sha256": "60ef74677e24eeaeb1c95d19487737efbbef28b2d92c7425b78c5e662ee25256",
+      "bytes": 257102,
+      "internal_links": 0,
       "external_links": 25
     },
     {
@@ -232,8 +232,8 @@
       "pages": 50,
       "original_page_label_start": "258",
       "original_page_label_end": "307",
-      "sha256": "a3ba37dde89d38a6930cd31c104fc6880709ce252b2e15a2a455db4914d4b194",
-      "bytes": 316555,
+      "sha256": "27b2a1584fa4a2a1cd458e5c8407a6ad9b91b8f8f8d364f88418a94a738dfc7a",
+      "bytes": 371916,
       "internal_links": 0,
       "external_links": 50
     },
@@ -249,8 +249,8 @@
       "pages": 40,
       "original_page_label_start": "308",
       "original_page_label_end": "347",
-      "sha256": "2e0d2a00e4efc8bf8f1b821b2d17e6ad6493f61b09e2c813dc3d0961fc00e0a8",
-      "bytes": 332212,
+      "sha256": "0565e51786e9e9c8b40f638d8c4cda240f9d635d9c8e8dd5855a23617a739804",
+      "bytes": 373339,
       "internal_links": 0,
       "external_links": 40
     },
@@ -266,8 +266,8 @@
       "pages": 18,
       "original_page_label_start": "348",
       "original_page_label_end": "365",
-      "sha256": "d816dd71f37142686771660997196d8e662267073997476cd69cc3d805ba069c",
-      "bytes": 162033,
+      "sha256": "5a0c0ae77e30b0c0c3c6424921879c8053735a5c9c6e47a51573cc8674081441",
+      "bytes": 202095,
       "internal_links": 0,
       "external_links": 18
     },
@@ -283,8 +283,8 @@
       "pages": 37,
       "original_page_label_start": "366",
       "original_page_label_end": "402",
-      "sha256": "441a2af9cf1b047a111b685fbaf7a2d5b0049b14d3ed8524d98eef6f568b8777",
-      "bytes": 261200,
+      "sha256": "fc31ec217391b373131c8c43d6b431d5b7646a7d5d6554d5683ac1b9ee189b1d",
+      "bytes": 310959,
       "internal_links": 0,
       "external_links": 37
     },
@@ -300,8 +300,8 @@
       "pages": 21,
       "original_page_label_start": "3",
       "original_page_label_end": "23",
-      "sha256": "5b1d8cc0519c5a7b81ed7efbb0edfed129b4863625b048870282bae7b465a04f",
-      "bytes": 250660,
+      "sha256": "1b207b9eee0449e30737054121358c4c5a6a4654fd293f18f296a1b85f6f2d7f",
+      "bytes": 293860,
       "internal_links": 0,
       "external_links": 22
     },
@@ -317,8 +317,8 @@
       "pages": 6,
       "original_page_label_start": "24",
       "original_page_label_end": "29",
-      "sha256": "7c048edba2eace42f1b7f462c2c91bba31b7cb9c4771af884ab8575ca4295030",
-      "bytes": 117271,
+      "sha256": "48ab85e7acf0ab2332302646d871f32fcbc439ec6702d09c094fc7fd725bd6a5",
+      "bytes": 156233,
       "internal_links": 0,
       "external_links": 6
     },
@@ -334,8 +334,8 @@
       "pages": 17,
       "original_page_label_start": "30",
       "original_page_label_end": "46",
-      "sha256": "5df0aaa3ed903b617562b866dfbe60850825cb99f0a2ce85e8a078e68164f847",
-      "bytes": 170473,
+      "sha256": "3e28f83a07c39eaa4bc209e178eacea0f62b253869e113782db2425c4c088f56",
+      "bytes": 218287,
       "internal_links": 0,
       "external_links": 17
     },
@@ -351,8 +351,8 @@
       "pages": 20,
       "original_page_label_start": "47",
       "original_page_label_end": "66",
-      "sha256": "dfc2bef34541b924b2c8805ccb13c6bd555be1c1e1696286d05304a3f1423c13",
-      "bytes": 188874,
+      "sha256": "0225e127a02cdb1084ee3b616a27575fd908be131c9b49287d29e287724f2780",
+      "bytes": 233679,
       "internal_links": 0,
       "external_links": 22
     },
@@ -368,8 +368,8 @@
       "pages": 21,
       "original_page_label_start": "67",
       "original_page_label_end": "87",
-      "sha256": "44183de611639d79f35c776613b62dd43c44ff26d504b762602c6b6101cd566b",
-      "bytes": 235017,
+      "sha256": "5b280c13d9aa4226d0d86a94384dad612760a0a800685b39263f2224415c0cf4",
+      "bytes": 278387,
       "internal_links": 0,
       "external_links": 21
     },
@@ -385,8 +385,8 @@
       "pages": 19,
       "original_page_label_start": "88",
       "original_page_label_end": "106",
-      "sha256": "ac56fb07854f351c725b10d8501455ce492228271758a66e066422a6090be4ba",
-      "bytes": 188459,
+      "sha256": "07d78f8e6470566f9be578e16bd91c726f8ed3a054cf7f17ca5d9e2d138eacd8",
+      "bytes": 234813,
       "internal_links": 0,
       "external_links": 19
     },
@@ -402,8 +402,8 @@
       "pages": 19,
       "original_page_label_start": "107",
       "original_page_label_end": "125",
-      "sha256": "3e1e35869216b0c1c2340e35da56c7ddf17ad9af3b655db37ce892e55cf0cde3",
-      "bytes": 158532,
+      "sha256": "e2bd58ebeed81bd0673cc898a76210cbd97a23eb3a6ae636e6af645bd1cc42bb",
+      "bytes": 204462,
       "internal_links": 0,
       "external_links": 19
     },
@@ -419,8 +419,8 @@
       "pages": 22,
       "original_page_label_start": "126",
       "original_page_label_end": "147",
-      "sha256": "de37effb6b4448b4babc3714fafaf3d1f90abf771f300b0cba83125dd50bca70",
-      "bytes": 186911,
+      "sha256": "86edd7c7728f57ad76b7cc3dee15642209413f2b1f251a431c16497459f94c3f",
+      "bytes": 234617,
       "internal_links": 0,
       "external_links": 22
     },
@@ -436,8 +436,8 @@
       "pages": 26,
       "original_page_label_start": "148",
       "original_page_label_end": "173",
-      "sha256": "8f6a95d7d707eee5b44e815c0614d95fce3a43861f08a6fdb96de5849a4e5bf3",
-      "bytes": 254547,
+      "sha256": "c209e393ed751ff733078e75e0785e4b7930422a5e73f92de5c6cc2cddd90a84",
+      "bytes": 300343,
       "internal_links": 0,
       "external_links": 26
     },
@@ -453,8 +453,8 @@
       "pages": 35,
       "original_page_label_start": "174",
       "original_page_label_end": "208",
-      "sha256": "495b044ddf7aa5458bc759e4fe27dff2b08bed99d22a90026e4cde4c6e846750",
-      "bytes": 293422,
+      "sha256": "9da0ed1d9d6e3c62cd45111a6ba2485bf6b36176439b3861f32b668481e5adcd",
+      "bytes": 342678,
       "internal_links": 0,
       "external_links": 35
     },
@@ -470,8 +470,8 @@
       "pages": 25,
       "original_page_label_start": "209",
       "original_page_label_end": "233",
-      "sha256": "47a9a294c7ea16e6588d643e32c6d35b87128fe0a521a1365e50919c589342fe",
-      "bytes": 247437,
+      "sha256": "9ae50917a49e52aa988e0736029385e2460dae0eb31bbc988192a660fae26fa3",
+      "bytes": 296585,
       "internal_links": 0,
       "external_links": 25
     },
@@ -487,9 +487,9 @@
       "pages": 25,
       "original_page_label_start": "234",
       "original_page_label_end": "258",
-      "sha256": "a4a297d0b81d7ebf634ae791c8c15d050edc30981e6a01007bec2af3e323a61b",
-      "bytes": 214667,
-      "internal_links": 4,
+      "sha256": "de1ea24c2ce92c748a5f6e4fd18591c93b1da8dea778c99f26e627fa01015057",
+      "bytes": 260084,
+      "internal_links": 0,
       "external_links": 25
     },
     {
@@ -504,8 +504,8 @@
       "pages": 52,
       "original_page_label_start": "259",
       "original_page_label_end": "310",
-      "sha256": "85edcf7de538bced1644b232d912f1f7548219e5f941b3414345124321ef3256",
-      "bytes": 330741,
+      "sha256": "7017449e4e82b4b715479158167eff9e74fb5b96e1821df87d3ec505c97b593d",
+      "bytes": 391533,
       "internal_links": 0,
       "external_links": 52
     },
@@ -521,8 +521,8 @@
       "pages": 41,
       "original_page_label_start": "311",
       "original_page_label_end": "351",
-      "sha256": "788850a6c9be6394d9b1bf2c33ae07816940127a9dea737cdab4da2e146a76d5",
-      "bytes": 335524,
+      "sha256": "3429262c1723895f21efd5f5911e757f07dc08c5f6950a516dfad1cf9a1c60ef",
+      "bytes": 381304,
       "internal_links": 0,
       "external_links": 41
     },
@@ -538,8 +538,8 @@
       "pages": 19,
       "original_page_label_start": "352",
       "original_page_label_end": "370",
-      "sha256": "5b27427e76e4c21d90772af3df9b089e6f477b5be714372fb338b49f2d910c0e",
-      "bytes": 159408,
+      "sha256": "c168a167abc4387e63b6b0da830a70ea4757f6eb7f6a14184b9660dfffc3a777",
+      "bytes": 203483,
       "internal_links": 0,
       "external_links": 19
     },
@@ -555,8 +555,8 @@
       "pages": 39,
       "original_page_label_start": "371",
       "original_page_label_end": "409",
-      "sha256": "37baf88f41574ef461d09bedaeea8e373c99335cf929c6a42fe6fc2714f1ad0e",
-      "bytes": 274664,
+      "sha256": "ea3f45e10650ac2e224630301892d3104e77e7fb9e10fe4bbab2847e73fb8e28",
+      "bytes": 327424,
       "internal_links": 0,
       "external_links": 39
     }

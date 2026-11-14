@@ -1,0 +1,33 @@
+{
+  "version": "teaching-pdf-editorial-v2",
+  "files": {
+    "public/materials/2026-2027/linear-algebra-engineering-notes.pdf": {
+      "victory": 295,
+      "editorial": 1,
+      "pages": 336
+    },
+    "public/materials/2026-2027/linear-algebra-engineering-tutorials-en.pdf": {
+      "victory": 295,
+      "editorial": 1,
+      "pages": 358
+    },
+    "public/materials/2026-2027/linear-algebra-biomedical-notes-he.pdf": {
+      "victory": 301,
+      "editorial": 1,
+      "pages": 405
+    },
+    "public/materials/2026-2027/linear-algebra-biomedical-notes-en.pdf": {
+      "victory": 301,
+      "editorial": 1,
+      "pages": 412
+    },
+    "materials/2026-2027/linear-algebra/tutorial-downloads.json": {
+      "files": 28,
+      "books": 2
+    },
+    "materials/2026-2027/linear-algebra-biomedical/tutorial-downloads.json": {
+      "files": 32,
+      "books": 2
+    }
+  }
+}
