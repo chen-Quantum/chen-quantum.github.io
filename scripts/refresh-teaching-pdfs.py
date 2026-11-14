@@ -248,7 +248,7 @@ def main():
     if args.single_pdf:
         print(json.dumps(update_document(args.single_pdf,args.lang or 'he'),ensure_ascii=False));return
     root=args.root
-    mark=root/'public/materials/2026-2027/.editorial-v2.json'
+    mark=root/'.github/teaching-pdf-release-v2.json'
     if mark.exists():
         print('Already applied. To reprocess with a newer algorithm, change the version marker.')
         return
