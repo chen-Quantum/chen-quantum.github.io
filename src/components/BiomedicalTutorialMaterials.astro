@@ -13,14 +13,9 @@ import {
 <section id="biomedical-tutorial-downloads" class="biomedical-materials mt-16 scroll-mt-24" aria-labelledby="biomedical-notes-title">
   <p class="edition-label">Biomedical Engineering · 2026-2027</p>
   <h2 id="biomedical-notes-title" class="font-display text-3xl mb-4">Biomedical Linear Algebra tutorial notes</h2>
-  <p class="biomedical-description" lang="he" dir="rtl">
-    רשימות התרגול לביו רפואית, עם תרגילים ופתרונות לפי סדר ההרצאות.
-    מתרגול 4 ממשיכים לפי חומר ההרצאה של השבוע הקודם, עם השלמה קצרה על מערכות משוואות.
-    תרגול 14 מתאים להרצאת שבוע 13, ותרגול 15 הוא מפגש ההשלמה.
-  </p>
+  <p class="biomedical-description" lang="he" dir="rtl">רשימות תרגול, פתרונות וחומרי העשרה בהנדסה ביו-רפואית.</p>
   <p class="biomedical-description mt-3">
-    Exercises, worked solutions, and diagrams follow the biomedical course sequence.
-    Open the complete book or download a single tutorial below.
+    Open the complete booklet or download individual tutorials in Hebrew or English.
   </p>
   <div class="academic-actions mt-6">
     <a class="academic-primary" href={biomedicalNotesPdf} target="_blank" rel="noopener">Biomedical booklet · Hebrew PDF ↗</a>
@@ -32,7 +27,7 @@ import {
       <li id={`biomedical-tutorial-${tutorial.number}`} class="biomedical-tutorial-card" data-biomedical-tutorial={tutorial.number}>
         <span class="biomedical-tutorial-number" aria-hidden="true">{String(tutorial.number).padStart(2, "0")}</span>
         <div class="min-w-0">
-          <p class="biomedical-tutorial-kicker">{tutorial.number === 15 ? "Completion meeting" : `Tutorial ${tutorial.number}`}{tutorial.lectureWeek && ` · Lecture week ${tutorial.lectureWeek}`}</p>
+          <p class="biomedical-tutorial-kicker">{`Tutorial ${tutorial.number}`}</p>
           <h3 class="font-semibold text-slate-900" dir="rtl" lang="he">{tutorial.titleHe}</h3>
           <p class="biomedical-topic-english">{tutorial.title}</p>
           <TutorialPdfDownloads label={`Biomedical tutorial ${tutorial.number}`} englishPdf={biomedicalTutorialPdf(tutorial.number, "en")} hebrewPdf={biomedicalTutorialPdf(tutorial.number, "he")} />
