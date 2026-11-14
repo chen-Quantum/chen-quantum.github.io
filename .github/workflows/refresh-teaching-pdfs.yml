@@ -1,0 +1,68 @@
+name: Refresh teaching PDFs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refresh-teaching-pdfs.yml'
+      - 'scripts/refresh-teaching-pdfs.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: teaching-pdf-publisher
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF processing tools
+        run: python -m pip install pymupdf==1.26.7
+      - name: Update booklet text and resplit individual PDFs
+        run: python scripts/refresh-teaching-pdfs.py --root .
+      - name: Commit updated PDFs and manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/materials/2026-2027 .github/teaching-pdf-release-v2.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update tutorial PDFs and practice sheets"
+            git push origin HEAD:main
+          fi
+
+  build:
+    needs: refresh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out updated PDFs
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Build updated teaching website
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+          package-manager: pnpm@10
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy updated website
+        id: deployment
+        uses: actions/deploy-pages@v5
