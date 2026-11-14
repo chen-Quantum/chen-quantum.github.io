@@ -417,6 +417,9 @@
   padding: 1px 7px;
   border-radius: 4px;
   min-width: 30px;
+  min-inline-size: 30px;
+  flex-shrink: 0;
+  white-space: nowrap;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }

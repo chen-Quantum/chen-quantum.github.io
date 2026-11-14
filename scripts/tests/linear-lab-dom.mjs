@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { test } from "node:test";
-import { renderActivity, escapeHtml } from "../../src/lib/linearLabPlot.mjs";
+import { renderActivity, escapeHtml, teachingText, teachingDirection } from "../../src/lib/linearLabPlot.mjs";
 const require = createRequire(
   path.resolve(process.env.PORTAL_QA_ROOT || ".", "package.json"),
 );
@@ -15,7 +15,7 @@ const labCode = readFileSync("src/scripts/linear-lab.js", "utf8").replace(
   "",
 );
 const llmCode = readFileSync("src/scripts/linear-llm.js", "utf8");
-function open(route, code, stored = {}) {
+function open(route, code, stored = {}, options = {}) {
   const dom = new JSDOM(
       readFileSync(`dist/teaching/linear-algebra/${route}/index.html`, "utf8"),
       {
@@ -26,6 +26,8 @@ function open(route, code, stored = {}) {
     w = dom.window;
   w.renderActivity = renderActivity;
   w.escapeHtml = escapeHtml;
+  w.teachingText = teachingText;
+  w.teachingDirection = teachingDirection;
   w.Blob = Blob;
   w.exports = [];
   w.URL.createObjectURL = (b) => {
@@ -43,6 +45,15 @@ function open(route, code, stored = {}) {
   };
   for (const [k, v] of Object.entries(stored))
     w.localStorage.setItem(k, JSON.stringify(v));
+  for (const [k, v] of Object.entries(options.rawStorage || {}))
+    w.localStorage.setItem(k, v);
+  if (options.prepareActivities) {
+    const data = w.document.getElementById("la-data");
+    data.textContent = JSON.stringify(
+      options.prepareActivities(JSON.parse(data.textContent)),
+    );
+  }
+  options.beforeEval?.(w);
   w.eval(code);
   return dom;
 }
@@ -166,9 +177,178 @@ test("invalid stored controls are rejected and student text is never interpreted
   assert.equal(d.querySelectorAll("#la-activity img").length, 0);
   assert.equal(d.getElementById("la-progress").value, 0);
   click(w, '[data-step="1"]');
-  assert.equal(d.getElementById("control-n").value, "3");
+  assert.equal(d.getElementById("control-n").value, "5");
   dom.window.close();
 });
+
+// Content-revision migration regressions. Run against the parent's rebuilt data.
+function labData(route = "lab") {
+  const dom = new JSDOM(
+    readFileSync(`dist/teaching/linear-algebra/${route}/index.html`, "utf8"),
+  );
+  const data = JSON.parse(
+    dom.window.document.getElementById("la-data").textContent,
+  );
+  dom.window.close();
+  return data;
+}
+const nondefaultControl = (c) =>
+  c.options
+    ? c.options.find((o) => o.value !== c.value)?.value ?? c.value
+    : c.value === c.max ? c.min : c.max;
+
+test("a changed same-index answer invalidates only that activity and preserves all original prose and metadata", async () => {
+  const key = "chengadi-linear-lab-v1";
+  const fixture = (data) => data.map((a) => ({
+    ...a,
+    contentRevision: a.id === "complex" ? 1 : 0,
+    resetControlsOnRevision: a.id === "complex" ? [a.controls[0].id] : [],
+  }));
+  const data = fixture(labData());
+  const changed = data.find((a) => a.id === "complex");
+  const unchanged = data.find((a) => a.id === "field");
+  const prose = '  המקור שלי <img src=x onerror="alert(1)">\n' + "long 🧮 prose ".repeat(600);
+  const values = Object.fromEntries(
+    changed.controls.map((c) => [c.id, nondefaultControl(c)]),
+  );
+  const retired = { reflection: "Keep this retired activity's student work.", privateNote: "Unrecognized fields survive." };
+  const prior = {
+    version: 1,
+    preferences: { handwriting: "student supplied" },
+    earlierMigration: { note: "keep earlier metadata" },
+    activities: {
+      [changed.id]: {
+        values: { ...values, oldControl: 73 },
+        prediction: changed.answer,
+        extension: changed.extensionAnswer,
+        reflection: prose,
+        stage: 2,
+        completed: true,
+        studentTag: "never discard this field",
+      },
+      [unchanged.id]: {
+        values: {},
+        prediction: unchanged.answer,
+        extension: unchanged.extensionAnswer,
+        reflection: "An unchanged completed activity remains completed.",
+        stage: 1,
+        completed: true,
+      },
+      retired,
+    },
+  };
+  const raw = JSON.stringify(prior, null, 3) + "\n";
+  const dom = open("lab", labCode, {}, {
+    rawStorage: { [key]: raw },
+    prepareActivities: fixture,
+  });
+  const w = dom.window, d = w.document;
+  let saved = JSON.parse(w.localStorage.getItem(key));
+  const migrated = saved.activities[changed.id];
+  assert.equal(migrated.contentRevision, 1);
+  assert.equal(migrated.prediction, null);
+  assert.equal(migrated.extension, null);
+  assert.equal(migrated.completed, false);
+  assert.equal(migrated.reflection, prose);
+  assert.equal(d.getElementById("la-reflection").value, prose);
+  assert.equal(d.querySelectorAll("#la-activity img").length, 0);
+  assert.equal(migrated.stage, 2);
+  assert.equal(migrated.values[changed.controls[0].id], changed.controls[0].value);
+  assert.equal(migrated.values[changed.controls[1].id], values[changed.controls[1].id]);
+  assert.equal(migrated.values.oldControl, 73);
+  assert.equal(migrated.studentTag, prior.activities[changed.id].studentTag);
+  assert.equal(saved.activities[unchanged.id].completed, true);
+  assert.deepEqual(saved.activities.retired, retired);
+  assert.deepEqual(saved.preferences, prior.preferences);
+  assert.deepEqual(saved.earlierMigration, prior.earlierMigration);
+  assert.equal(saved.legacyRawEnvelope, raw);
+  assert.equal(d.getElementById("la-progress").value, 1);
+
+  // Re-complete the revised scenario; reload/language changes must not reset it again.
+  click(w, `input[name="extension"][value="${changed.extensionAnswer}"]`);
+  click(w, "#la-finish-form button");
+  click(w, "#la-reset");
+  saved = JSON.parse(w.localStorage.getItem(key));
+  assert.equal(saved.activities[changed.id].completed, true);
+  assert.equal(saved.activities[changed.id].reflection, prose);
+  assert.equal(saved.activities[changed.id].extension, changed.extensionAnswer);
+  assert.equal(saved.legacyRawEnvelope, raw);
+  click(w, "#la-export");
+  const notebook = JSON.parse(await w.exports.at(-1).blob.text());
+  assert.equal(notebook.activities.find((a) => a.id === changed.id).reflection, prose);
+  assert.equal(notebook.legacyRawEnvelope, raw);
+
+  for (const route of ["lab/en", "lab"]) {
+    const next = open(route, labCode, { [key]: saved }, { prepareActivities: fixture });
+    const current = JSON.parse(next.window.localStorage.getItem(key));
+    assert.equal(current.activities[changed.id].completed, true);
+    assert.equal(current.activities[changed.id].reflection, prose);
+    assert.equal(current.activities[changed.id].contentRevision, 1);
+    assert.equal(current.legacyRawEnvelope, raw);
+    assert.deepEqual(current.activities.retired, retired);
+    assert.equal(next.window.document.getElementById("la-progress").value, 2);
+    saved = current;
+    next.window.close();
+  }
+  dom.window.close();
+});
+
+test("the declared revision policy resets only c, eigen s and Gram-Schmidt delta", () => {
+  const key = "chengadi-linear-lab-v1", data = labData();
+  const policies = { map: ["c"], eigen: ["s"], "gram-schmidt": ["delta"] };
+  const prior = { version: 1, legacyRawEnvelope: "earlier original raw backup", activities: {} };
+  for (const a of data) {
+    assert.equal(a.contentRevision, 1);
+    assert.deepEqual(a.resetControlsOnRevision, policies[a.id] || []);
+    prior.activities[a.id] = {
+      contentRevision: 0,
+      values: Object.fromEntries(a.controls.map((c) => [c.id, nondefaultControl(c)])),
+      prediction: a.answer,
+      extension: a.extensionAnswer,
+      completed: true,
+      stage: 1,
+      reflection: `Original explanation for ${a.id}, preserved verbatim.`,
+    };
+  }
+  const dom = open("lab", labCode, { [key]: prior }), w = dom.window;
+  for (const a of data) {
+    change(w, "la-select", a.id);
+    const saved = JSON.parse(w.localStorage.getItem(key)).activities[a.id];
+    assert.equal(saved.prediction, null);
+    assert.equal(saved.extension, null);
+    assert.equal(saved.completed, false);
+    assert.equal(saved.stage, 1);
+    assert.equal(saved.reflection, prior.activities[a.id].reflection);
+    for (const c of a.controls)
+      assert.equal(saved.values[c.id], (policies[a.id] || []).includes(c.id)
+        ? c.value : prior.activities[a.id].values[c.id]);
+  }
+  assert.equal(JSON.parse(w.localStorage.getItem(key)).legacyRawEnvelope, prior.legacyRawEnvelope);
+  assert.equal(w.document.getElementById("la-progress").value, 0);
+  dom.window.close();
+});
+
+test("unavailable storage keeps migrated work usable and exports exact student text", async () => {
+  const key = "chengadi-linear-lab-v1";
+  const raw = JSON.stringify({ version: 1, activities: {}, keep: "original metadata" });
+  const dom = open("lab", labCode, {}, {
+    rawStorage: { [key]: raw },
+    beforeEval(w) {
+      w.Storage.prototype.setItem = () => { throw new w.DOMException("Storage full", "QuotaExceededError"); };
+    },
+  });
+  const w = dom.window, d = w.document;
+  const prose = "Student text remains usable when browser storage fails. ".repeat(120);
+  input(w, "la-reflection", prose);
+  assert.match(d.getElementById("la-storage-status").textContent, /storage is unavailable/);
+  click(w, "#la-export");
+  const notebook = JSON.parse(await w.exports.at(-1).blob.text());
+  assert.equal(notebook.activities[0].reflection, prose);
+  assert.equal(notebook.legacyRawEnvelope, raw);
+  assert.equal(w.localStorage.getItem(key), raw);
+  dom.window.close();
+});
+
 test("LLM journal preserves separate records, copies prompts and exports only actual work", async () => {
   const dom = open("llm", llmCode),
     w = dom.window,

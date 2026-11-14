@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { linearActivities as hebrewActivities } from "../../data/linearActivities";
 import { linearActivitiesEn } from "../../data/linearActivitiesEn";
 import CourseLanguageSwitch from "./CourseLanguageSwitch.astro";
-import { renderActivity } from "../../lib/linearLabPlot.mjs";
+import { renderActivity, teachingText, teachingDirection } from "../../lib/linearLabPlot.mjs";
 import "../../styles/linear-lab.css";
 const { locale = "he" } = Astro.props as { locale?: "he" | "en" };
 const linearActivities =
@@ -227,7 +227,7 @@ const firstPlot = renderActivity(
             <h2 id="la-title" tabindex="-1">
               {first.title}
             </h2>
-            <p id="la-intro">{first.intro}</p>
+            <p id="la-intro">{teachingText(first.intro)}</p>
             <div class="la-formula" id="la-formula" dir="ltr">
               {first.formula}
             </div>
@@ -240,7 +240,7 @@ const firstPlot = renderActivity(
               <span>02</span> Explore
             </button>
             <button type="button" data-step="2">
-              <span>03</span> Explain
+              <span>03</span> Write
             </button>
           </nav>
           <section
@@ -256,13 +256,13 @@ const firstPlot = renderActivity(
             </h3>
             <form id="la-prediction-form">
               <fieldset>
-                <legend id="la-question">{first.question}</legend>
+                <legend id="la-question">{teachingText(first.question)}</legend>
                 <div id="la-choices" class="la-choices">
                   {first.choices.map((c, i) => (
                     <label>
                       <>
                         <input type="radio" name="prediction" value={i} />
-                        <span>{c}</span>
+                        <span dir={teachingDirection(c)}>{teachingText(c)}</span>
                       </>
                     </label>
                   ))}
@@ -297,14 +297,14 @@ const firstPlot = renderActivity(
             <h3 id="la-experiment-heading">
               {t("עכשיו משנים משהו.", "Vary the parameters")}
             </h3>
-            <p id="la-experiment">{first.experiment}</p>
+            <p id="la-experiment">{teachingText(first.experiment)}</p>
             <div class="la-experiment-grid">
               <div class="la-controls" id="la-controls">
                 {first.controls.map((c) => (
                   <div class="la-control">
                     <>
                       <label for={`control-${c.id}`}>
-                        {c.label}
+                        {teachingText(c.label)}
                         <output id={`value-${c.id}`} dir="ltr">
                           {c.value}
                         </output>
@@ -350,7 +350,7 @@ const firstPlot = renderActivity(
               <h4>{t("שתי עצירות למחשבה", "Questions to consider")}</h4>
               <ol id="la-observations">
                 {first.observations.map((o) => (
-                  <li>{o}</li>
+                  <li>{teachingText(o)}</li>
                 ))}
               </ol>
             </div>
@@ -362,7 +362,7 @@ const firstPlot = renderActivity(
                 lang="en"
                 dir="ltr"
               >
-                Explain what you found →
+                Write your conclusion →
               </button>
               <button
                 type="button"
@@ -382,23 +382,23 @@ const firstPlot = renderActivity(
           >
             <p class="la-step-label">{t("התמונה היא התחלה", "Explanation")}</p>
             <h3 id="la-explain-heading">
-              {t("כותבים למה זה נכון.", "Explain your result")}
+              {t("כותבים למה זה נכון.", "Write your result")}
             </h3>
             <details class="la-proof">
               <summary lang="en" dir="ltr">
                 Read the mathematical explanation
               </summary>
-              <p id="la-explanation">{first.explanation}</p>
+              <p id="la-explanation">{teachingText(first.explanation)}</p>
             </details>
             <form id="la-finish-form">
               <fieldset>
-                <legend id="la-extension">{first.extension}</legend>
+                <legend id="la-extension">{teachingText(first.extension)}</legend>
                 <div class="la-choices" id="la-extension-choices">
                   {first.extensionChoices.map((c, i) => (
                     <label>
                       <>
                         <input type="radio" name="extension" value={i} />
-                        <span>{c}</span>
+                        <span dir={teachingDirection(c)}>{teachingText(c)}</span>
                       </>
                     </label>
                   ))}
@@ -409,7 +409,7 @@ const firstPlot = renderActivity(
                 for="la-reflection"
                 id="la-reflection-label"
               >
-                {first.reflection}
+                {teachingText(first.reflection)}
               </label>
               <textarea
                 id="la-reflection"

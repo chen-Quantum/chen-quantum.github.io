@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire, stripTypeScriptTypes } from "node:module";
 import { test } from "node:test";
-import { renderActivity, escapeHtml } from "../../src/lib/linearLabPlot.mjs";
+import { renderActivity, escapeHtml, teachingText, teachingDirection } from "../../src/lib/linearLabPlot.mjs";
 const require = createRequire(
   path.resolve(process.env.PORTAL_QA_ROOT || ".", "package.json"),
 );
@@ -32,6 +32,8 @@ function open(route, storage = {}, hash = "") {
   const w = dom.window;
   w.renderActivity = renderActivity;
   w.escapeHtml = escapeHtml;
+  w.teachingText = teachingText;
+  w.teachingDirection = teachingDirection;
   w.Blob = Blob;
   w.exports = [];
   w.URL.createObjectURL = (b) => {
@@ -79,6 +81,8 @@ test("both languages have matching activity IDs, controls, quiz keys and homewor
   for (let i = 0; i < h.length; i++) {
     for (const key of [
       "id",
+      "contentRevision",
+      "resetControlsOnRevision",
       "number",
       "formula",
       "answer",
@@ -239,4 +243,28 @@ test("favicon declarations replace the starter icon with Chen's portrait on ever
   const png = fs.readFileSync("public/brand/chen-favicon-v2.png");
   assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   assert.ok(png.length > 3000);
+});
+
+test("Hebrew teaching mathematics keeps tuple/sign order while student prose stays byte-exact", () => {
+  const dom = open("lab"), w = dom.window, d = w.document;
+  const activities = JSON.parse(d.getElementById("la-data").textContent);
+  const stripIsolates = (text) => text.replace(/[\u2066\u2069]/g, "");
+  for (const a of activities) {
+    set(w, "la-select", a.id, "change");
+    assert.equal(d.getElementById("la-activity").dir, "rtl");
+    assert.equal(stripIsolates(d.getElementById("la-explanation").textContent), a.explanation);
+    for (const span of d.querySelectorAll("#la-choices label span, #la-extension-choices label span"))
+      if (!he.test(span.textContent)) assert.equal(span.dir, "ltr");
+  }
+  set(w, "la-select", "rank", "change");
+  assert.ok(d.getElementById("la-explanation").textContent.includes("\u2066(4,−2,1)\u2069"));
+  set(w, "la-select", "determinant", "change");
+  const negative = d.querySelector("#la-choices label span");
+  assert.equal(negative.textContent, "−6");
+  assert.equal(negative.dir, "ltr");
+  const prose = "  זהו הטקסט המקורי שלי (−6,2) <b>is text</b>.\n";
+  set(w, "la-reflection", prose, "input");
+  assert.equal(d.getElementById("la-reflection").value, prose);
+  assert.equal(JSON.parse(w.localStorage.getItem("chengadi-linear-lab-v1")).activities.determinant.reflection, prose);
+  dom.window.close();
 });

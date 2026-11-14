@@ -8,6 +8,20 @@ export const escapeHtml = (s) =>
         c
       ],
   );
+// Format trusted teaching text only. Student writing is never passed here.
+// Plain Unicode isolates keep mathematical runs intact without adding HTML.
+export function teachingText(value) {
+  const text = String(value);
+  if (!/[\u0590-\u05ff]/u.test(text)) return text;
+  return text.replace(/[^\u0590-\u05ff]+/gu, (run) => {
+    const [, leading, core, trailing] = run.match(/^(\s*)([\s\S]*?)([\s.,;:!?]*)$/u);
+    return /[A-Za-z0-9\u0370-\u03ff\u2100-\u214f]/u.test(core)
+      ? `${leading}\u2066${core}\u2069${trailing}`
+      : run;
+  });
+}
+export const teachingDirection = (text) =>
+  /[\u0590-\u05ff]/u.test(text) ? "rtl" : "ltr";
 const colors = {
   green: "#1b6655",
   blue: "#3165a2",
@@ -22,16 +36,16 @@ export function renderActivity(id, p, locale = "he") {
       complex: 1.45,
       field: 4,
       systems: 7,
-      span: 11,
-      order: 10,
-      basis: 7,
+      span: 18,
+      order: 20,
+      basis: 16,
       rank: 5,
-      map: 5,
-      similarity: 8,
-      determinant: 6,
-      eigen: 5,
-      projection: 4.6,
-      "gram-schmidt": 6,
+      map: 19,
+      similarity: 16,
+      determinant: 9,
+      eigen: 8,
+      projection: 5.5,
+      "gram-schmidt": 9,
     }[id] || 6;
   if (id === "field" && p.p) extent = p.p + 0.5;
   const cx = 280,
@@ -45,8 +59,25 @@ export function renderActivity(id, p, locale = "he") {
   const line = (u, v, color = "muted", dash = false, width = 2) => {
     shapes += `<line x1="${X(u[0])}" y1="${Y(u[1])}" x2="${X(v[0])}" y2="${Y(v[1])}" stroke="${colors[color]}" stroke-width="${width}" ${dash ? 'stroke-dasharray="6 5"' : ""}/>`;
   };
+  const placedLabels = [];
   const label = (v, text, color = "green", dy = -12) => {
-    shapes += `<text x="${X(v[0]) + 8}" y="${Y(v[1]) + dy}" fill="${colors[color]}" font-size="13" font-weight="600">${escapeHtml(text)}</text>`;
+    const ax = X(v[0]), ay = Y(v[1]), width = Math.max(8, text.length * 7.6);
+    const x = Math.max(30, Math.min(ax + 8, 526 - width));
+    let y = Math.max(38, Math.min(ay + dy, 378));
+    for (const offset of [0, 24, -24, 48, -48, 72, -72, 96, -96]) {
+      const candidate = Math.max(38, Math.min(ay + dy + offset, 378));
+      const box = { x, y: candidate - 15, width, height: 19 };
+      if (!placedLabels.some((other) => box.x < other.x + other.width + 5 &&
+        box.x + box.width + 5 > other.x && box.y < other.y + other.height + 3 &&
+        box.y + box.height + 3 > other.y)) {
+        y = candidate;
+        break;
+      }
+    }
+    placedLabels.push({ x, y: y - 15, width, height: 19 });
+    if (Math.abs(y - (ay + dy)) > 1 || Math.abs(x - (ax + 8)) > 1)
+      shapes += `<path d="M ${ax} ${ay} L ${x - 3} ${y - 4}" stroke="${colors[color]}" stroke-width="0.8" opacity="0.65" fill="none"/>`;
+    shapes += `<text data-plot-label="${escapeHtml(text)}" data-endpoint-x="${v[0]}" data-endpoint-y="${v[1]}" x="${x}" y="${y}" fill="${colors[color]}" stroke="#fcfdf9" stroke-width="2.5" paint-order="stroke" stroke-linejoin="round" font-size="13" font-weight="600">${escapeHtml(text)}</text>`;
   };
   const point = (v, text, color = "green", dy = -12) => {
     shapes += `<circle cx="${X(v[0])}" cy="${Y(v[1])}" r="5" fill="${colors[color]}" stroke="#fff" stroke-width="1.5"/>`;
@@ -116,8 +147,8 @@ export function renderActivity(id, p, locale = "he") {
           }
         m.points.forEach((v) => point(v, vec(v), "green", -10));
       } else {
-        wholeLine(1, 1, 0, "blue");
-        wholeLine(1, -1, 0, "orange");
+        wholeLine(3, 5, 0, "blue");
+        wholeLine(5, 3, 0, "orange");
         point([0, 0], "ker A = {0}");
       }
       row("השדה", p.p ? `F${p.p}` : "ℝ");
@@ -131,8 +162,8 @@ export function renderActivity(id, p, locale = "he") {
     }
     case "systems": {
       const m = M.systemModel(p.t, p.b);
-      wholeLine(1, 1, 3, "blue");
-      wholeLine(2, 2 + p.t, p.b, "orange");
+      wholeLine(1, 2, 2, "blue");
+      wholeLine(3, 6 + p.t, p.b, "orange");
       if (m.solution) point(m.solution, "solution");
       row(
         "סוג המערכת",
@@ -146,12 +177,12 @@ export function renderActivity(id, p, locale = "he") {
       row("דרגות", `rank A = ${m.rank};  rank [A|b] = ${m.augmentedRank}`);
       if (m.solution) row("הפתרון המדויק", `(x,y) = (${m.exact.join(", ")})`);
       caption =
-        "כחול: x+y=3. כתום: המשוואה השנייה. במקרה של ישרים חופפים, אחד מכסה את האחר. המשוואות והדרגות מכריעות גם כשקשה להבחין בציור.";
+        "כחול: x+2y=2. כתום: המשוואה השנייה. במקרה של ישרים חופפים, אחד מכסה את האחר. המשוואות והדרגות מכריעות גם כשקשה להבחין בציור.";
       break;
     }
     case "span": {
       const m = M.spanModel(p.delta, p.a, p.b);
-      if (m.rank === 1) wholeLine(1, -1, 0, "muted");
+      if (m.rank === 1) wholeLine(1, -2, 0, "muted");
       else polygon([[0, 0], m.u, M.add(m.u, m.v), m.v]);
       arrow(m.u, "u", "blue");
       arrow(m.v, "v", "orange");
@@ -167,7 +198,7 @@ export function renderActivity(id, p, locale = "he") {
     }
     case "order": {
       const m = M.matrixOrderModel(p.s, p.r);
-      arrow([1, 1], "x", "muted");
+      arrow(m.x, "x", "muted");
       polygon(
         [
           [0, 0],
@@ -200,12 +231,12 @@ export function renderActivity(id, p, locale = "he") {
       const m = M.basisModel(p.s, p.a, p.b);
       arrow(m.basis[0], "b1", "blue");
       arrow(m.basis[1], "b2", "orange");
-      arrow([p.a, 0], "a·b1", "blue", [0, 0], true);
-      arrow(M.scale(p.b, m.basis[1]), "b·b2", "orange", [p.a, 0], true);
+      arrow(M.scale(p.a, m.basis[0]), "a·b1", "blue", [0, 0], true);
+      arrow(M.scale(p.b, m.basis[1]), "b·b2", "orange", M.scale(p.a, m.basis[0]), true);
       point(m.x, "x");
       row("הקואורדינטות בבסיס B", `[x]B = ${vec(m.coordinates)}`);
       row("הווקטור בקואורדינטות רגילות", `x = ${vec(m.x)}`);
-      row("מטריצת הבסיס", `P = [[1, ${p.s}], [0, 1]]`);
+      row("מטריצת הבסיס", `P = [[1, ${p.s}], [2, ${2 * p.s + 1}]]`);
       row("ההמרה בחזרה", `P⁻¹x = ${vec(M.mv(m.inverse, m.x))}`);
       caption =
         "החצים b1,b2 הם וקטורי הבסיס. הסכום המקווקו מראה כיצד הקואורדינטות יוצרות את x.";
@@ -221,10 +252,10 @@ export function renderActivity(id, p, locale = "he") {
         polygon([
           [0, 0],
           [1, 0],
+          [4, p.t],
           [3, p.t],
-          [2, p.t],
         ]);
-      point([0, 1], "b", "purple");
+      point(m.target, "b", "purple");
       row("ממד התחום", "3");
       row("דרגה וממד גרעין", `${m.rank} + ${m.nullity} = 3`);
       row("בסיס לגרעין", m.kernel.map(vec).join("; "));
@@ -245,7 +276,7 @@ export function renderActivity(id, p, locale = "he") {
       row("סכום התמונות", `T(u)+T(v) = ${vec(m.sumT)}`);
       row("לינאריות של T במשפחה הזאת", m.linear ? "לינארית" : "אינה לינארית");
       caption =
-        "u=(1,0), v=(0,1). חפיפה במקרה אחד אינה הוכחה כללית; במקרה c=0 הייצוג המטריציוני מוכיח לינאריות.";
+        "u=(1,1), v=(−1,2). חפיפה במקרה אחד אינה הוכחה כללית; במקרה c=0 הייצוג המטריציוני מוכיח לינאריות.";
       break;
     }
     case "similarity": {
@@ -255,18 +286,16 @@ export function renderActivity(id, p, locale = "he") {
       );
       arrow(m.x, "x = Pc", "muted");
       arrow(m.Ax, "Ax = PDc", "green");
-      row("המטריצה בקואורדינטות רגילות", `A = [[2, ${p.s}], [0, 3]]`);
+      row("המטריצה בקואורדינטות רגילות", `A = [[3, ${p.s}], [0, 4]]`);
       row("מסלול 1: הפעלת A", `Ax = ${vec(m.Ax)}`);
       row("מסלול 2: חישוב בקואורדינטות", `P(Dc) = ${vec(m.PDc)}`);
-      row("נתונים שאינם משתנים", `tr A = 5; det A = 6; λ = 2,3`);
+      row("נתונים שאינם משתנים", `tr A = 7; det A = 12; λ = 3,4`);
       caption =
-        "c=(1,1). שני מסלולי החישוב מגיעים לאותו וקטור. החצים p1,p2 הם עמודות P.";
+        "c=(2,−1). שני מסלולי החישוב מגיעים לאותו וקטור. החצים p1,p2 הם עמודות P.";
       break;
     }
     case "determinant": {
-      const u = [2, 1],
-        v = [p.s, p.t],
-        d = 2 * p.t - p.s;
+      const { u, v, determinant: d } = M.determinantModel(p.s, p.t);
       polygon([[0, 0], u, M.add(u, v), v], d < 0 ? "orange" : "green");
       arrow(u, "u", "blue");
       arrow(v, "v", "orange");
@@ -287,9 +316,9 @@ export function renderActivity(id, p, locale = "he") {
       if (p.s) wholeLine(0, 1, 0, "purple");
       arrow(m.v, "v", "orange");
       arrow(m.Av, "Av", "green");
-      row("ריבוי אלגברי של λ=2", "2");
+      row("ריבוי אלגברי של λ=3", "2");
       row("ממד המרחב העצמי", String(m.eigenspaceDimension));
-      row("לכסינות", m.diagonalizable ? "לכסינה: A=2I" : "אינה לכסינה");
+      row("לכסינות", m.diagonalizable ? "לכסינה: A=3I" : "אינה לכסינה");
       row(
         "בדיקת כיוון",
         Math.abs(m.cross) < 1e-9
@@ -312,7 +341,7 @@ export function renderActivity(id, p, locale = "he") {
       arrow(m.p, "p", "green");
       arrow(m.residual, "v−p", "orange", m.p, true);
       row("המקדם המדויק", `c = ${m.exact}`);
-      row("ההיטל על W", `p = (${m.exact}, ${m.exact})`);
+      row("ההיטל על W", `p = (${m.exactProjection}, ${m.exactProjection})`);
       row("בדיקה במכפלה הנתונה", `⟨v−p,u⟩w = ${num(m.weightedDot)}`);
       row("לשם השוואה: מכפלה אוקלידית", `(v−p)·u = ${num(m.euclideanDot)}`);
       caption =
@@ -342,10 +371,11 @@ export function renderActivity(id, p, locale = "he") {
   }
   let grid = "";
   const tick = extent < 2 ? 0.5 : 1;
+  const labelEvery = Math.max(1, Math.ceil(extent / 8));
   for (let x = Math.ceil(-extent / tick) * tick; x <= extent; x += tick) {
     grid += `<line x1="${X(x)}" y1="24" x2="${X(x)}" y2="386" stroke="#e6ece6"/><line x1="80" y1="${Y(x)}" x2="480" y2="${Y(x)}" stroke="#e6ece6"/>`;
-    if (x && Number.isInteger(x)) {
-      grid += `<text x="${X(x) + 3}" y="${cy + 16}" fill="#718076" font-size="10">${x}</text><text x="${cx - 20}" y="${Y(x) - 3}" fill="#718076" font-size="10">${x}</text>`;
+    if (x && Number.isInteger(x) && x % labelEvery === 0) {
+      grid += `<text data-axis-tick="x" x="${X(x) + 3}" y="${cy + 16}" fill="#718076" font-size="10">${x}</text><text data-axis-tick="y" x="${cx - 20}" y="${Y(x) - 3}" fill="#718076" font-size="10">${x}</text>`;
     }
   }
   if (locale === "en") {

@@ -30,179 +30,74 @@ export function roots(theta, n) {
 export function fieldModel(p) {
   if (![0, 2, 3, 5].includes(p))
     throw new Error("Use R or one of the supported prime fields");
-  const rank = p === 2 ? 1 : 2;
-  const points = [];
+  const A = [[3, 5], [5, 3]], rank = p === 2 ? 1 : 2, points = [];
   if (p)
     for (let x = 0; x < p; x++)
-      for (let y = 0; y < p; y++) {
-        if (mod(x + y, p) === 0 && mod(x - y, p) === 0) points.push([x, y]);
-      }
-  return { rank, nullity: 2 - rank, determinant: p ? mod(-2, p) : -2, points };
+      for (let y = 0; y < p; y++)
+        if (mv(A, [x, y]).every((v) => mod(v, p) === 0)) points.push([x, y]);
+  return { A, rank, nullity: 2 - rank, determinant: p ? mod(det2(A), p) : det2(A), points };
 }
 export function systemModel(t, b) {
   if (t === 0)
-    return {
-      kind: b === 6 ? "infinite" : "none",
-      rank: 1,
-      augmentedRank: b === 6 ? 1 : 2,
-      solution: null,
-    };
-  return {
-    kind: "unique",
-    rank: 2,
-    augmentedRank: 2,
-    solution: [3 - (b - 6) / t, (b - 6) / t],
-    exact: [fraction(3 * t - b + 6, t), fraction(b - 6, t)],
-  };
+    return { kind: b === 6 ? "infinite" : "none", rank: 1,
+      augmentedRank: b === 6 ? 1 : 2, solution: null };
+  return { kind: "unique", rank: 2, augmentedRank: 2,
+    solution: [2 - 2 * (b - 6) / t, (b - 6) / t],
+    exact: [fraction(2 * t - 2 * b + 12, t), fraction(b - 6, t)] };
 }
 export function spanModel(delta, a, b) {
-  const u = [1, 1],
-    v = [2, 2 + delta];
-  return {
-    u,
-    v,
-    combination: add(scale(a, u), scale(b, v)),
-    rank: delta === 0 ? 1 : 2,
-    determinant: delta,
-  };
+  const u = [2, 1], v = [6, 3 + delta];
+  return { u, v, combination: add(scale(a, u), scale(b, v)),
+    rank: delta === 0 ? 1 : 2, determinant: 2 * delta };
 }
 export function matrixOrderModel(s, r) {
-  return {
-    A: [
-      [1, s],
-      [0, 1],
-    ],
-    B: [
-      [r, 0],
-      [0, 1],
-    ],
-    ABx: [r + s, 1],
-    BAx: [r * (1 + s), 1],
-    commute: s === 0 || r === 1,
-    determinant: r,
-  };
+  const A = [[1, s], [0, 1]], B = [[r, 0], [0, 1]], x = [2, 2],
+    AB = [[r, s], [0, 1]], BA = [[r, r * s], [0, 1]];
+  return { A, B, AB, BA, x, ABx: mv(AB, x), BAx: mv(BA, x),
+    commute: s === 0 || r === 1, determinant: r };
 }
 export function basisModel(s, a, b) {
-  return {
-    P: [
-      [1, s],
-      [0, 1],
-    ],
-    inverse: [
-      [1, -s],
-      [0, 1],
-    ],
-    x: [a + s * b, b],
-    coordinates: [a, b],
-    basis: [
-      [1, 0],
-      [s, 1],
-    ],
-  };
+  const P = [[1, s], [2, 2 * s + 1]], inverse = [[2 * s + 1, -s], [-2, 1]];
+  return { P, inverse, x: mv(P, [a, b]), coordinates: [a, b], basis: [[1, 2], [s, 2 * s + 1]] };
 }
 export function rankModel(t) {
-  return {
-    A: [
-      [1, 2, 3],
-      [0, t, t],
-    ],
-    rank: t === 0 ? 1 : 2,
-    nullity: t === 0 ? 2 : 1,
-    kernel:
-      t === 0
-        ? [
-            [-2, 1, 0],
-            [-3, 0, 1],
-          ]
-        : [[-1, -1, 1]],
-    targetInImage: t !== 0,
-  };
+  return { A: [[1, 3, 2], [0, t, 2 * t]], target: [1, 2],
+    rank: t === 0 ? 1 : 2, nullity: t === 0 ? 2 : 1,
+    kernel: t === 0 ? [[-3, 1, 0], [-2, 0, 1]] : [[4, -2, 1]],
+    targetInImage: t !== 0 };
 }
 export function mapModel(c) {
-  const T = ([x, y]) => [x + y, y + c];
-  return {
-    origin: T([0, 0]),
-    Tu: T([1, 0]),
-    Tv: T([0, 1]),
-    Tsum: T([1, 1]),
-    sumT: add(T([1, 0]), T([0, 1])),
-    linear: c === 0,
-  };
+  const T = ([x, y]) => [2 * x - y, 3 * y + 2 * c], u = [1, 1], v = [-1, 2];
+  return { u, v, origin: T([0, 0]), Tu: T(u), Tv: T(v),
+    Tsum: T(add(u, v)), sumT: add(T(u), T(v)), linear: c === 0 };
 }
 export function similarityModel(s) {
-  const P = [
-      [1, s],
-      [0, 1],
-    ],
-    D = [
-      [2, 0],
-      [0, 3],
-    ],
-    A = [
-      [2, s],
-      [0, 3],
-    ];
-  const c = [1, 1],
-    x = mv(P, c);
-  return {
-    P,
-    D,
-    A,
-    x,
-    Ax: mv(A, x),
-    PDc: mv(P, mv(D, c)),
-    trace: 5,
-    determinant: 6,
-    eigenvectors: [
-      [1, 0],
-      [s, 1],
-    ],
-  };
+  const P = [[1, s], [0, 1]], D = [[3, 0], [0, 4]], A = [[3, s], [0, 4]], c = [2, -1], x = mv(P, c);
+  return { P, D, A, c, x, Ax: mv(A, x), PDc: mv(P, mv(D, c)),
+    trace: 7, determinant: 12, eigenvectors: [[1, 0], [s, 1]] };
 }
 export function eigenModel(s, theta) {
-  const angle = (theta * Math.PI) / 180,
-    v = [Math.cos(angle), Math.sin(angle)];
-  const A = [
-      [2, s],
-      [0, 2],
-    ],
-    Av = mv(A, v);
-  return {
-    A,
-    v,
-    Av,
-    eigenspaceDimension: s === 0 ? 2 : 1,
-    diagonalizable: s === 0,
-    cross: v[0] * Av[1] - v[1] * Av[0],
-  };
+  const angle = theta * Math.PI / 180, v = [Math.cos(angle), Math.sin(angle)],
+    A = [[3, 2 * s], [0, 3]], Av = mv(A, v);
+  return { A, v, Av, eigenspaceDimension: s === 0 ? 2 : 1,
+    diagonalizable: s === 0, cross: v[0] * Av[1] - v[1] * Av[0] };
 }
 export function projectionModel(w) {
   if (w <= 0) throw new Error("A positive weight is required");
-  const coefficient = (3 * w + 1) / (w + 1),
-    p = [coefficient, coefficient],
-    residual = [3 - coefficient, 1 - coefficient];
-  return {
-    u: [1, 1],
-    v: [3, 1],
-    p,
-    residual,
-    coefficient,
-    exact: fraction(3 * w + 1, w + 1),
-    weightedDot: w * residual[0] + residual[1],
-    euclideanDot: residual[0] + residual[1],
-  };
+  const u = [2, 2], v = [4, 2], coefficient = (2 * w + 1) / (w + 1),
+    p = scale(coefficient, u), residual = add(v, scale(-1, p));
+  return { u, v, p, residual, coefficient, exact: fraction(2 * w + 1, w + 1),
+    exactProjection: fraction(4 * w + 2, w + 1),
+    weightedDot: w * residual[0] * u[0] + residual[1] * u[1], euclideanDot: dot(residual, u) };
 }
 export function gramSchmidtModel(k, delta) {
-  const v1 = [1, 1],
-    v2 = [k, k + delta],
-    w2 = [-delta / 2, delta / 2];
-  return {
-    v1,
-    v2,
-    w2,
-    independent: delta !== 0,
-    coefficient: k + delta / 2,
-    e1: scale(1 / Math.sqrt(2), v1),
-    e2: delta === 0 ? null : scale(Math.sign(delta) / Math.sqrt(2), [-1, 1]),
-  };
+  const v1 = [2, 2], v2 = [k, k + 2 * delta], w2 = [-delta, delta];
+  return { v1, v2, w2, independent: delta !== 0, coefficient: (k + delta) / 2,
+    e1: [1 / Math.sqrt(2), 1 / Math.sqrt(2)],
+    e2: delta === 0 ? null : scale(Math.sign(delta) / Math.sqrt(2), [-1, 1]) };
+}
+
+export function determinantModel(s, t) {
+  const u = [4, 2], v = [s, t], determinant = det2([[u[0], v[0]], [u[1], v[1]]]);
+  return { u, v, determinant, area: Math.abs(determinant), invertible: determinant !== 0 };
 }

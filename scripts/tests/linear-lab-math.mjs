@@ -57,8 +57,8 @@ test("field: brute-force solutions agree with the stated nullity", () => {
         if (
           M.mv(
             [
-              [1, 1],
-              [1, -1],
+              [3, 5],
+              [5, 3],
             ],
             [x, y],
           ).every((a) => M.mod(a, p) === 0)
@@ -69,6 +69,8 @@ test("field: brute-force solutions agree with the stated nullity", () => {
     assert.equal(m.rank + m.nullity, 2);
   }
   assert.throws(() => M.fieldModel(4));
+  assert.equal(M.fieldModel(0).determinant, -16);
+  assert.deepEqual(M.fieldModel(2).points, [[0,0],[1,1]]);
 });
 test("systems: unique solutions satisfy both equations; t=0 handles consistency", () => {
   for (let t = -2; t <= 2; t++)
@@ -76,8 +78,8 @@ test("systems: unique solutions satisfy both equations; t=0 handles consistency"
       const m = M.systemModel(t, b);
       if (m.solution) {
         const [x, y] = m.solution;
-        near(x + y, 3);
-        near(2 * x + (2 + t) * y, b);
+        near(x + 2 * y, 2);
+        near(3 * x + (6 + t) * y, b);
         assert.notEqual(t, 0);
       } else {
         assert.equal(t, 0);
@@ -96,15 +98,17 @@ test("span: determinant, linear combination, and singular case agree", () => {
           m.combination,
           M.add(M.scale(a, m.u), M.scale(b, m.v)),
         );
-        if (!d) assert.equal(m.combination[0], m.combination[1]);
+        if (!d) assert.equal(m.combination[0], 2 * m.combination[1]);
       }
 });
 test("composition order is computed from matrix products", () => {
   for (let s = -2; s <= 2; s++)
     for (let r = 1; r <= 3; r++) {
       const m = M.matrixOrderModel(s, r);
-      assert.deepEqual(m.ABx, M.mv(mm(m.A, m.B), [1, 1]));
-      assert.deepEqual(m.BAx, M.mv(mm(m.B, m.A), [1, 1]));
+      assert.deepEqual(m.ABx, [2*r+2*s,2]);
+      assert.deepEqual(m.BAx, [2*r+2*r*s,2]);
+      assert.deepEqual(m.ABx, M.mv(mm(m.A, m.B), [2, 2]));
+      assert.deepEqual(m.BAx, M.mv(mm(m.B, m.A), [2, 2]));
       assert.equal(
         m.commute,
         JSON.stringify(mm(m.A, m.B)) === JSON.stringify(mm(m.B, m.A)),
@@ -116,27 +120,32 @@ test("basis matrices are inverses and preserve the round trip", () => {
     for (let a = -2; a <= 2; a++)
       for (let b = -2; b <= 2; b++) {
         const m = M.basisModel(s, a, b);
+        assert.deepEqual(m.x, [a+s*b, 2*a+(2*s+1)*b]);
         assert.deepEqual(mm(m.P, m.inverse), [
           [1, 0],
           [0, 1],
         ]);
         assert.deepEqual(M.mv(m.inverse, m.x), m.coordinates);
       }
+  assert.deepEqual(M.mv(M.basisModel(-1,0,0).inverse,[3,5]),[2,-1]);
 });
 test("rank-nullity and supplied kernel bases, including rank drop", () => {
   for (let t = -2; t <= 2; t++) {
     const m = M.rankModel(t);
     assert.equal(m.rank + m.nullity, 3);
     assert.equal(m.kernel.length, m.nullity);
+    assert.deepEqual(m.target,[1,2]);
+    if(t) assert.deepEqual(M.mv(m.A,[1-6/t,2/t,0]),m.target);
+    else assert.equal(M.det2([[m.kernel[0][1],m.kernel[1][1]],[m.kernel[0][2],m.kernel[1][2]]]),1);
     for (const v of m.kernel) assert.deepEqual(M.mv(m.A, v), [0, 0]);
     const minors = [
       M.det2([
-        [1, 2],
+        [1, 3],
         [0, t],
       ]),
       M.det2([
-        [2, 3],
-        [t, t],
+        [3, 2],
+        [t, 2*t],
       ]),
     ];
     assert.equal(
@@ -151,8 +160,11 @@ test("affine map: direct additivity discrepancy and image of zero", () => {
     assert.equal(m.linear, c === 0);
     const discrepancy = m.Tsum.map((x, i) => x - m.sumT[i]);
     near(discrepancy[0], 0);
-    near(discrepancy[1], -c);
-    assert.deepEqual(m.origin, [0, c]);
+    near(discrepancy[1], -2*c);
+    assert.deepEqual(m.origin, [0, 2*c]);
+    assert.deepEqual(m.Tu,[1,3+2*c]);
+    assert.deepEqual(m.Tv,[-4,6+2*c]);
+    assert.deepEqual(m.Tsum,[-3,9+2*c]);
   }
 });
 test("similarity: AP=PD and both vector paths agree", () => {
@@ -160,6 +172,10 @@ test("similarity: AP=PD and both vector paths agree", () => {
     const m = M.similarityModel(s);
     assert.deepEqual(mm(m.A, m.P), mm(m.P, m.D));
     assert.deepEqual(m.Ax, m.PDc);
+    assert.deepEqual(m.Ax,[6-4*s,-4]);
+    assert.equal(m.trace,7);
+    assert.equal(m.determinant,12);
+    assert.deepEqual(m.D,[[3,0],[0,4]]);
     assert.equal(M.det2(m.A), m.determinant);
   }
 });
@@ -167,27 +183,33 @@ test("defective family: characteristic data do not imply diagonalizability", () 
   for (let s = 0; s <= 3; s++)
     for (let theta = 0; theta <= 180; theta += 15) {
       const m = M.eigenModel(s, theta);
-      near(M.det2(m.A), 4);
+      near(M.det2(m.A), 9);
       assert.equal(m.eigenspaceDimension, s ? 1 : 2);
-      near(m.cross, -s * Math.sin((theta * Math.PI) / 180) ** 2);
+      near(m.cross, -2*s * Math.sin((theta * Math.PI) / 180) ** 2);
     }
 });
 test("weighted projection belongs to W and has weighted-orthogonal residual", () => {
   for (let w = 1; w <= 4; w++) {
     const m = M.projectionModel(w);
     near(m.p[0], m.p[1]);
-    near(w * m.residual[0] + m.residual[1], 0);
+    near(2*w * m.residual[0] + 2*m.residual[1], 0);
+    near(m.coefficient,(2*w+1)/(w+1));
+    near(m.euclideanDot,4*(1-w)/(w+1));
     assert.deepEqual(M.add(m.p, m.residual), m.v);
     if (w === 1) near(m.euclideanDot, 0);
     else assert.ok(Math.abs(m.euclideanDot) > 0.1);
   }
   assert.throws(() => M.projectionModel(0));
-  assert.equal(M.projectionModel(3).exact, "5/2");
+  assert.equal(M.projectionModel(2).exact, "5/3");
+  assert.equal(M.projectionModel(2).exactProjection, "10/3");
+  M.projectionModel(2).p.forEach((v)=>near(v,10/3));
 });
 test("Gram-Schmidt: normalized vectors are orthogonal; dependent input is explicit", () => {
   for (let k = 1; k <= 3; k++)
     for (let d = -2; d <= 2; d++) {
       const m = M.gramSchmidtModel(k, d);
+      assert.deepEqual(m.w2,[-d,d]);
+      near(m.coefficient,(k+d)/2);
       near(M.dot(m.w2, m.v1), 0);
       assert.deepEqual(M.add(m.w2, M.scale(m.coefficient, m.v1)), m.v2);
       near(M.dot(m.e1, m.e1), 1);
@@ -199,6 +221,15 @@ test("Gram-Schmidt: normalized vectors are orthogonal; dependent input is explic
         assert.equal(m.independent, false);
       }
     }
+});
+test("Gram-Schmidt's particular symmetric example has its claimed eigenvectors",()=>{
+  const a=linearActivities.find((a)=>a.id==="gram-schmidt"), match=a.explanation.match(/S=(\[\[\d+,\d+\],\[\d+,\d+\]\])/);
+  assert.ok(match); const S=JSON.parse(match[1]);
+  for(const d of [-2,-1,1,2]) {
+    const m=M.gramSchmidtModel(2,d);
+    M.mv(S,m.e1).forEach((v,i)=>near(v,6*m.e1[i]));
+    M.mv(S,m.e2).forEach((v,i)=>near(v,2*m.e2[i]));
+  }
 });
 test("all control endpoint combinations produce finite, described SVGs", () => {
   for (const a of linearActivities) {
@@ -241,4 +272,31 @@ test("LLM activities are mapped to taught topics and clearly label synthetic err
     assert.ok(a.tasks.length >= 4);
     assert.ok(a.prompt && a.repairedPrompt);
   }
+});
+
+test("fresh complex quizzes agree with the root formula", () => {
+  const a = linearActivities.find((a) => a.id === "complex");
+  assert.ok(a.question.includes("w⁵ = z"));
+  assert.equal(M.roots(60, 5).length, 5);
+  assert.equal(a.choices[a.answer], "חמישה פתרונות");
+  assert.equal(a.extensionChoices[a.extensionAnswer], `${360 / 6}°`);
+});
+
+test("determinant area: all actual columns, orientations, singular points and quizzes", () => {
+  for (let s = -2; s <= 3; s++) for (let t = -2; t <= 3; t++) {
+    const m = M.determinantModel(s, t), vs = [[0,0], m.u, M.add(m.u,m.v), m.v];
+    const signedArea = vs.reduce((total,p,i) => {const q=vs[(i+1)%4]; return total+p[0]*q[1]-p[1]*q[0];},0)/2;
+    assert.equal(m.determinant, 4*t-2*s);
+    assert.equal(m.determinant, signedArea);
+    assert.equal(m.area, Math.abs(signedArea));
+    assert.equal(m.invertible, s !== 2*t);
+    const graph = renderActivity("determinant", {s,t});
+    assert.equal(graph.readouts[0].value, `det A = ${signedArea}`);
+    assert.equal(graph.readouts[1].value, String(Math.abs(signedArea)));
+  }
+  assert.equal(M.determinantModel(3,0).determinant,-6);
+  assert.equal(M.determinantModel(-1,3).area,14);
+  const a=linearActivities.find((a)=>a.id==="determinant");
+  assert.equal(a.choices[a.answer], "6");
+  assert.equal(a.extensionChoices[a.extensionAnswer], "14");
 });

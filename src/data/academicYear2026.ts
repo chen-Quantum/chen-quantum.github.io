@@ -3,7 +3,7 @@ export const engineeringNotesPdf =
   "/materials/2026-2027/linear-algebra-engineering-notes.pdf";
 export const engineeringNotesEnglishPdf =
   "/materials/2026-2027/linear-algebra-engineering-tutorials-en.pdf";
-export const engineeringAppendixPages = { he: 273, en: 277 };
+export const engineeringAppendixPages = { he: 332, en: 353 };
 export function engineeringTutorialPdf(number: number, language: "he" | "en") {
   return `/materials/2026-2027/linear-algebra/tutorial-${String(number).padStart(2, "0")}-${language}.pdf`;
 }
@@ -13,42 +13,42 @@ export const engineeringLogicAppendixPdf = {
 };
 export const engineeringTutorials = [
   { number: 1, title: "Complex numbers and induction", page: 6, englishPage: 6 },
-  { number: 2, title: "Proof methods, sets, and fields", page: 23, englishPage: 24 },
-  { number: 3, title: "Fields and Finite Fields", page: 35, englishPage: 36 },
+  { number: 2, title: "Proof methods, sets, and fields", page: 24, englishPage: 27 },
+  { number: 3, title: "Fields and Finite Fields", page: 38, englishPage: 41 },
   {
     number: 4,
     title: "Complex Polynomials and Matrix Operations",
-    page: 47,
-    englishPage: 48,
+    page: 53,
+    englishPage: 57,
   },
-  { number: 5, title: "Linear Systems, Row Reduction, and Invertible Matrices", page: 59, englishPage: 61 },
+  { number: 5, title: "Linear Systems, Row Reduction, and Invertible Matrices", page: 75, englishPage: 81 },
   {
     number: 6,
     title: "Vector Spaces, Subspaces, and Linear Combinations",
-    page: 82,
-    englishPage: 84,
+    page: 104,
+    englishPage: 110,
   },
   {
     number: 7,
     title: "Linear Dependence, Bases, Dimension, and Row and Column Spaces",
-    page: 103,
-    englishPage: 105,
+    page: 129,
+    englishPage: 133,
   },
-  { number: 8, title: "Linear Maps and Coordinates", page: 128, englishPage: 130 },
-  { number: 9, title: "Matrix Representations, Change of Basis, and Determinants", page: 147, englishPage: 149 },
-  { number: 10, title: "Determinants, Adjugates, Similarity, and an Introduction to Diagonalization", page: 165, englishPage: 168 },
-  { number: 11, title: "Diagonalization, Cayley-Hamilton, and an Introduction to Inner Products", page: 197, englishPage: 200 },
+  { number: 8, title: "Linear Maps and Coordinates", page: 159, englishPage: 166 },
+  { number: 9, title: "Matrix Representations, Change of Basis, and Determinants", page: 181, englishPage: 191 },
+  { number: 10, title: "Determinants, Adjugates, Similarity, and an Introduction to Diagonalization", page: 206, englishPage: 217 },
+  { number: 11, title: "Diagonalization, Cayley-Hamilton, and an Introduction to Inner Products", page: 244, englishPage: 258 },
   {
     number: 12,
     title: "Inner Products, Norms, Orthogonality, Projections, and Gram-Schmidt",
-    page: 227,
-    englishPage: 231,
+    page: 278,
+    englishPage: 294,
   },
   {
     number: 13,
     title: "Adjoints and Unitary Diagonalization",
-    page: 251,
-    englishPage: 255,
+    page: 308,
+    englishPage: 328,
   },
 ];
 
