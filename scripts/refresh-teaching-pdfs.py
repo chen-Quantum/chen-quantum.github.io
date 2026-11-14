@@ -126,8 +126,12 @@ def insert_caption(page: fitz.Page, original: dict, caption: str, language: str,
     size = min(original["size"], 10.0)
     typeface=fitz.Font(fontfile=str(FONT_DIRECTORY/'DejaVuSans-Bold.ttf'))
     requested_width=typeface.text_length(caption,fontsize=size)*1.03 + 6
-    right=min(page.rect.width-40,r.x1+1)
-    left=max(55,right-requested_width)
+    if language == 'he':
+        right=min(page.rect.width-40,r.x1+1)
+        left=max(55,right-requested_width)
+    else:
+        left=max(55,r.x0-1)
+        right=min(page.rect.width-50,left+requested_width)
     box=fitz.Rect(left,r.y0-2.8,right,r.y1+4.8)
     if language == "he":
         import html
