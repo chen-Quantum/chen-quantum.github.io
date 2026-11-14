@@ -243,6 +243,94 @@ def split_manifest(root:Path, relative:str)->dict:
     return {'files':len(data['files']),'books':len(data['full_books'])}
 
 
+
+def cleanup_remaining_exam_sources(root: Path) -> dict:
+    """Finish exam and university-source credits without changing page counts."""
+    targets = [
+        ('linear-algebra-engineering-notes.pdf', [(73, 'exam2023'), (87, 'mit'), (88, 'exam2024')]),
+        ('linear-algebra-biomedical-notes-he.pdf', [(63, 'mit'), (65, 'exam2024')]),
+    ]
+    report = {}
+    font_archive = fitz.Archive(str(FONT_DIRECTORY))
+    for filename, items in targets:
+        target = root / 'public/materials/2026-2027' / filename
+        with fitz.open(target) as pdf:
+            changes = []
+            for pnum, kind in items:
+                page = pdf[pnum - 1]
+                spans = [
+                    sp
+                    for block in page.get_text('dict')['blocks']
+                    for line in block.get('lines', [])
+                    for sp in line['spans']
+                ]
+                if kind == 'mit':
+                    to_redact = [
+                        sp for sp in spans
+                        if 63 < sp['bbox'][1] < 94 and sp['bbox'][0] >= 60
+                    ]
+                    anchors = [sp for sp in spans if 'עיבוד לפי' in sp['text']]
+                    assert len(anchors) == 1 and any('MIT' in sp['text'] for sp in to_redact), (
+                        filename, pnum, len(anchors), len(to_redact)
+                    )
+                    captions = [(anchors[0], 'MIT OpenCourseWare, 18.06')]
+                else:
+                    first = [sp for sp in spans if 'ממבחן אלגברה' in sp['text']]
+                    if kind == 'exam2023':
+                        second = [sp for sp in spans if 'צוות המרצים:' in sp['text']]
+                        words = ['מבחן לינארית לחשמל, 2023. מרצים: ענת אמיר, גיא לנדסמן ויוחאי מעין.']
+                    else:
+                        second = [
+                            sp for sp in spans
+                            if 'המרצים:' in sp['text'] and 'וישנבסקי' in sp['text']
+                        ]
+                        words = [
+                            'מבחן לינארית לחשמל, 2024.',
+                            'מרצים: יוחאי מעין, אבי חנן, לאוניד וישנבסקי וסלע פריד.',
+                        ]
+                    assert len(first) == len(second) == 1, (
+                        filename, pnum, kind, len(first), len(second)
+                    )
+                    to_redact = [first[0], second[0]]
+                    captions = [(first[0], words[0])]
+                    if len(words) > 1:
+                        captions.append((second[0], words[1]))
+                for sp in to_redact:
+                    page.add_redact_annot(redaction_rect(sp), fill=(1, 1, 1))
+                page.apply_redactions(images=0, graphics=0, text=0)
+                for anchor, caption in captions:
+                    insert_caption(page, anchor, caption, 'he', font_archive, color='#516475')
+                extracted = page.get_text()
+                if kind.startswith('exam'):
+                    assert 'מועד א' not in extracted and 'מועד ב' not in extracted, (
+                        filename, pnum
+                    )
+                else:
+                    assert 'עיבוד לפי' not in extracted, (filename, pnum)
+                changes.append({'page': pnum, 'kind': kind})
+            pdf.subset_fonts()
+            temp = target.with_name(target.name + '.exam.tmp.pdf')
+            pdf.save(temp, garbage=4, deflate=True, deflate_fonts=True)
+        os.replace(temp, target)
+        report[filename] = changes
+    for folder in ['linear-algebra', 'linear-algebra-biomedical']:
+        split_manifest(root, 'materials/2026-2027/' + folder + '/tutorial-downloads.json')
+    for folder in ['linear-algebra', 'linear-algebra-biomedical']:
+        manifest = json.loads(
+            (root / 'public/materials/2026-2027' / folder / 'tutorial-downloads.json').read_text()
+        )
+        for entry in manifest['files']:
+            source = root / 'public' / entry['source_url'].lstrip('/')
+            part = root / 'public' / entry['url'].lstrip('/')
+            with fitz.open(source) as book, fitz.open(part) as excerpt:
+                start = entry['source_physical_start'] - 1
+                assert len(excerpt) == entry['pages'], entry['url']
+                for i in range(len(excerpt)):
+                    assert excerpt[i].get_text() == book[start + i].get_text(), entry['url']
+                    assert excerpt[i].get_label() == book[start + i].get_label(), entry['url']
+    return report
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1])
@@ -254,6 +342,11 @@ def main():
     root=args.root
     mark=root/'.github/teaching-pdf-release-v2.json'
     if mark.exists():
+        release = json.loads(mark.read_text())
+        if 'exam_cleanup' not in release:
+            release['exam_cleanup'] = cleanup_remaining_exam_sources(root)
+            mark.write_text(json.dumps(release, ensure_ascii=False, indent=2) + chr(10))
+            print(json.dumps({'exam_cleanup': release['exam_cleanup']}, ensure_ascii=False))
         # Audit remaining examination source labels without changing a published PDF.
         for fp in [
             'linear-algebra-engineering-notes.pdf',
