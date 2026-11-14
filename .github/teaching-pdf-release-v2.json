@@ -29,5 +29,31 @@
       "files": 32,
       "books": 2
     }
+  },
+  "exam_cleanup": {
+    "linear-algebra-engineering-notes.pdf": [
+      {
+        "page": 73,
+        "kind": "exam2023"
+      },
+      {
+        "page": 87,
+        "kind": "mit"
+      },
+      {
+        "page": 88,
+        "kind": "exam2024"
+      }
+    ],
+    "linear-algebra-biomedical-notes-he.pdf": [
+      {
+        "page": 63,
+        "kind": "mit"
+      },
+      {
+        "page": 65,
+        "kind": "exam2024"
+      }
+    ]
   }
 }
