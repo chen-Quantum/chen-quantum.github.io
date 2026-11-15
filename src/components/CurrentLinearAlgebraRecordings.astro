@@ -33,23 +33,22 @@ const tracks = [
     videoCount: trackVideos.length,
     sessions: sessionNumbers.map((number) => {
       const sessionVideos = trackVideos.filter((video) => video.laTutorial === number);
-      // The verified fields recordings match chapter 3 of the current booklet.
       const isFieldsTutorial = number === 3 && sessionVideos.length > 0 &&
         sessionVideos.every((video) => video.title.includes("שדות ושדות סופיים"));
-      // Do not associate tutorial 4 with a PDF solely by matching numbers.
-      // Its topic coverage was not independently verified against the handbook.
-      const practiceTutorialNumber = number === 4 ? null : track.id === "biomedical" ? number : isFieldsTutorial ? 3 :
-        ([1, 2].includes(number) ? number : null);
+      const electricalFieldsAndComplex = track.id === "electrical" && number === 4 &&
+        sessionVideos.some((video) => /שדות/.test(video.title) && /מרוכבים/.test(video.title));
+      const chapterNumbers = electricalFieldsAndComplex ? [3, 1] : [number];
       const tutorialRegistry = track.id === "biomedical" ? biomedicalTutorials : engineeringTutorials;
       const practicePdf = track.id === "biomedical" ? biomedicalTutorialPdf : engineeringTutorialPdf;
-      const practiceTutorial = tutorialRegistry.find(
-        (tutorial) => tutorial.number === practiceTutorialNumber,
-      );
+      const practiceTutorials = chapterNumbers.flatMap((chapterNumber) => {
+        const tutorial = tutorialRegistry.find((item) => item.number === chapterNumber);
+        return tutorial ? [tutorial] : [];
+      });
       return {
         number,
         title: isFieldsTutorial ? "Fields and finite fields" :
           ("Tutorial " + number),
-        practiceTutorial,
+        practiceTutorials,
         practicePdf,
         videos: sessionVideos,
       };
@@ -153,54 +152,55 @@ const tracks = [
                 </div>
               </div>
 
-              {session.practiceTutorial ? (
+              {session.practiceTutorials.length > 0 ? (
               <div class="session-material">
-                <p class="content-label">Practice sheet · PDF</p>
-                <p class="material-chapter">
-                  Handbook chapter {session.practiceTutorial.number} · {session.practiceTutorial.title}
-                </p>
+                <p class="content-label">{session.practiceTutorials.length > 1 ? "Practice sheets by topic · PDF" : "Practice sheet · PDF"}</p>
                 <p class="material-help">
-                  Select the language, open the inline preview, or use the
-                  download code to open the complete sheet.
+                  Select a language to preview a chapter or enter the course download code.
                 </p>
-                <div class="session-pdfs">
-                  <div class="session-pdf" lang="he">
-                    <div class="pdf-heading">
-                      <span>Hebrew · עברית</span>
-                      <PdfDownloadGate
-                        pdfPath={session.practicePdf(session.practiceTutorial.number, "he")}
-                        code={TEACHING_PDF_DOWNLOAD_CODE}
-                        label="Open / download PDF"
-                      />
+                {session.practiceTutorials.map((practiceTutorial) => (
+                  <div class="session-pdf-pair">
+                    <p class="material-chapter">Handbook chapter {practiceTutorial.number} · {practiceTutorial.title}</p>
+                    <div class="session-pdfs">
+                      <div class="session-pdf" lang="he">
+                        <div class="pdf-heading">
+                          <span>Hebrew · עברית</span>
+                          <PdfDownloadGate
+                            pdfPath={session.practicePdf(practiceTutorial.number, "he")}
+                            code={TEACHING_PDF_DOWNLOAD_CODE}
+                            label="Open / download PDF"
+                          />
+                        </div>
+                        <PdfPreview
+                          pdfPath={session.practicePdf(practiceTutorial.number, "he")}
+                          title={"Handbook chapter " + practiceTutorial.number + " (Hebrew)"}
+                          downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
+                        />
+                      </div>
+                      <div class="session-pdf">
+                        <div class="pdf-heading">
+                          <span>English</span>
+                          <PdfDownloadGate
+                            pdfPath={session.practicePdf(practiceTutorial.number, "en")}
+                            code={TEACHING_PDF_DOWNLOAD_CODE}
+                            label="Open / download PDF"
+                          />
+                        </div>
+                        <PdfPreview
+                          pdfPath={session.practicePdf(practiceTutorial.number, "en")}
+                          title={"Handbook chapter " + practiceTutorial.number + " (English)"}
+                          downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
+                        />
+                      </div>
                     </div>
-                    <PdfPreview
-                      pdfPath={session.practicePdf(session.practiceTutorial.number, "he")}
-                      title={"Handbook chapter " + session.practiceTutorial.number + " (Hebrew)"}
-                      downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
-                    />
                   </div>
-                  <div class="session-pdf">
-                    <div class="pdf-heading">
-                      <span>English</span>
-                      <PdfDownloadGate
-                        pdfPath={session.practicePdf(session.practiceTutorial.number, "en")}
-                        code={TEACHING_PDF_DOWNLOAD_CODE}
-                        label="Open / download PDF"
-                      />
-                    </div>
-                    <PdfPreview
-                      pdfPath={session.practicePdf(session.practiceTutorial.number, "en")}
-                      title={"Handbook chapter " + session.practiceTutorial.number + " (English)"}
-                      downloadCode={TEACHING_PDF_DOWNLOAD_CODE}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
               ) : (
                 <div class="session-material">
                   <p class="content-label">Practice sheet</p>
                   <p class="material-help">
-                    A related handbook chapter will appear here when it is available.
+                    <a href="/teaching/2026-2027/#tutorial-downloads" class="track-back">Browse all tutorial PDFs ↗</a>
                   </p>
                 </div>
               )}
@@ -251,6 +251,7 @@ const tracks = [
   .session-material { min-width: 0; background: #fafbf7; border: 1px solid #e1e8dc; border-radius: 10px; padding: 1.25rem; }
   .material-help { font-size: 0.8rem; line-height: 1.7; color: #647067; margin-bottom: 1rem; }
   .material-chapter { color: #294437; font-size: 0.85rem; font-weight: 650; line-height: 1.6; margin-bottom: 0.65rem; }
+  .session-pdf-pair + .session-pdf-pair { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #dce4d6; }
   .session-pdfs { display: grid; gap: 1rem; }
   .session-pdf { min-width: 0; padding: 0.95rem; background: white; border: 1px solid #e1e8dc; border-radius: 9px; }
   .pdf-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
