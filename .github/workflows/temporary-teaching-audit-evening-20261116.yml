@@ -79,12 +79,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Setup pnpm 10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Build and test teaching site
         shell: bash
         run: |
-          corepack enable
-          corepack pnpm install --frozen-lockfile
-          corepack pnpm run build
+          pnpm install --frozen-lockfile
+          pnpm run build
           node scripts/tests/teaching-order.mjs
           node scripts/tests/site-discovery.mjs
           python3 scripts/check-teaching-tracks.py
