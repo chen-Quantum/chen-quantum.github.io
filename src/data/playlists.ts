@@ -82,13 +82,13 @@ export const teachingPlaylists: TeachingPlaylist[] = [
   {
     id: "PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv",
     url: "https://www.youtube.com/playlist?list=PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv",
-    title: "שתי וקטורים הם בתל אממ הם לא צל אחד של השני",
+    title: "מטלות בית פתורות - לינארית להנדסה ביו רפואית",
     courseId: "linear-algebra",
-    contentType: "unknown",
-    videoIds: [],
-    confidence: "low",
-    notes:
-      "yt-dlp reported that this playlist does not exist on the 2026-06-11 sync run. Needs manual review before publishing.",
+    contentType: "worked-solution",
+    description: "Solved Linear Algebra homework questions for Biomedical Engineering. Academic year and tutorial numbers are unverified.",
+    videoIds: ["8QwMKMnGTSs", "yKiJNFsLei4", "u8WAmelu8nI"],
+    confidence: "high",
+    notes: "Video IDs, titles and durations verified using yt-dlp on 2026-11-16; YouTube oEmbed separately verified all three. Individual metadata restricted by YouTube sign-in; upload dates, academic year and tutorial numbers are not established.",
   },
   {
     id: "PLm0oTNdEqyalMoJvzAouqqQoCU3NyWiBI",

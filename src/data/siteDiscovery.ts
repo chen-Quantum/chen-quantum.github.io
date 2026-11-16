@@ -1,6 +1,7 @@
 import { getCollection } from "astro:content";
 import { engineeringTutorials } from "./academicYear2026";
 import { tirgulim } from "./tirgulim";
+import { videosByPlaylist } from "./youtubeVideos";
 import { practiceTopicsEn } from "./englishTeaching";
 
 export interface SiteSearchEntry {
@@ -53,6 +54,13 @@ export async function getSiteSearchEntries(): Promise<SiteSearchEntry[]> {
   ]);
   return [
     ...pages,
+    ...videosByPlaylist("PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv").map((video) => ({
+      title: video.title,
+      url: "/teaching/linear-algebra/#recording-" + video.videoId,
+      description: "Biomedical Engineering Linear Algebra homework solution (" + video.duration + "). Academic year and tutorial number unverified.",
+      category: "Teaching",
+      keywords: ["ביו רפואה", "לינארית", "מטלות בית פתורות", "homework", "worked solution", video.videoId].join(" "),
+    })),
     ...engineeringTutorials.map((tutorial) => ({
       title: "Linear algebra · Tutorial " + tutorial.number + ": " + tutorial.title,
       url: "/teaching/2026-2027#tutorial-" + tutorial.number,

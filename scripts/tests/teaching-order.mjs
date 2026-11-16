@@ -47,6 +47,15 @@ for (const [html, label] of [[main, 'teaching'], [year, 'year'], [intl, 'interna
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
   assert.equal(ids.length, new Set(ids).size, label + ': no duplicate anchors');
 }
+const archivedHomework = ["8QwMKMnGTSs", "yKiJNFsLei4", "u8WAmelu8nI"];
+for (const videoId of archivedHomework) {
+  assert.equal(archive.split('data-embed="https://www.youtube-nocookie.com/embed/' + videoId + '"').length - 1, 1, 'Exactly one archived player for ' + videoId);
+  assert.ok(!year.includes(videoId), 'Undated homework absent from current-year page: ' + videoId);
+  assert.ok(!intl.includes(videoId), 'International programme has no recordings: ' + videoId);
+}
+const videoSource = readFileSync('src/data/youtubeVideos.ts', 'utf8');
+const ids = [...videoSource.matchAll(/videoId:\s*"([^"]+)"/g)].map(m => m[1]);
+assert.equal(new Set(ids).size, ids.length, 'No duplicate videoId rows');
 assert.ok(main.includes('data-pdf-code='), 'Existing PDF download gate remains');
 assert.ok(year.includes('tutorial-01-he.pdf'), 'Other courses remain bilingual');
 console.log('PASS: ordering, unique anchors, PDF access and language regression checks');

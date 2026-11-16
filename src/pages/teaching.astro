@@ -24,6 +24,9 @@ import {
 const currentRecordingCount = (track: string) => linearAlgebraVideos.filter(
   (v) => v.playlistId === "PLEvis3LHS9Ks" && v.track === track,
 ).length;
+const biomedicalHomeworkCount = linearAlgebraVideos.filter(
+  (v) => v.playlistId === "PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv" && v.contentType === "worked-solution" && v.track === "Biomedical Engineering",
+).length;
 
 const allTeaching = await getCollection("teaching", ({ data }) => !data.draft);
 const activeCourses = allTeaching
@@ -40,14 +43,12 @@ function countFor(courseId: string) {
   if (courseId === "linear-algebra-electrical")
     return {
       materials: engineeringTutorials.length,
-      videos: linearAlgebraVideos.filter((v) => v.track.includes("Electrical"))
-        .length,
+      videos: currentRecordingCount("Electrical Engineering"),
     };
   if (courseId === "linear-algebra-biomedical")
     return {
       materials: biomedicalTutorials.length,
-      videos: linearAlgebraVideos.filter((v) => v.track.includes("Biomedical"))
-        .length,
+      videos: currentRecordingCount("Biomedical Engineering"),
     };
   return { materials: 0, videos: 0 };
 }
@@ -192,6 +193,9 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
             <div class="earlier-course-actions">
               <a href="#earlier-linear-algebra">Recordings ↓</a>
               <a href="/teaching/linear-algebra/#songs">Study extras ↗</a>
+              {biomedicalHomeworkCount > 0 && (
+                <a href="/teaching/linear-algebra/#biomedical-homework-solutions">Biomedical solved homework ({biomedicalHomeworkCount}) ↗</a>
+              )}
             </div>
           </article>
           {groupTheoryVideos.length > 0 && (
@@ -554,6 +558,12 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
         </a>
       </div>
 
+      {biomedicalHomeworkCount > 0 && (
+        <p class="mb-5 text-sm text-slate-600">
+          <a class="text-link" href="/teaching/linear-algebra/#biomedical-homework-solutions">Biomedical Engineering: {biomedicalHomeworkCount} additional solved homework recordings ↗</a>
+          <span> · Academic year unverified; separate from current-year tutorials</span>
+        </p>
+      )}
       <div class="space-y-10">
         {
           laGroups.map((g) => (
