@@ -49,6 +49,17 @@ jobs:
                       seen.add(vid)
                       if vid in known:continue
                       short={"id":vid,"playlist_title":x.get("title"),"playlist_duration":x.get("duration"),"playlist_url":u}
+                      print("FLAT_CANDIDATE_META",json.dumps({k:x.get(k) for k in ["id","title","duration","availability","live_status","upload_date","release_date","channel","description","url","ie_key"]},ensure_ascii=False),flush=True)
+                      import urllib.request
+                      try:
+                          q="https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="+vid+"&format=json"
+                          with urllib.request.urlopen(urllib.request.Request(q,headers={"User-Agent":"Mozilla/5.0"}),timeout=10) as response:
+                              ob=json.load(response)
+                          short["oembed"]={k:ob.get(k) for k in ["title","author_name","provider_name","type"]}
+                          print("OEMBED_OK",vid,json.dumps(short["oembed"],ensure_ascii=False),flush=True)
+                      except Exception as e:
+                          short["oembed_error"]=str(e)[:500]
+                          print("OEMBED_FAIL",vid,short["oembed_error"],flush=True)
                       meta,err2=run(["yt-dlp","--dump-single-json","--skip-download","--no-playlist","--no-warnings","--quiet","--","https://www.youtube.com/watch?v="+vid],70)
                       if meta:
                           short.update({k:meta.get(k) for k in ["title","duration","upload_date","release_date","description","live_status","availability","channel","timestamp"]})
