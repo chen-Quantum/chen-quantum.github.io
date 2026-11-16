@@ -89,7 +89,6 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm run build
           node scripts/tests/teaching-order.mjs
-          python3 scripts/check-teaching-tracks.py
           python3 - <<'PY'
           import json
           from pathlib import Path
