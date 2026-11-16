@@ -21,6 +21,8 @@ on:
     - cron: "0 0 * * 2,4"
       timezone: "Asia/Jerusalem"
   workflow_dispatch:
+  push:
+    branches: [audit-teaching-2026-11-16-evening]
 
 permissions:
   contents: read
@@ -48,6 +50,35 @@ jobs:
 
       - name: Run sync (report-only)
         run: node scripts/sync-teaching-content.mjs
+
+      - name: Inspect metadata of any new videos (no download)
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          report=json.loads(Path("reports/teaching-sync/latest.json").read_text())
+          print("AUDIT_PLAYLIST_REPORT",json.dumps(report,ensure_ascii=False))
+          seen=set()
+          for p in report["playlists"]:
+              if not p.get("ok"):
+                  print("PLAYLIST_SCAN_FAILURE", p["id"],p.get("error",""))
+              for v in p.get("newVideos",[]):
+                  vid=v["videoId"]
+                  if vid in seen:continue
+                  seen.add(vid)
+                  cmd=["yt-dlp","--no-playlist","--skip-download","--no-warnings","--dump-single-json","https://www.youtube.com/watch?v="+vid]
+                  try:
+                      x=subprocess.run(cmd,timeout=75,text=True,capture_output=True)
+                      if x.returncode:
+                          print("DETAIL_FAILED",vid,x.stderr.strip()[:900])
+                          continue
+                      j=json.loads(x.stdout)
+                      data={k:j.get(k) for k in ["id","title","description","duration","upload_date","release_date","availability","live_status","channel","webpage_url"]}
+                      print("VERIFIED_VIDEO",json.dumps(data,ensure_ascii=False))
+                  except Exception as e:
+                      print("DETAIL_ERROR",vid,str(e))
+          print("TOTAL_NEW_CANDIDATE_IDS",len(seen))
+          PY
 
       - name: Append report to job summary
         if: always()
