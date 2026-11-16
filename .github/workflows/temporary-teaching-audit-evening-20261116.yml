@@ -89,5 +89,14 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm run build
           node scripts/tests/teaching-order.mjs
-          node scripts/tests/site-discovery.mjs
           python3 scripts/check-teaching-tracks.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          items=json.loads(Path("dist/search-index.json").read_text())
+          for vid in ["8QwMKMnGTSs","yKiJNFsLei4","u8WAmelu8nI"]:
+              matches=[x for x in items if x["url"].endswith("recording-"+vid)]
+              assert len(matches)==1,(vid,matches)
+              assert "Biomedical" in matches[0]["description"]
+          print("PASS: 3 unique searchable biomedical homework recordings")
+          PY
