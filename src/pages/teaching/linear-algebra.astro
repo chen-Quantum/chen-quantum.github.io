@@ -15,6 +15,7 @@ import LiteYouTube from "../../components/LiteYouTube.astro";
 import {
   linearAlgebraVideos,
   videosByContentType,
+  videosByPlaylist,
 } from "../../data/youtubeVideos";
 import { teachingPlaylists } from "../../data/playlists";
 
@@ -28,8 +29,12 @@ const laGroups = laTutorialNumbers
 const examVideos = linearAlgebraVideos.filter((v) => v.isExamQuestion);
 
 // Worked solutions (non-exam), songs, memory-aids: LA only.
+const biomedicalHomeworkPlaylistId = "PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv";
+const biomedicalHomeworkVideos = videosByPlaylist(biomedicalHomeworkPlaylistId).filter(
+  (v) => v.category === "linear_algebra" && v.track === "Biomedical Engineering" && v.contentType === "worked-solution"
+);
 const laSolutions = videosByContentType("worked-solution").filter(
-  (v) => v.category === "linear_algebra" && !v.isExamQuestion
+  (v) => v.category === "linear_algebra" && !v.isExamQuestion && v.playlistId !== biomedicalHomeworkPlaylistId
 );
 const laSongs = videosByContentType("song").filter(
   (v) => v.category === "linear_algebra"
@@ -42,6 +47,7 @@ const laMemoryAids = videosByContentType("memory-aid").filter(
 const examPlaylist = teachingPlaylists.find(
   (p) => p.id === "PLm0oTNdEqyanqRzbtG56IX1fzIjknH6An"
 );
+const biomedicalHomeworkPlaylist = teachingPlaylists.find((p) => p.id === biomedicalHomeworkPlaylistId);
 const solutionsPlaylist = teachingPlaylists.find(
   (p) => p.id === "PLm0oTNdEqyalwtYng6d2FFijOXHsBT_Sn"
 );
@@ -159,6 +165,41 @@ const memoryAidPlaylist = teachingPlaylists.find(
               track={v.track}
               note={v.sessionNote}
             />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {biomedicalHomeworkVideos.length > 0 && (
+      <section id="biomedical-homework-solutions" class="mb-16 scroll-mt-24">
+        <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+          <h2 class="font-display text-2xl md:text-3xl text-slate-900">
+            Biomedical Engineering · Solved homework questions
+          </h2>
+          <span class="text-xs text-slate-500">{biomedicalHomeworkVideos.length} videos</span>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed max-w-3xl mb-6">
+          Additional Linear Algebra worked solutions from the verified biomedical
+          playlist. The academic year and tutorial numbers are not established.
+          These videos are separate from the 2026–2027 course, with no practice PDF match.
+          {biomedicalHomeworkPlaylist && (
+            <> <a href={biomedicalHomeworkPlaylist.url} target="_blank" rel="noopener noreferrer" class="text-link">Original YouTube playlist ↗</a></>
+          )}
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {biomedicalHomeworkVideos.map((v) => (
+            <div id={"recording-" + v.videoId} class="scroll-mt-24">
+              <LiteYouTube
+                videoId={v.videoId}
+                title={v.title}
+                thumbnail={v.thumbnail}
+                embedUrl={v.embedUrl}
+                url={v.url}
+                duration={v.duration}
+                track={v.track}
+                note={v.sessionNote}
+              />
+            </div>
           ))}
         </div>
       </section>

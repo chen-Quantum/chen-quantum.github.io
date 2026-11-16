@@ -3,6 +3,8 @@ import type { YouTubeVideo } from "./youtubeVideos";
 // English display labels use the existing course/session metadata. The original
 // YouTube titles and source PDFs remain intact for matching and maintenance.
 export function englishVideoTitle(video: YouTubeVideo): string {
+  // Preserve verbatim YouTube titles for this undated homework archive.
+  if (video.playlistId === "PLm0oTNdEqyakeEk6T3jTBxeqS5z_zUzEv") return video.title;
   if (!/[\u0590-\u05ff]/.test(video.title)) return video.title;
   const courses: Record<string, string> = {
     hedva2: "Calculus 2",
