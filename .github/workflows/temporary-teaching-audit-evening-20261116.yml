@@ -74,3 +74,17 @@ jobs:
               raise SystemExit("Primary 2026-2027 playlist cannot be verified")
           
           PY
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Build and test teaching site
+        shell: bash
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+          corepack pnpm run build
+          node scripts/tests/teaching-order.mjs
+          node scripts/tests/site-discovery.mjs
+          python3 scripts/check-teaching-tracks.py
