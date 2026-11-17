@@ -13,35 +13,40 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install YouTube metadata tool
         run: python3 -m pip install -q yt-dlp
-      - name: List public channel playlists and recent uploads
+      - name: Get exact original playlist episodes and two new videos
         shell: bash
         run: |
           python3 - <<'PY'
-          import json, urllib.request, subprocess
+          import json,subprocess,re,urllib.request
           from urllib.parse import quote
-          vid='KJ9rZ7OP17k'
-          oembed='https://www.youtube.com/oembed?url='+quote('https://www.youtube.com/watch?v='+vid, safe='')+'&format=json'
-          try:
-              with urllib.request.urlopen(urllib.request.Request(oembed,headers={'User-Agent':'Mozilla/5.0'}),timeout=20) as response:
-                  d=json.load(response)
-              print('CHANNEL_AUTHOR',json.dumps({'name':d.get('author_name'),'url':d.get('author_url')},ensure_ascii=False),flush=True)
-              channel=d.get('author_url','').rstrip('/')
-          except Exception as exc:
-              print('OEMBED_ERROR',str(exc),flush=True)
-              channel=''
-          urls=[channel+'/playlists',channel+'/videos'] if channel else []
-          urls+=['https://www.youtube.com/@JuanBalagan/playlists']
-          for url in urls:
-              print('SCAN_URL',url,flush=True)
-              try:
-                  proc=subprocess.run(['yt-dlp','--flat-playlist','--dump-single-json','--playlist-end','120','--no-warnings','--skip-download','--',url],capture_output=True,text=True,timeout=115)
-                  if proc.returncode:
-                      print('YT_ERROR',proc.stderr[-500:],flush=True)
-                      continue
-                  d=json.loads(proc.stdout)
-                  print('CHANNEL_TITLE',d.get('title'),'CHANNEL_ID',d.get('channel_id'),'ENTRIES',len(d.get('entries') or []),flush=True)
-                  for e in d.get('entries') or []:
-                      if e and isinstance(e,dict):
-                          print('CHANNEL_ENTRY',json.dumps({'id':e.get('id'),'title':e.get('title'),'url':e.get('url'),'type':e.get('_type'),'view_count':e.get('view_count')},ensure_ascii=False),flush=True)
-              except Exception as exc: print('SCANNER_ERROR',str(exc),flush=True)
+          from pathlib import Path
+          previous=Path('src/data/youtubeVideos.ts').read_text()
+          known=set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{11})"',previous))
+          ids=[
+            ('linear-electrical-old','PLm0oTNdEqyakPZNxPchsnGy7R7BnkP2ML'),
+            ('linear-biomedical-old','PLm0oTNdEqyaml_II1IKiInf06g2LTBeyt'),
+            ('hedva-engineering','PLm0oTNdEqyalxtp6tUphCnuvojTdVE3Pn'),
+            ('linear-current','PLEvis3LHS9Ks'),
+          ]
+          for label,pid in ids:
+            p=subprocess.run(['yt-dlp','--flat-playlist','--dump-single-json','--quiet','--skip-download','--no-warnings','https://www.youtube.com/playlist?list='+pid],capture_output=True,text=True,timeout=100)
+            if p.returncode:
+              print('ERROR',label,p.stderr[-450:],flush=True)
+              continue
+            data=json.loads(p.stdout)
+            ents=[x for x in data.get('entries') or [] if isinstance(x,dict)]
+            print('PLAYLIST',label,pid,json.dumps({'title':data.get('title'),'size':len(ents)},ensure_ascii=False),flush=True)
+            for x in ents:
+              v={'id':x.get('id'),'title':x.get('title'),'duration':x.get('duration'),'already_imported':x.get('id') in known}
+              print('ITEM',label,json.dumps(v,ensure_ascii=False),flush=True)
+          u='https://www.youtube.com/@JuanBalagan/videos'
+          p=subprocess.run(['yt-dlp','--flat-playlist','--dump-single-json','--quiet','--skip-download','--no-warnings',u],capture_output=True,text=True,timeout=90)
+          if p.returncode:
+            print('CHANNEL_ERROR',p.stderr[-350:],flush=True)
+          else:
+            data=json.loads(p.stdout)
+            for x in data.get('entries') or []:
+              if x and x.get('id') in ['rKNRT8A5ymY','jGjGSJFibiM','9rdJdh6c0XM']:
+                v={'id':x.get('id'),'title':x.get('title'),'duration':x.get('duration'),'channel_id':data.get('channel_id'),'already_imported':x.get('id') in known}
+                print('NEW',json.dumps(v,ensure_ascii=False),flush=True)
           PY
