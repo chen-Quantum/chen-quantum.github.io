@@ -1,0 +1,47 @@
+name: Audit public teaching playlist catalogue
+on:
+  push:
+    branches:
+      - audit-youtube-playlists-20261117
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install YouTube metadata tool
+        run: python3 -m pip install -q yt-dlp
+      - name: List public channel playlists and recent uploads
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, subprocess
+          from urllib.parse import quote
+          vid='KJ9rZ7OP17k'
+          oembed='https://www.youtube.com/oembed?url='+quote('https://www.youtube.com/watch?v='+vid, safe='')+'&format=json'
+          try:
+              with urllib.request.urlopen(urllib.request.Request(oembed,headers={'User-Agent':'Mozilla/5.0'}),timeout=20) as response:
+                  d=json.load(response)
+              print('CHANNEL_AUTHOR',json.dumps({'name':d.get('author_name'),'url':d.get('author_url')},ensure_ascii=False),flush=True)
+              channel=d.get('author_url','').rstrip('/')
+          except Exception as exc:
+              print('OEMBED_ERROR',str(exc),flush=True)
+              channel=''
+          urls=[channel+'/playlists',channel+'/videos'] if channel else []
+          urls+=['https://www.youtube.com/@JuanBalagan/playlists']
+          for url in urls:
+              print('SCAN_URL',url,flush=True)
+              try:
+                  proc=subprocess.run(['yt-dlp','--flat-playlist','--dump-single-json','--playlist-end','120','--no-warnings','--skip-download','--',url],capture_output=True,text=True,timeout=115)
+                  if proc.returncode:
+                      print('YT_ERROR',proc.stderr[-500:],flush=True)
+                      continue
+                  d=json.loads(proc.stdout)
+                  print('CHANNEL_TITLE',d.get('title'),'CHANNEL_ID',d.get('channel_id'),'ENTRIES',len(d.get('entries') or []),flush=True)
+                  for e in d.get('entries') or []:
+                      if e and isinstance(e,dict):
+                          print('CHANNEL_ENTRY',json.dumps({'id':e.get('id'),'title':e.get('title'),'url':e.get('url'),'type':e.get('_type'),'view_count':e.get('view_count')},ensure_ascii=False),flush=True)
+              except Exception as exc: print('SCANNER_ERROR',str(exc),flush=True)
+          PY
