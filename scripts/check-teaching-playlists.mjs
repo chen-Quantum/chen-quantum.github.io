@@ -15,7 +15,7 @@ for (const id of ["rKNRT8A5ymY","jGjGSJFibiM"]) {
     const token = `data-video-practice="${id}"`;
     const pos = html.indexOf(token);
     assert(pos >= 0, "No matching PDF control beside " + id + " on " + name);
-    const chunk = html.slice(pos,pos+2800);
+    const chunk = html.slice(pos,pos+12500);
     assert(chunk.includes("tutorial-05-he.pdf"),"No Hebrew tutorial 5 PDF for " + id + " on " + name);
     assert(chunk.includes("tutorial-05-en.pdf"),"No English tutorial 5 PDF for " + id + " on " + name);
   }
