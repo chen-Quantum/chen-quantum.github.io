@@ -1,0 +1,82 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import LiteYouTube from "../../components/LiteYouTube.astro";
+import { teachingPlaylistGroups, videosInTeachingPlaylist } from "../../data/teachingPlaylistCatalog";
+---
+
+<Layout title="Teaching playlists" description="All course recordings and YouTube playlists by Chen Gadi, including Linear Algebra and Calculus 2 for engineering students.">
+  <section class="page-intro" id="playlists-top">
+    <div class="mx-auto max-w-6xl px-6">
+      <a href="/teaching/" class="text-link">← Teaching</a>
+      <p class="edition-label mt-4">Teaching · Video archive</p>
+      <h1>All recordings &amp; playlists</h1>
+      <p>Linear Algebra, Calculus 2 and additional study material, organised by course and year.</p>
+      <div class="academic-actions mt-5">
+        {teachingPlaylistGroups.map((group) => (
+          <a href={`#${group.id}`} class="academic-secondary">{group.title} ↓</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-6xl px-6 py-10 md:py-14">
+    {teachingPlaylistGroups.map((group) => (
+      <section class="playlist-year scroll-mt-24" id={group.id} aria-labelledby={`group-title-${group.id}`}>
+        <div class="playlist-year-title">
+          <h2 id={`group-title-${group.id}`} class="font-display">{group.title}</h2>
+          <p>{group.caption}</p>
+        </div>
+        {group.cards.map((playlist) => (
+          <article id={playlist.id} class="full-playlist scroll-mt-24" data-playlist-archive={playlist.id}>
+            <div class="full-playlist-heading">
+              <div>
+                <p class="playlist-year-note">{playlist.year} · {playlist.videoIds.length} הקלטות</p>
+                <h3 lang="he" dir="rtl">{playlist.title}</h3>
+                <p class="playlist-caption">{playlist.subtitle}</p>
+              </div>
+              <div class="full-playlist-actions">
+                {playlist.youtubeUrl && (
+                  <a href={playlist.youtubeUrl} target="_blank" rel="noopener noreferrer">פתיחת הפלייליסט ב-YouTube ↗</a>
+                )}
+                <a href="/teaching/#teaching-playlists">חזרה לתפריט הקורסים ←</a>
+              </div>
+            </div>
+            <div class="playlist-video-grid">
+              {videosInTeachingPlaylist(playlist).map((video) => (
+                <LiteYouTube
+                  videoId={video.videoId}
+                  title={video.title}
+                  thumbnail={video.thumbnail}
+                  embedUrl={video.embedUrl}
+                  url={video.url}
+                  duration={video.duration}
+                  track={video.track}
+                  note={video.sessionNote}
+                />
+              ))}
+            </div>
+          </article>
+        ))}
+      </section>
+    ))}
+  </main>
+</Layout>
+
+<style>
+  .playlist-year + .playlist-year { padding-top: 2.5rem; margin-top: 3rem; border-top: 1px solid #dae4d9; }
+  .playlist-year-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.5rem; margin-bottom: 1.5rem; }
+  .playlist-year-title h2 { color: #213e2c; font-size: clamp(1.75rem,3vw,2.3rem); }
+  .playlist-year-title p { color: #5c6f63; font-size: 0.87rem; }
+  .full-playlist { padding: clamp(1.25rem,2.5vw,2rem); margin-bottom: 1.5rem; border: 1px solid #dce5db; background: #fff; border-radius: 16px; }
+  .full-playlist-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; flex-wrap: wrap; padding-bottom: 1.25rem; border-bottom: 1px solid #e7eee6; margin-bottom: 1.5rem; }
+  .full-playlist-heading h3 { color: #264e36; font-size: clamp(1.15rem,2vw,1.5rem); line-height: 1.45; font-weight: 750; }
+  .playlist-year-note { font-weight: 800; font-size: 0.68rem; color: #557263; margin-bottom: 0.45rem; }
+  .playlist-caption { font-size: 0.81rem; color: #647569; margin-top: 0.3rem; }
+  .full-playlist-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .full-playlist-actions a { text-decoration: none; font-size: 0.77rem; font-weight: 700; color: #24543d; padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid #c2dac5; }
+  .full-playlist-actions a:hover { background: #eef6ef; }
+  .full-playlist-actions a:focus-visible { outline: 3px solid #a7cba9; outline-offset: 2px; }
+  .playlist-video-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  @media(max-width:1000px){ .playlist-video-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width:650px){ .playlist-video-grid { grid-template-columns: minmax(0,1fr); } }
+</style>

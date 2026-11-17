@@ -5,6 +5,7 @@ import LiteYouTube from "../components/LiteYouTube.astro";
 import PdfPreview from "../components/PdfPreview.astro";
 import PdfDownloadGate from "../components/PdfDownloadGate.astro";
 import CurrentLinearAlgebraRecordings from "../components/CurrentLinearAlgebraRecordings.astro";
+import TeachingPlaylistDirectory from "../components/TeachingPlaylistDirectory.astro";
 import FeaturedInternationalEngineering from "../components/FeaturedInternationalEngineering.astro";
 import { TEACHING_PDF_DOWNLOAD_CODE } from "../data/teachingAccess";
 import { getCollection } from "astro:content";
@@ -109,6 +110,8 @@ const tirgulimNewestFirst = [...tirgulim].sort((a, b) => {
       </div>
     </div>
   </section>
+
+  <TeachingPlaylistDirectory />
 
   <!-- Current semester material is featured before the older teaching archive.
        Previous deep links keep working through the component's existing IDs. -->
