@@ -1,0 +1,77 @@
+---
+import {
+  teachingPlaylistGroups,
+  coverForTeachingPlaylist,
+} from "../data/teachingPlaylistCatalog";
+---
+
+<section id="teaching-playlists" class="mx-auto max-w-6xl px-6 pt-8 scroll-mt-24" aria-labelledby="teaching-playlists-title">
+  <div class="playlist-directory">
+    <div class="playlist-directory-top">
+      <div>
+        <p class="edition-label">Video library · All courses</p>
+        <h2 id="teaching-playlists-title" class="font-display">כל ההקלטות והפלייליסטים</h2>
+        <p>כל הקורסים, ההקלטות ודפי התרגול במקום אחד. בוחרים קורס ומגיעים ישירות לסרטונים שלו.</p>
+      </div>
+      <a href="/teaching/playlists/" class="playlist-directory-all">לכל ההקלטות <span aria-hidden="true">←</span></a>
+    </div>
+    {teachingPlaylistGroups.map((group) => (
+      <div class="playlist-directory-group">
+        <div class="playlist-directory-heading">
+          <h3>{group.title}</h3>
+          <p>{group.caption}</p>
+        </div>
+        <div class="playlist-directory-grid">
+          {group.cards.map((playlist) => (
+            <article class="playlist-card" data-teaching-playlist={playlist.id}>
+              <a href={`/teaching/playlists/#${playlist.id}`} class="playlist-card-main" aria-label={`${playlist.title} - צפייה בהקלטות`}>
+                {coverForTeachingPlaylist(playlist) ? (
+                  <img src={coverForTeachingPlaylist(playlist)} alt="" width="320" height="180" loading="lazy" decoding="async" />
+                ) : (
+                  <span class="playlist-card-placeholder" aria-hidden="true">▶</span>
+                )}
+                <span class="playlist-card-copy">
+                  <strong lang="he" dir="rtl">{playlist.title}</strong>
+                  <small>{playlist.videoIds.length} הקלטות · {playlist.year}</small>
+                </span>
+              </a>
+              <div class="playlist-card-actions">
+                <a href={`/teaching/playlists/#${playlist.id}`}>לצפייה באתר ←</a>
+                {playlist.youtubeUrl && (
+                  <a href={playlist.youtubeUrl} target="_blank" rel="noopener noreferrer">YouTube ↗</a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .playlist-directory { border: 1px solid #d5e0d4; background: #fff; border-radius: 20px; padding: clamp(1.15rem,2.5vw,2rem); }
+  .playlist-directory-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; align-items: end; padding-bottom: 1.25rem; }
+  .playlist-directory-top h2 { color: #213f32; font-size: clamp(1.4rem,2.1vw,1.9rem); margin: 0.3rem 0; }
+  .playlist-directory-top p:last-child { color: #617167; font-size: 0.87rem; line-height: 1.65; }
+  .playlist-directory-all { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid #1b4e3f; color: #1b4e3f; font-weight: 750; font-size: 0.85rem; border-radius: 9px; padding: 0.6rem 0.85rem; text-decoration: none; }
+  .playlist-directory-all:hover { background: #edf4ee; }
+  .playlist-directory-group { margin-top: 1.2rem; }
+  .playlist-directory-group + .playlist-directory-group { padding-top: 1.3rem; border-top: 1px solid #e4eae3; }
+  .playlist-directory-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 1rem; margin-bottom: 0.85rem; }
+  .playlist-directory-heading h3 { font-size: 1.08rem; font-weight: 800; color: #254734; }
+  .playlist-directory-heading p { font-size: 0.75rem; color: #66756b; }
+  .playlist-directory-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0.8rem; }
+  .playlist-card { border: 1px solid #dce5db; border-radius: 12px; overflow: hidden; min-width: 0; background: #fdfefd; display: flex; flex-direction: column; }
+  .playlist-card-main { text-decoration: none; color: inherit; display: grid; grid-template-columns: 6.5rem minmax(0,1fr); gap: 0.75rem; padding: 0.7rem; flex: 1; }
+  .playlist-card-main img, .playlist-card-placeholder { width: 6.5rem; aspect-ratio: 16/9; object-fit: cover; border-radius: 7px; background: #e8efeb; display: grid; place-items: center; }
+  .playlist-card-copy { display: flex; flex-direction: column; justify-content: center; min-width: 0; gap: 0.4rem; }
+  .playlist-card-copy strong { font-size: 0.87rem; color: #273e34; line-height: 1.45; font-weight: 760; }
+  .playlist-card-copy small { color: #6b7d70; font-size: 0.72rem; }
+  .playlist-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding: 0.55rem 0.7rem 0.75rem; border-top: 1px solid #eef1ed; }
+  .playlist-card-actions a { font-size: 0.75rem; color: #21533a; font-weight: 720; text-decoration: none; }
+  .playlist-card-main:hover strong, .playlist-card-actions a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .playlist-card a:focus-visible, .playlist-directory-all:focus-visible { outline: 3px solid #9fc7a8; outline-offset: 2px; }
+  @media(max-width:1000px){ .playlist-directory-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width:660px){ .playlist-directory-grid { grid-template-columns: minmax(0,1fr); } }
+</style>
