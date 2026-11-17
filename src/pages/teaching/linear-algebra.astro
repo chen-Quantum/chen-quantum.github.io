@@ -20,9 +20,11 @@ import {
 import { teachingPlaylists } from "../../data/playlists";
 
 // Tutorial recordings: grouped by tutorial number (newest first).
-const laTutorialNumbers = [13, 12, 11, 10, 9, 8];
+const laTutorialNumbers = [13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3];
+const lastYearPlaylistIds = new Set(["PLm0oTNdEqyakPZNxPchsnGy7R7BnkP2ML", "PLm0oTNdEqyaml_II1IKiInf06g2LTBeyt"]);
+const lastYearVideoIds = new Set(teachingPlaylists.filter((playlist) => lastYearPlaylistIds.has(playlist.id)).flatMap((playlist) => playlist.videoIds));
 const laGroups = laTutorialNumbers
-  .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n) }))
+  .map((n) => ({ n, videos: linearAlgebraVideos.filter((v) => v.laTutorial === n && lastYearVideoIds.has(v.videoId)) }))
   .filter((g) => g.videos.length > 0);
 
 // Worked exam questions: any LA video marked isExamQuestion.
@@ -74,7 +76,7 @@ const memoryAidPlaylist = teachingPlaylists.find(
       </h1>
       <p class="text-base text-slate-500 max-w-2xl leading-relaxed">
         Tutorial recordings across the electrical and biomedical engineering
-        tracks (tutorials 8–13), worked exam questions, and supporting
+        tracks (tutorials 3–13), worked exam questions, and supporting
         playlists. Recordings are
         <strong class="font-semibold text-slate-600">unlisted YouTube videos</strong>,
         available through the course website / link. The new written notes are on the 2026–2027 course page.

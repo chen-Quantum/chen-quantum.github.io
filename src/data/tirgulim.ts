@@ -124,7 +124,7 @@ export const tirgulim: TirgulSession[] = [
     titleEn: "Practice sheet 6",
     topics: [],
     pdfPath: "/files/teaching/calculus-2/tirgul6.pdf",
-    videoIds: ["BNwvvzMndGA", "uELbKWDmI68"],
+    videoIds: ["BNwvvzMndGA", "9rdJdh6c0XM", "uELbKWDmI68"],
   },
   {
     // tirgul7 PDF was copied from ../tirgulim/tirgul7.pdf. Topics are left empty
