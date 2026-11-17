@@ -1,0 +1,79 @@
+name: Temporary YouTube teaching metadata audit 2026-11-17
+on:
+  push:
+    branches:
+      - audit-teaching-2026-11-17
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yt-dlp
+        run: python3 -m pip install -q yt-dlp
+      - name: Scan all tracked playlists using YouTube metadata, no video downloads
+        run: |
+          python3 - <<'PY'
+          import re, json, sys, subprocess, datetime, urllib.request
+          from pathlib import Path
+          repo = Path('.')
+          playlist_text = (repo/'src/data/playlists.ts').read_text()
+          video_text = (repo/'src/data/youtubeVideos.ts').read_text()
+          ids = list(dict.fromkeys(re.findall(r'https://www\.youtube\.com/playlist\?list=([A-Za-z0-9_-]+)', playlist_text)))
+          existing = set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{11})"', video_text))
+          report = {'checked_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'known_ids': len(existing), 'playlists': []}
+          def yt(args, timeout):
+              try:
+                  p = subprocess.run(['yt-dlp', '--no-warnings', '--quiet', '--skip-download', *args], capture_output=True, text=True, timeout=timeout)
+                  if p.returncode != 0 or not p.stdout.strip():
+                      return None, (p.stderr.strip() or 'yt-dlp failed')[-350:]
+                  return json.loads(p.stdout), None
+              except Exception as e:
+                  return None, str(e)[:350]
+          for pid in ids:
+              url = 'https://www.youtube.com/playlist?list='+pid
+              meta, err = yt(['--flat-playlist','--dump-single-json', '--', url], 100)
+              row = {'id':pid, 'ok':isinstance(meta,dict), 'error':err,'count':0, 'candidates':[]}
+              if isinstance(meta,dict):
+                  entries = [v for v in meta.get('entries', []) if isinstance(v,dict)]
+                  row['count'] = len(entries)
+                  for v in entries:
+                      vid = v.get('id','')
+                      if not isinstance(vid,str) or len(vid)!=11 or vid in existing: continue
+                      obj = {'id':vid, 'flat_title':v.get('title'), 'flat_duration_seconds':v.get('duration'),
+                          'flat_upload_date':v.get('upload_date'), 'flat_release_date':v.get('release_date'),
+                          'flat_description':v.get('description'), 'flat_live_status':v.get('live_status'),
+                          'flat_availability':v.get('availability')}
+                      try:
+                          ou='https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v='+vid+'&format=json'
+                          with urllib.request.urlopen(urllib.request.Request(ou,headers={'User-Agent':'Mozilla/5.0'}),timeout=12) as r:
+                              o=json.load(r)
+                          obj['oembed_title']=o.get('title')
+                          obj['oembed_author']=o.get('author_name')
+                      except Exception as e:
+                          obj['oembed_error']=str(e)[:150]
+                      full, issue = yt(['--dump-single-json','--no-playlist', '--', 'https://www.youtube.com/watch?v='+vid], 75)
+                      if isinstance(full,dict):
+                          obj.update({key:full.get(key) for key in ['title','description','duration','upload_date','release_date','availability','live_status','channel','was_live_at']})
+                      else:
+                          obj['full_error']=issue
+                      row['candidates'].append(obj)
+              report['playlists'].append(row)
+              print('PLAYLIST', pid,'OK' if row['ok'] else 'FAIL','COUNT',row['count'],'CANDIDATES',len(row['candidates']),flush=True)
+          Path('teaching-audit-20261117.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print('TEACHING_AUDIT_JSON_START',flush=True)
+          print(json.dumps(report,ensure_ascii=False),flush=True)
+          print('TEACHING_AUDIT_JSON_END',flush=True)
+          if not any(x['id']=='PLEvis3LHS9Ks' and x['ok'] for x in report['playlists']):
+              sys.exit('Primary playlist scan failed; no publication permitted')
+          PY
+      - name: Upload read-only audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: teaching-audit-20261117
+          path: teaching-audit-20261117.json
+          if-no-files-found: ignore
+          retention-days: 3
