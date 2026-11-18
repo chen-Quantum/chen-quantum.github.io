@@ -1,0 +1,59 @@
+name: Teaching metadata audit 2026-11-18 evening
+on:
+  push:
+    branches: [audit-teaching-metadata-20261118-evening]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install metadata-only yt-dlp
+        run: python3 -m pip install -q yt-dlp
+      - name: Scan every registered teaching playlist, compare video IDs and inspect new metadata
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,re,subprocess,datetime
+          from pathlib import Path
+          playlist_src=Path('src/data/playlists.ts').read_text()
+          video_src=Path('src/data/youtubeVideos.ts').read_text()
+          known=set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{11})"',video_src))
+          playlist_ids=list(dict.fromkeys(re.findall(r'https://www\.youtube\.com/playlist\?list=([A-Za-z0-9_-]+)',playlist_src)))
+          def call(args,seconds=105):
+              try:
+                  p=subprocess.run(['yt-dlp','--no-warnings','--quiet','--skip-download',*args],capture_output=True,text=True,timeout=seconds)
+                  if p.returncode or not p.stdout:
+                      return None,((p.stderr or '').strip()[-500:] or 'no stdout')
+                  return json.loads(p.stdout),None
+              except Exception as e:
+                  return None,str(e)
+          print('AUDIT_BEGIN',json.dumps({'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'playlists':len(playlist_ids),'known_video_rows':len(known)}),flush=True)
+          found={}
+          failures=0
+          for pid in playlist_ids:
+              data,error=call(['--flat-playlist','--dump-single-json','https://www.youtube.com/playlist?list='+pid])
+              if error:
+                  failures+=1
+                  print('PLAYLIST_ERROR',json.dumps({'playlistId':pid,'error':error},ensure_ascii=False),flush=True)
+                  continue
+              entries=[e for e in (data.get('entries') or []) if isinstance(e,dict)]
+              print('PLAYLIST',json.dumps({'playlistId':pid,'title':data.get('title'),'count':len(entries)},ensure_ascii=False),flush=True)
+              for entry in entries:
+                  vid=entry.get('id')
+                  if not vid: continue
+                  payload={'playlistId':pid,'id':vid,'title':entry.get('title'),'duration':entry.get('duration'),'upload_date':entry.get('upload_date'),'release_timestamp':entry.get('release_timestamp'),'availability':entry.get('availability'),'known_video_row':vid in known}
+                  print('ITEM',json.dumps(payload,ensure_ascii=False),flush=True)
+                  if vid not in known:
+                      found.setdefault(vid,{'playlistIds':[],**payload})['playlistIds'].append(pid)
+          print('CANDIDATES',json.dumps({'count':len(found),'ids':list(found)},ensure_ascii=False),flush=True)
+          for vid,payload in found.items():
+              full,error=call(['--dump-single-json','--ignore-no-formats-error','https://www.youtube.com/watch?v='+vid],35)
+              metadata=None
+              if full:
+                  metadata={k:full.get(k) for k in ('id','title','description','duration','upload_date','release_date','timestamp','release_timestamp','availability','live_status','channel_id') }
+              print('CANDIDATE',json.dumps({'id':vid,'flat':payload,'full':metadata,'full_error':error},ensure_ascii=False),flush=True)
+          print('AUDIT_END',json.dumps({'playlist_failures':failures,'unique_candidate_videos':len(found),'known_video_rows':len(known)}),flush=True)
+          PY
