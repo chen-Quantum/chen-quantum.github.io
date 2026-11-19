@@ -1,0 +1,67 @@
+name: Temporary teaching recording audit 2026-11-19
+on:
+  push:
+    branches: ["audit/teaching-sync-20261119"]
+    paths: [".github/workflows/manual-teaching-audit-20261119.yml"]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install metadata extractor
+        run: python3 -m pip install -q --disable-pip-version-check yt-dlp
+      - name: Scan registered playlists, compare video IDs and verify candidates
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import concurrent.futures, subprocess, re, json, pathlib
+          root=pathlib.Path(".")
+          playlists=(root/"src/data/playlists.ts").read_text()
+          videos=(root/"src/data/youtubeVideos.ts").read_text()
+          items=list(dict.fromkeys(re.findall(r'url:\s*"(https://www\.youtube\.com/playlist\?list=[A-Za-z0-9_-]+)"',playlists)))
+          known=set(re.findall(r'videoId:\s*"([A-Za-z0-9_-]{6,})"',videos))
+          def scan(url):
+              pid=url.rsplit("=",1)[-1]
+              cmd=["yt-dlp","--flat-playlist","--dump-single-json","--no-warnings","--quiet","--socket-timeout","18",url]
+              try:
+                  p=subprocess.run(cmd,text=True,capture_output=True,timeout=80)
+                  if p.returncode!=0 or not p.stdout.strip():
+                      return {"playlist":pid,"ok":False,"error":(p.stderr or "no output")[-350:]}
+                  j=json.loads(p.stdout)
+                  entries=[{"id":e.get("id"),"title":e.get("title"),"duration":e.get("duration"),"upload_date":e.get("upload_date")} for e in j.get("entries",[]) if e and e.get("id")]
+                  missing=[e for e in entries if e["id"] not in known]
+                  return {"playlist":pid,"ok":True,"title":j.get("title"),"total":len(entries),"new":missing}
+              except Exception as ex:
+                  return {"playlist":pid,"ok":False,"error":str(ex)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              res=list(pool.map(scan,items))
+          print("===PLAYLIST SCAN BEGIN===")
+          for entry in res:
+              print(json.dumps(entry,ensure_ascii=False))
+          print("===PLAYLIST SCAN END===")
+          new={}
+          for entry in res:
+              for video in entry.get("new",[]):
+                  new.setdefault(video["id"],video)
+          print("===SUMMARY===",json.dumps({"playlists":len(items),"success":sum(x["ok"] for x in res),"known_ids":len(known),"unique_new":len(new)},ensure_ascii=False))
+          for idx,(vid,v) in enumerate(new.items()):
+              if idx>=30:
+                  print("NEW DETAIL LIMIT reached 30, remaining",len(new)-30)
+                  break
+              try:
+                  p=subprocess.run(["yt-dlp","--no-playlist","--skip-download","--dump-single-json","--quiet","--no-warnings","--socket-timeout","15","https://www.youtube.com/watch?v="+vid],text=True,capture_output=True,timeout=50)
+                  if p.returncode!=0 or not p.stdout.strip():
+                      print("DETAIL",json.dumps({"id":vid,"ok":False,"error":p.stderr[-380:]},ensure_ascii=False))
+                      continue
+                  j=json.loads(p.stdout)
+                  print("DETAIL",json.dumps({"id":vid,"ok":True,"title":j.get("title"),"description":(j.get("description") or "")[:1800],"duration":j.get("duration"),"upload_date":j.get("upload_date"),"timestamp":j.get("timestamp"),"release_date":j.get("release_date"),"availability":j.get("availability"),"live_status":j.get("live_status"),"channel":j.get("channel")},ensure_ascii=False))
+              except Exception as ex:
+                  print("DETAIL",json.dumps({"id":vid,"ok":False,"error":str(ex)},ensure_ascii=False))
+          
+          PY
