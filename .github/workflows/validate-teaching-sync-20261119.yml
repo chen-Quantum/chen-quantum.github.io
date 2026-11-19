@@ -1,0 +1,56 @@
+name: Validate teaching recording sync 2026-11-19 (temporary)
+on:
+  push:
+    branches: ["sync/biomedical-tutorial5-wed-20261119"]
+    paths: [".github/workflows/validate-teaching-sync-20261119.yml"]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the complete site
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Check order, uniqueness, separation and rendered video
+        run: |
+          node scripts/tests/teaching-order.mjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          src=Path('src/data/youtubeVideos.ts').read_text()
+          pl=Path('src/data/playlists.ts').read_text()
+          assert len(re.findall(r'videoId: "rujieps4isc"',src))==1
+          assert pl.count('"rujieps4isc"')==1
+          for path in ['dist/teaching/index.html','dist/teaching/2026-2027/index.html']:
+              html=Path(path).read_text()
+              assert html.count('data-embed="https://www.youtube-nocookie.com/embed/rujieps4isc"')==1, (path,'not exactly one player')
+              assert 'archive-current-recordings-biomedical-tutorial-5' in html or 'new-recordings-biomedical-tutorial-5' in html
+          intl=Path('dist/teaching/international-engineering/index.html').read_text()
+          assert 'rujieps4isc' not in intl
+          print('PASS rendered new player once per course view, playlist uniqueness, international exclusion')
+          PY
+      - name: Independently verify metadata from YouTube playlist (no download)
+        run: |
+          python3 -m pip install -q --disable-pip-version-check yt-dlp
+          python3 - <<'PY'
+          import subprocess,json
+          p=subprocess.run(['yt-dlp','--flat-playlist','--dump-single-json','--quiet','--no-warnings','--socket-timeout','20','https://www.youtube.com/playlist?list=PLEvis3LHS9Ks'],text=True,capture_output=True,timeout=100)
+          if p.returncode or not p.stdout.strip(): raise RuntimeError('YouTube playlist metadata unavailable: '+p.stderr[-500:])
+          d=json.loads(p.stdout)
+          e=[x for x in d.get('entries',[]) if x and x.get('id')=='rujieps4isc']
+          assert len(e)==1,e
+          assert e[0].get('title')=='אלגברה לינארית להנדסה ביו רפואית תרגול 5 (יום רביעי)',e
+          assert e[0].get('duration')==3366,e
+          print('PASS independently verified YouTube video ID, original title, and duration (3366 seconds)')
+          PY
