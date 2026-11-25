@@ -1,0 +1,35 @@
+name: Temporary teaching metadata audit 2026-11-25
+on:
+  push:
+    branches: [audit/teaching-sync-20261125-evening]
+    paths: [.github/workflows/temporary-teaching-audit-20261125.yml]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --quiet yt-dlp
+      - name: Scan all registered playlists without downloading media
+        run: |
+          node scripts/sync-teaching-content.mjs
+          cat reports/teaching-sync/latest.json
+      - name: Verify candidate metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, subprocess, concurrent.futures
+          data=json.load(open('reports/teaching-sync/latest.json'))
+          ids={v['videoId'] for p in data['playlists'] if p['ok'] for v in p['newVideos']}
+          def check(i):
+              r=subprocess.run(['yt-dlp','--skip-download','--no-playlist','--socket-timeout','15','--retries','0','--dump-single-json','https://www.youtube.com/watch?v='+i],capture_output=True,text=True,timeout=60)
+              if r.returncode:
+                  return {'id':i,'error':r.stderr[-500:]}
+              d=json.loads(r.stdout)
+              return {k:d.get(k) for k in ['id','title','duration','upload_date','release_date','description','availability','live_status','channel']}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+              for i,f in [(i,ex.submit(check,i)) for i in sorted(ids)]:
+                  try: print(json.dumps(f.result(),ensure_ascii=False))
+                  except Exception as e: print(json.dumps({'id':i,'error':str(e)}))
+          PY
